@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutTitle"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/header_height"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/rounded_title">
+
+    <ImageView
+        android:id="@+id/icon"
+        style="@style/Icon"
+        android:src="@mipmap/ic_launcher_foreground"/>
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/TextView.Title"
+        android:text="@string/app_name"
+        android:textColor="@color/colourBackground" />
+
+</LinearLayout>

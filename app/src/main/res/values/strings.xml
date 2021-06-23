@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Audio Profile</string>
+    <string name="audio_profile_title">Set audio profile</string>
+    <string name="cannot_get_system_service">Cannot get system service, exiting!</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="configure">Configure</string>
+    <string name="copyright">&#169; %1s RJW - All rights reserved</string>
+    <string name="notification">Audio Profile service running</string>
+    <string name="ok">OK</string>
+    <string name="permission_grant">Grant permission</string>
+    <string name="permission_instructions">In order to be able to modify the audio profile of the device, the application requires the do not disturb permission.
+        Please press the button to grant the permission and then press Back to return to the application and press the OK button.</string>
+    <array name="profile">
+        <item>Silent</item>
+        <item>Quiet</item>
+        <item>Normal</item>
+        <item>Loud</item>
+    </array>
+    <string name="config_profile_name">Profile name:</string>
+    <string name="unchanged">Do not change</string>
+
+    <string name="about_built">Built:</string>
+    <string name="about_title">About</string>
+    <string name="about_version">Version</string>
+
+    <string name="config_title">Profile Configuration</string>
+    <string name="config_volume_notification">Notification volume</string>
+    <string name="config_volume_media">Media volume</string>
+    <string name="config_volume_ringtone">Ringtone volume</string>
+    <string name="config_volume_system">System volume</string>
+
+    <string name="settings_app_colour">Application colour</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_wifi_enter">Enter Wifi Network</string>
+    <string name="settings_wifi_exit">Exit Wifi Network</string>
+</resources>

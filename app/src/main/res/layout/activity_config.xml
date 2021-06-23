@@ -1,0 +1,188 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/content_title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.Heading"
+            android:text="@string/config_title"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextView"
+                android:text="@string/config_profile_name"/>
+
+            <EditText
+                android:id="@+id/editProfileName"
+                style="@style/EditText"/>
+
+            <Spinner
+                android:id="@+id/spinnerIcon"
+                style="@style/Spinner"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextView"
+                    android:text="@string/config_volume_ringtone"/>
+
+                <LinearLayout
+                    style="@style/Blank"/>
+
+                <CheckBox
+                    android:id="@+id/checkBoxUnchangedRingtone"
+                    style="@style/CheckBox"
+                    android:text="@string/unchanged"
+                    android:onClick="onClickUnchanged"/>
+
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekBarRingtone"
+                style="@style/SeekBar"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextView"
+                    android:text="@string/config_volume_notification"/>
+
+                <LinearLayout
+                    style="@style/Blank"/>
+
+                <CheckBox
+                    android:id="@+id/checkBoxUnchangedNotification"
+                    style="@style/CheckBox"
+                    android:text="@string/unchanged"
+                    android:onClick="onClickUnchanged"/>
+
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekBarNotification"
+                style="@style/SeekBar"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextView"
+                    android:text="@string/config_volume_media"/>
+
+                <LinearLayout
+                    style="@style/Blank"/>
+
+                <CheckBox
+                    android:id="@+id/checkBoxUnchangedMedia"
+                    style="@style/CheckBox"
+                    android:text="@string/unchanged"
+                    android:onClick="onClickUnchanged"/>
+
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekBarMedia"
+                style="@style/SeekBar"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextView"
+                    android:text="@string/config_volume_system"/>
+
+                <LinearLayout
+                    style="@style/Blank"/>
+
+                <CheckBox
+                    android:id="@+id/checkBoxUnchangedSystem"
+                    style="@style/CheckBox"
+                    android:text="@string/unchanged"
+                    android:onClick="onClickUnchanged"/>
+
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekBarSystem"
+                style="@style/SeekBar"/>
+
+        </LinearLayout>
+
+        <Button
+            style="@style/Button.Action"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin_table"
+            android:text="@string/close"
+            android:onClick="onClickClose"/>
+
+    </LinearLayout>
+
+</LinearLayout>
