@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,10 +18,10 @@ import com.rjw.audioprofile.R;
 
 public class DisplayUtils {
     public static final String EXTRA_CUSTOM_COLOUR = "CustomColour";
-    public static int COLOUR_LEVELS = 6;
+    public static final int COLOUR_LEVELS = 6;
 
     public static void colourControls(final View v) {
-        colourControls(v, MainActivity.getConfigColour());
+        colourControls(v, MainActivity.Companion.getConfigColour());
     }
 
     public static void colourControls(final View v, final int colour) {

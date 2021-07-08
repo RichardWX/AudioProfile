@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import com.rjw.audioprofile.R;
 
 public class IconAdapter extends ArrayAdapter<Drawable> {
-    private Context mContext;
+    private final Context mContext;
 
     public IconAdapter(final Context context, final Drawable[] objects) {
         this(context, objects, null);
