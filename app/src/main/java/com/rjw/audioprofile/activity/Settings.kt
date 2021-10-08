@@ -1,65 +1,79 @@
 package com.rjw.audioprofile.activity
 
 import android.content.Intent
-import android.graphics.PorterDuff
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import android.widget.CheckBox
-import android.widget.Spinner
 import com.rjw.audioprofile.R
-import com.rjw.audioprofile.utils.AudioProfileList
-import com.rjw.audioprofile.utils.DisplayUtils
-import com.rjw.audioprofile.utils.ProfileAdapter
+import com.rjw.audioprofile.databinding.ActivitySettingsBinding
+import com.rjw.audioprofile.utils.*
 
 class Settings : AudioActivity() {
-    private lateinit var mEnterProfile: Spinner
-    private lateinit var mExitProfile: Spinner
-    private lateinit var mEnterProfileDefault: CheckBox
-    private lateinit var mExitProfileDefault: CheckBox
+    private lateinit var binding: ActivitySettingsBinding
+    private val lockTimings = arrayOf(1, 2, 5, 10, 20, 30)
     private var mAppColour: Int = MainActivity.configColour
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setWindowRatios(0.8f, 0.3f)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.bind(view!!)
         setTitle(R.string.settings_title)
         val adapter = ProfileAdapter(this, AudioProfileList.getProfiles().toTypedArray())
-        mEnterProfile = findViewById(R.id.spinnerEnterWifi)
-        mEnterProfile.setAdapter(adapter)
-        mEnterProfileDefault = findViewById(R.id.checkboxEnterWifiDefault)
-        mEnterProfileDefault.getButtonDrawable()!!.setColorFilter(MainActivity.configColour, PorterDuff.Mode.SRC_ATOP)
+        binding.spinnerEnterWifi.adapter = adapter
+        binding.checkboxEnterWifiDefault.buttonDrawable!!.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
         var profile = AudioProfileList.enterWifiProfile
         if(profile == -1) {
-            mEnterProfileDefault.setChecked(true)
+            binding.checkboxEnterWifiDefault.isChecked = true
         } else {
-            mEnterProfile.setSelection(profile)
+            binding.spinnerEnterWifi.setSelection(profile)
         }
-        mExitProfile = findViewById(R.id.spinnerExitWifi)
-        mExitProfile.setAdapter(adapter)
-        mExitProfileDefault = findViewById(R.id.checkboxExitWifiDefault)
-        mExitProfileDefault.getButtonDrawable()!!.setColorFilter(MainActivity.configColour, PorterDuff.Mode.SRC_ATOP)
+        binding.spinnerExitWifi.adapter = adapter
+        binding.checkboxExitWifiDefault.buttonDrawable!!.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
         profile = AudioProfileList.exitWifiProfile
         if(profile == -1) {
-            mExitProfileDefault.setChecked(true)
+            binding.checkboxExitWifiDefault.isChecked = true
         } else {
-            mExitProfile.setSelection(profile)
+            binding.spinnerExitWifi.setSelection(profile)
         }
+        val profileLockTime = AudioProfileList.lockProfileTime
+        val lockAdapter = MinutesAdapter(this, lockTimings)
+        binding.spinnerLockProfile.adapter = lockAdapter
+        binding.checkboxLockProfile.buttonDrawable!!.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
+        if(profileLockTime == -1) {
+            binding.checkboxLockProfile.isChecked = false
+        } else {
+            binding.checkboxLockProfile.isChecked = true
+            for(item in 0..lockAdapter.count - 1) {
+                if(lockAdapter.getItem(item) == profileLockTime) {
+                    binding.spinnerLockProfile.setSelection(item)
+                }
+            }
+        }
+
         enableControls()
         colourControls()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == MainActivity.ACTIVITY_SELECT_THEME_COLOUR) {
             if(resultCode == RESULT_OK) {
-                mAppColour = data.getIntExtra(DisplayUtils.EXTRA_CUSTOM_COLOUR, mAppColour)
-                MainActivity.setAppColour(mAppColour)
-                val intent = Intent(this, javaClass)
-                startActivity(intent)
-                finish()
+                if(data != null) {
+                    mAppColour = data.getIntExtra(DisplayUtils.EXTRA_CUSTOM_COLOUR, mAppColour)
+                    MainActivity.setAppColour(mAppColour)
+                    val intent = Intent(this, javaClass)
+                    startActivity(intent)
+                    finish()
+                }
             }
         }
     }
 
     fun onClickUnchanged(v: View?) {
+        enableControls()
+    }
+
+    fun onClickLockProfile(v: View?) {
         enableControls()
     }
 
@@ -70,16 +84,11 @@ class Settings : AudioActivity() {
     }
 
     fun onClickClose(v: View?) {
-        if(mEnterProfileDefault.isChecked) {
-            AudioProfileList.enterWifiProfile = -1
-        } else {
-            AudioProfileList.enterWifiProfile = mEnterProfile.selectedItemPosition
-        }
-        if(mExitProfileDefault.isChecked) {
-            AudioProfileList.exitWifiProfile = -1
-        } else {
-            AudioProfileList.exitWifiProfile = mExitProfile.selectedItemPosition
-        }
+        AudioProfileList.enterWifiProfile = if(binding.checkboxEnterWifiDefault.isChecked) -1 else binding.spinnerEnterWifi.selectedItemPosition
+        AudioProfileList.exitWifiProfile = if(binding.checkboxExitWifiDefault.isChecked) -1 else binding.spinnerExitWifi.selectedItemPosition
+        AudioProfileList.lockProfileTime = if(binding.checkboxLockProfile.isChecked) binding.spinnerLockProfile.getItemAtPosition(
+            binding.spinnerLockProfile.selectedItemPosition
+        ) as Int else -1
         val intent = Intent()
         intent.putExtra(DisplayUtils.EXTRA_CUSTOM_COLOUR, mAppColour)
         setResult(RESULT_OK, intent)
@@ -87,7 +96,8 @@ class Settings : AudioActivity() {
     }
 
     private fun enableControls() {
-        mEnterProfile.visibility = if(mEnterProfileDefault.isChecked) View.INVISIBLE else View.VISIBLE
-        mExitProfile.visibility = if(mExitProfileDefault.isChecked) View.INVISIBLE else View.VISIBLE
+        binding.spinnerEnterWifi.visibility = if(binding.checkboxEnterWifiDefault.isChecked) View.INVISIBLE else View.VISIBLE
+        binding.spinnerExitWifi.visibility = if(binding.checkboxExitWifiDefault.isChecked) View.INVISIBLE else View.VISIBLE
+        binding.spinnerLockProfile.visibility = if(binding.checkboxLockProfile.isChecked) View.VISIBLE else View.INVISIBLE
     }
 }

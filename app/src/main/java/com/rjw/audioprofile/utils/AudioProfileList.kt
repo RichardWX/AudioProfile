@@ -3,32 +3,22 @@ package com.rjw.audioprofile.utils
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
+import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import java.util.*
 
 class AudioProfileList(context: Context?) {
     class AudioProfile(name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int) {
-        @JvmField
         var name: String? = null
-
-        @JvmField
         var icon = 0
-
-        @JvmField
         var ringtoneVolume = 0
-
-        @JvmField
         var notificationVolume = 0
-
-        @JvmField
         var mediaVolume = 0
-
-        @JvmField
         var systemVolume = 0
+
         operator fun set(name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int) {
             this.name = name
             this.icon = icon
@@ -46,25 +36,18 @@ class AudioProfileList(context: Context?) {
     companion object {
         const val NO_PROFILES = 4
         private const val DEFAULT = -1
-        private const val NAME = "Name"
-        private const val ICON = "Icon"
-        private const val RINGTONE = "Ringtone"
-        private const val NOTIFICATION = "Notification"
-        private const val MEDIA = "Media"
-        private const val SYSTEM = "System"
-        private const val CURRENT_PROFILE = "CurrentProfile"
-        private const val ENTER_PROFILE = "EnterProfile"
-        private const val EXIT_PROFILE = "ExitProfile"
         private var mCurrentProfile = 0
         private var mEnterWifiProfile = -1
         private var mExitWifiProfile = -1
+        private var mLockProfileTime = -1
         private var mContext: Context? = null
         private var mPrefs: SharedPreferences? = null
         private val mProfiles = ArrayList<AudioProfile>()
         private var mIcons: IntArray? = null
+        private var mLastProfileSwitchTime = -1L
         fun initialise(context: Context?) {
-            mContext = context
-            if(mIcons == null || mIcons!!.size == 0) {
+            mContext = context?.applicationContext
+            if(mIcons == null || mIcons!!.isEmpty()) {
                 mIcons = intArrayOf(
                     R.drawable.icon00,
                     R.drawable.icon01,
@@ -92,9 +75,9 @@ class AudioProfileList(context: Context?) {
                 return mIcons!!.size
             }
 
-        fun getIcon(iconId: Int): Drawable? {
-            val icon = mContext!!.getDrawable(mIcons!![iconId])
-            icon!!.setColorFilter(MainActivity.configColour, PorterDuff.Mode.SRC_ATOP)
+        fun getIcon(iconId: Int): Drawable {
+            val icon = ContextCompat.getDrawable(mContext!!, mIcons!![iconId])
+            icon!!.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             return icon
         }
 
@@ -102,7 +85,7 @@ class AudioProfileList(context: Context?) {
             return mIcons!![iconId]
         }
 
-        fun loadProfiles() {
+        private fun loadProfiles() {
             if(mPrefs == null) {
                 mPrefs = mContext!!.getSharedPreferences(MainActivity.TAG, Activity.MODE_PRIVATE)
             }
@@ -110,6 +93,7 @@ class AudioProfileList(context: Context?) {
             mCurrentProfile = mPrefs!!.getInt(CURRENT_PROFILE, mCurrentProfile)
             mEnterWifiProfile = mPrefs!!.getInt(ENTER_PROFILE, mEnterWifiProfile)
             mExitWifiProfile = mPrefs!!.getInt(EXIT_PROFILE, mExitWifiProfile)
+            mLockProfileTime = mPrefs!!.getInt(LOCK_PROFILE, mLockProfileTime)
             for(profile in 0 until NO_PROFILES) {
                 val audioProfile = AudioProfile(
                     mPrefs!!.getString(
@@ -146,6 +130,8 @@ class AudioProfileList(context: Context?) {
             set(currentProfile) {
                 mCurrentProfile = currentProfile
                 mPrefs!!.edit().putInt(CURRENT_PROFILE, mCurrentProfile).apply()
+                mLastProfileSwitchTime = Calendar.getInstance().timeInMillis
+                MainActivity.updateNotification()
             }
 
         var enterWifiProfile: Int
@@ -166,6 +152,23 @@ class AudioProfileList(context: Context?) {
                 mPrefs!!.edit().putInt(EXIT_PROFILE, mExitWifiProfile).apply()
             }
 
+        var lockProfileTime: Int
+            get() {
+                return mLockProfileTime
+            }
+            set(lockProfileTime) {
+                mLockProfileTime = lockProfileTime
+                mPrefs!!.edit().putInt(LOCK_PROFILE, mLockProfileTime).apply()
+            }
+
+        var lastProfileSwitchTime: Long
+            get() {
+                return mLastProfileSwitchTime
+            }
+            set(switchTime) {
+                mLastProfileSwitchTime = switchTime
+            }
+
         fun getProfile(profile: Int): AudioProfile {
             return mProfiles[profile]
         }
@@ -179,7 +182,7 @@ class AudioProfileList(context: Context?) {
         }
 
         fun applyProfile(context: Context) {
-            val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
             if(am != null) {
                 val audioProfile = getProfile(currentProfile)
                 if(audioProfile.ringtoneVolume != -1) {

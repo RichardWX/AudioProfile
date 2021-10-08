@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/toast_background">
 
-    <include layout="@layout/content_title"/>
+    <include android:id="@+id/layoutTitle"
+        layout="@layout/content_title"/>
 
     <ScrollView
         android:layout_width="match_parent"

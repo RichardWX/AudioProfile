@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layoutMain"
+    android:id="@+id/layoutContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
@@ -14,7 +14,7 @@
 
         <TextView
             style="@style/TextView.Heading"
-            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
             android:text="@string/audio_profile_title"/>
 
         <LinearLayout
@@ -59,7 +59,7 @@
             <TextView
                 android:id="@+id/textProfile0"
                 style="@style/TextView.Table"
-                android:text="Silent"
+                android:text="SILENT"
                 android:onClick="onClickAudioProfile"/>
 
             <Button
@@ -86,7 +86,7 @@
             <TextView
                 android:id="@+id/textProfile1"
                 style="@style/TextView.Table"
-                android:text="Quiet"
+                android:text="QUIET"
                 android:onClick="onClickAudioProfile"/>
 
             <Button
@@ -113,7 +113,7 @@
             <TextView
                 android:id="@+id/textProfile2"
                 style="@style/TextView.Table"
-                android:text="Normal"
+                android:text="NORMAL"
                 android:onClick="onClickAudioProfile"/>
 
             <Button
@@ -140,7 +140,7 @@
             <TextView
                 android:id="@+id/textProfile3"
                 style="@style/TextView.Table"
-                android:text="Loud"
+                android:text="LOUD"
                 android:onClick="onClickAudioProfile"/>
 
             <Button

@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.Window
-import android.widget.TextView
 import com.rjw.audioprofile.R
+import com.rjw.audioprofile.databinding.ContentTitleBinding
 import com.rjw.audioprofile.utils.DisplayUtils
 
 open class AudioActivity : Activity() {
+    private lateinit var bindingTitle: ContentTitleBinding
+    protected var view: View? = null
+
     protected val mWindowRatio = floatArrayOf(0.8f, 0.7f)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +23,9 @@ open class AudioActivity : Activity() {
     }
 
     override fun setContentView(layout: Int) {
-        super.setContentView(layout)
+        view = layoutInflater.inflate(layout, null, false)
+        setContentView(view)
+        bindingTitle = ContentTitleBinding.bind(view!!)
 
         // Set the window to be the right size.
         val vto = window.decorView.viewTreeObserver
@@ -48,11 +53,11 @@ open class AudioActivity : Activity() {
     }
 
     override fun setTitle(title: CharSequence) {
-        (findViewById<View>(R.id.title) as TextView).text = title
+        bindingTitle.title.text = title
     }
 
     override fun setTitle(titleId: Int) {
-        (findViewById<View>(R.id.title) as TextView).setText(titleId)
+        bindingTitle.title.setText(titleId)
     }
 
     protected fun setWindowRatios(xRatio: Float, yRatio: Float) {

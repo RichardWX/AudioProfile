@@ -5,17 +5,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import com.rjw.audioprofile.R
+import com.rjw.audioprofile.databinding.ActivityColourPickerBinding
 import com.rjw.audioprofile.utils.DisplayUtils
-import com.rjw.audioprofile.utils.HSVColourWheel
-import com.rjw.audioprofile.utils.HSVValueSlider
 import com.rjw.audioprofile.utils.OnColourSelectedListener
 
 /**
  * Class representing the Colour picker dialog box.
  */
 class ColourPicker : AudioActivity() {
-    private lateinit var mValueSlider: HSVValueSlider
-    private lateinit var mSelectedColourView: ImageView
+    private lateinit var binding: ActivityColourPickerBinding
 
     /**
      * Get the selected colour.
@@ -32,31 +30,29 @@ class ColourPicker : AudioActivity() {
         setWindowRatios(0.8f, 0.6f)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_colour_picker)
+        binding = ActivityColourPickerBinding.bind(view!!)
         setTitle(R.string.settings_app_colour)
 
         // Set up the colour wheel.
         colour = intent.getIntExtra(DisplayUtils.EXTRA_CUSTOM_COLOUR, 0)
-        val colourWheel: HSVColourWheel = findViewById(R.id.colourWheel)
-        colourWheel.setColour(colour)
-        colourWheel.setBlackCursor(false)
-        colourWheel.setListener(object : OnColourSelectedListener {
+        binding.colourWheel.setColour(colour)
+        binding.colourWheel.setBlackCursor(false)
+        binding.colourWheel.setListener(object : OnColourSelectedListener {
             override fun colourSelected(colour: Int) {
-                mValueSlider.setColour(colour, true)
+                binding.colourValue.setColour(colour, true)
             }
         })
 
         // Set up the saturation slider.
-        mValueSlider = findViewById(R.id.colourValue)
-        mValueSlider.setColour(colour, false)
-        mValueSlider.setHorizontal(false)
-        mValueSlider.setRadius(resources.getDimension(R.dimen.border_radius))
-        mValueSlider.setListener(object : OnColourSelectedListener {
+        binding.colourValue.setColour(colour, false)
+        binding.colourValue.setHorizontal(false)
+        binding.colourValue.setRadius(resources.getDimension(R.dimen.border_radius))
+        binding.colourValue.setListener(object : OnColourSelectedListener {
             override fun colourSelected(colour: Int) {
                 this@ColourPicker.colour = colour
                 setColourView()
             }
         })
-        mSelectedColourView = findViewById(R.id.colourView)
         setColourView()
         colourControls()
     }
@@ -86,6 +82,6 @@ class ColourPicker : AudioActivity() {
      */
     private fun setColourView() {
         // Update the colour control with the selected colour.
-        mSelectedColourView.setBackgroundColor(DisplayUtils.lighten(colour, DisplayUtils.COLOUR_LEVELS))
+        binding.colourView.setBackgroundColor(DisplayUtils.lighten(colour, DisplayUtils.COLOUR_LEVELS))
     }
 }

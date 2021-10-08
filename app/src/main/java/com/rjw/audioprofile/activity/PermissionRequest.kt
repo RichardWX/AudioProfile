@@ -18,7 +18,7 @@ class PermissionRequest : AudioActivity() {
     override fun onResume() {
         super.onResume()
         // If we already have the permission, just leave.
-        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager?
         if(nm == null || nm.isNotificationPolicyAccessGranted) {
             finish()
         }

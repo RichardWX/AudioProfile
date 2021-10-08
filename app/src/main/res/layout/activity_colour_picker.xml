@@ -19,8 +19,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:padding="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin"
-            android:layout_marginRight="@dimen/margin_small"/>
+            android:layout_marginStart="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin_small"/>
 
         <com.rjw.audioprofile.utils.HSVValueSlider
             android:id="@+id/colourValue"
@@ -45,7 +45,6 @@
         android:id="@+id/layoutButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:paddingTop="@dimen/margin"
         android:paddingBottom="@dimen/margin">
 

@@ -4,29 +4,26 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
-import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
+import com.rjw.audioprofile.databinding.AlertBinding
+import com.rjw.audioprofile.databinding.ContentTitleBinding
+import com.rjw.audioprofile.databinding.ToastBinding
 
 object Alerts {
-    const val TAG = "AUDIOPROFILE"
+    private lateinit var bindingToast: ToastBinding
+    private lateinit var bindingAlert: AlertBinding
     fun toast(message: Int) {
         toast(MainActivity.instance!!.getString(message))
     }
 
-    fun toast(message: StringBuilder) {
-        toast(message.toString())
-    }
-
-    fun toast(message: String?) {
+    fun toast(message: String) {
         try {
-            val view = LayoutInflater.from(MainActivity.instance!!).inflate(R.layout.toast, null)
-            (view.findViewById<View>(R.id.text) as TextView).text = message
-            DisplayUtils.colourControls(view)
+            bindingToast = ToastBinding.inflate(LayoutInflater.from(MainActivity.instance!!))
+            bindingToast.text.text = message
+            DisplayUtils.colourControls(bindingToast.root)
             val toast = Toast.makeText(MainActivity.instance, "", Toast.LENGTH_SHORT)
-            toast.view = view
+            toast.view = bindingToast.root
             toast.show()
         } catch(e: Exception) {
             // Do nothing.
@@ -37,16 +34,17 @@ object Alerts {
         alert(title.toString(), message.toString())
     }
 
-    fun alert(title: String?, message: String?) {
+    private fun alert(title: String, message: String) {
         try {
+            bindingAlert = AlertBinding.inflate(LayoutInflater.from(MainActivity.instance!!))
+            val bindingTitle = ContentTitleBinding.bind(bindingAlert.layoutTitle.root)
             val builder = AlertDialog.Builder(MainActivity.instance)
-            val view = LayoutInflater.from(MainActivity.instance).inflate(R.layout.alert, null)
-            (view.findViewById<View>(R.id.title) as TextView).text = title
-            (view.findViewById<View>(R.id.text) as TextView).text = message
-            builder.setView(view)
+            bindingTitle.title.text = title
+            bindingAlert.text.text = message
+            builder.setView(bindingAlert.root)
             val dialog = builder.create()
-            view.findViewById<View>(R.id.buttonOK).setOnClickListener { dialog.dismiss() }
-            DisplayUtils.colourControls(view)
+            bindingAlert.buttonOK.setOnClickListener { dialog.dismiss() }
+            DisplayUtils.colourControls(bindingAlert.root)
             dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setCanceledOnTouchOutside(false)
             dialog.show()

@@ -4,9 +4,13 @@
     <string name="cannot_get_system_service">Cannot get system service, exiting!</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
+    <string name="config_profile_name">Profile name:</string>
     <string name="configure">Configure</string>
     <string name="copyright">&#169; %1s RJW - All rights reserved</string>
-    <string name="notification">Audio Profile service running</string>
+    <plurals name="minutes">
+        <item quantity="one">minute</item>
+        <item quantity="other">minutes</item>
+    </plurals>
     <string name="ok">OK</string>
     <string name="permission_grant">Grant permission</string>
     <string name="permission_instructions">In order to be able to modify the audio profile of the device, the application requires the do not disturb permission.
@@ -17,7 +21,6 @@
         <item>Normal</item>
         <item>Loud</item>
     </array>
-    <string name="config_profile_name">Profile name:</string>
     <string name="unchanged">Do not change</string>
 
     <string name="about_built">Built:</string>
@@ -30,7 +33,11 @@
     <string name="config_volume_ringtone">Ringtone volume</string>
     <string name="config_volume_system">System volume</string>
 
+    <string name="notification_profile">Current profile: %s</string>
+    <string name="notification_service">Audio Profile is active</string>
+
     <string name="settings_app_colour">Application colour</string>
+    <string name="settings_lock_profile">Lock profile</string>
     <string name="settings_title">Settings</string>
     <string name="settings_wifi_enter">Enter Wifi Network</string>
     <string name="settings_wifi_exit">Exit Wifi Network</string>
