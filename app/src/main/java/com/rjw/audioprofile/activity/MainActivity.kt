@@ -35,6 +35,7 @@ class MainActivity : AudioActivity() {
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mWindowRatio = floatArrayOf(0.7f, 0.5f)
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.bind(view!!)
         val bindingContent = ContentMainBinding.bind(binding.layoutMain)
