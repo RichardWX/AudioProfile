@@ -8,6 +8,7 @@ import android.media.AudioManager
 import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
+import com.rjw.audioprofile.service.Notifications
 import java.util.*
 
 class AudioProfileList(context: Context?) {
@@ -131,7 +132,7 @@ class AudioProfileList(context: Context?) {
                 mCurrentProfile = currentProfile
                 mPrefs!!.edit().putInt(CURRENT_PROFILE, mCurrentProfile).apply()
                 mLastProfileSwitchTime = Calendar.getInstance().timeInMillis
-                MainActivity.updateNotification()
+                Notifications.updateNotification(mContext!!)
             }
 
         var enterWifiProfile: Int

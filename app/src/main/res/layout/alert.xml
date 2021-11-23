@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layoutMain"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/toast_background">
+    android:background="@drawable/toast_background"
+    android:orientation="vertical">
 
-    <include android:id="@+id/layoutTitle"
-        layout="@layout/content_title"/>
+    <include
+        android:id="@+id/layoutTitle"
+        layout="@layout/content_title" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,14 +20,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/colourText"/>
+            android:textColor="@color/colourText"
+            android:textSize="@dimen/text_size" />
 
     </ScrollView>
 
     <Button
         android:id="@+id/buttonOK"
         style="@style/Button.Action"
-        android:text="@android:string/ok"/>
+        android:text="@android:string/ok" />
 
 </LinearLayout>

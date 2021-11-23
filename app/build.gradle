@@ -11,12 +11,12 @@ android {
         applicationId "com.rjw.audioprofile"
         minSdkVersion 26
         targetSdkVersion 31
-        versionCode 5
-        versionName "1.5"
+        versionCode 6
+        versionName "1.6"
 
         setProperty("archivesBaseName", "AudioProfile" + " - R" + versionName)
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
-        buildConfigField "String", "BUILD_INFO", "\"Add profile locking\""
+        buildConfigField "String", "BUILD_INFO", "\"Fix notifications\""
     }
 
     buildFeatures {

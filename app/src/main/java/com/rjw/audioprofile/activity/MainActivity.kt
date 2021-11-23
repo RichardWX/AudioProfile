@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.service.quicksettings.TileService
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.rjw.audioprofile.BuildConfig
@@ -22,7 +23,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainActivity : AudioActivity() {
+class MainActivity : AudioActivity {
     private lateinit var binding: ActivityMainBinding
     private val mRadioProfile = arrayOfNulls<RadioButton>(AudioProfileList.NO_PROFILES)
     private val mImageProfile = arrayOfNulls<ImageView>(AudioProfileList.NO_PROFILES)
@@ -32,14 +33,17 @@ class MainActivity : AudioActivity() {
         override fun onServiceDisconnected(name: ComponentName?) {}
     }
 
+    constructor() {
+        mThis = this
+    }
+
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mWindowRatio = floatArrayOf(0.7f, 0.5f)
+        mWindowRatio = floatArrayOf(0.7f, 0.7f)
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.bind(view!!)
         val bindingContent = ContentMainBinding.bind(binding.layoutMain)
-        mThis = this
 
         // Setup handler for uncaught exceptions.
         Thread.setDefaultUncaughtExceptionHandler { _, e -> e.printStackTrace() }
@@ -234,18 +238,12 @@ class MainActivity : AudioActivity() {
         const val REQUEST_AUDIO_PROFILE = 2
         const val ACTIVITY_SETTINGS = 3
         const val ACTIVITY_SELECT_THEME_COLOUR = 4
-        private const val CHANNEL_ID = "AudioProfileChannelId"
-        private val CHANNEL_NAME: CharSequence = "AudioProfile"
-        private const val CHANNEL_DESCRIPTION = "AudioProfile"
-        private const val SERVICE_NOTIFICATION_ID = 100
         const val PREF_APPLICATION_COLOUR = "ApplicationColour"
         private var mThis: MainActivity? = null
         var profiles: AudioProfileList? = null
             private set
         var configColour = 0
             private set
-        private var mNm: NotificationManager? = null
-        private var mNotificationBuilder: Notification.Builder? = null
 
         val instance: MainActivity?
             get() {
@@ -264,57 +262,6 @@ class MainActivity : AudioActivity() {
 
         val whiteColour: Int
             get() = mThis!!.getColor(R.color.colourWhiteText)
-
-        fun createNotificationChannel() {
-            try {
-                mNm = mThis!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager?
-                if(mNm != null) {
-                    val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN)
-                    channel.description = CHANNEL_DESCRIPTION
-                    channel.setShowBadge(false)
-                    channel.enableLights(false)
-                    channel.setSound(null, null)
-                    mNm!!.createNotificationChannel(channel)
-                }
-            } catch(e: Exception) {
-                Alerts.toast("Creating notification channel: ${e.javaClass.name}\n${e.message}")
-            }
-        }
-
-        fun showServiceNotification(service: Service?, msg: String?, pendingIntent: PendingIntent?) {
-            try {
-                if(service != null) {
-                    mNotificationBuilder = Notification.Builder(service)
-                        .setChannelId(CHANNEL_ID)
-                        .setSmallIcon(R.drawable.notification)
-                        .setContentTitle(msg)
-                        .setContentIntent(pendingIntent)
-                    service.startForeground(SERVICE_NOTIFICATION_ID, mNotificationBuilder!!.build())
-                    updateNotification()
-                }
-            } catch(e: Exception) {
-                Alerts.toast("Creating notification: ${e.javaClass.name}\n${e.message}")
-            }
-        }
-
-        fun updateNotification() {
-            try {
-                if(mNm == null) {
-                    mNm = mThis!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager?
-                }
-                if(mNm != null && mThis != null && mNotificationBuilder != null) {
-                    mNotificationBuilder!!.setContentText(
-                        String.format(
-                            mThis!!.getString(R.string.notification_profile),
-                            AudioProfileList.getProfile(AudioProfileList.currentProfile).name
-                        )
-                    )
-                    mNm!!.notify(SERVICE_NOTIFICATION_ID, mNotificationBuilder!!.build())
-                }
-            } catch(e: Exception) {
-                Alerts.toast("Updating notification: ${e.javaClass.name}\n${e.message}")
-            }
-        }
 
         fun setAppColour(colour: Int) {
             configColour = colour

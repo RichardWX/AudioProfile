@@ -13,7 +13,7 @@ open class AudioActivity : Activity() {
     private lateinit var bindingTitle: ContentTitleBinding
     protected var view: View? = null
 
-    protected var mWindowRatio = floatArrayOf(0.8f, 0.7f)
+    protected var mWindowRatio = floatArrayOf(0.8f, 0.8f)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)

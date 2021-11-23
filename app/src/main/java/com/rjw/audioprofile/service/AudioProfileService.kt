@@ -13,7 +13,7 @@ import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.utils.AudioProfileList
 import java.util.*
 
-class AudioProfileService : Service() {
+class  AudioProfileService : Service() {
     private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if(context != null && intent != null) {
@@ -60,14 +60,16 @@ class AudioProfileService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        // Get the profile list updated.
+        AudioProfileList.initialise(this)
         val filter = IntentFilter()
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
         filter.addAction(WifiManager.NETWORK_IDS_CHANGED_ACTION)
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)
         registerReceiver(mReceiver, filter)
         val pendingIntent = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
-        MainActivity.createNotificationChannel()
-        MainActivity.showServiceNotification(this, getString(R.string.notification_service), pendingIntent)
+        Notifications.createNotificationChannel(this)
+        Notifications.showServiceNotification(this, getString(R.string.notification_service), pendingIntent)
     }
 
     override fun onDestroy() {

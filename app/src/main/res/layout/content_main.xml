@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layoutContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,139 +14,134 @@
         <TextView
             style="@style/TextView.Heading"
             android:layout_marginStart="@dimen/margin"
-            android:text="@string/audio_profile_title"/>
+            android:text="@string/audio_profile_title" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <ImageView
             android:layout_width="@dimen/icon_size_settings"
             android:layout_height="@dimen/icon_size_settings"
-            android:src="@drawable/settings"
-            android:onClick="onClickSettings"/>
-        
+            android:onClick="onClickSettings"
+            android:src="@drawable/settings" />
+
         <LinearLayout
             android:layout_width="@dimen/margin_small"
-            android:layout_height="@dimen/icon_size_settings"/>
+            android:layout_height="@dimen/icon_size_settings" />
 
         <ImageView
             android:layout_width="@dimen/icon_size_settings"
             android:layout_height="@dimen/icon_size_settings"
-            android:src="@drawable/information"
-            android:onClick="onClickAbout"/>
+            android:onClick="onClickAbout"
+            android:src="@drawable/information" />
 
     </LinearLayout>
 
-    <TableLayout
-        style="@style/TableLayout">
+    <TableLayout style="@style/TableLayout">
 
-        <TableRow
-            style="@style/TableRow">
+        <TableRow style="@style/TableRow">
 
             <RadioButton
                 android:id="@+id/radioProfile0"
                 style="@style/RadioButton"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile" />
 
             <ImageView
                 android:id="@+id/imageProfile0"
                 style="@style/ImageView"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile" />
 
             <TextView
                 android:id="@+id/textProfile0"
                 style="@style/TextView.Table"
-                android:text="SILENT"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile"
+                android:text="SILENT" />
 
             <Button
                 android:id="@+id/buttonConfigureProfile0"
                 style="@style/Button"
-                android:text="@string/configure"
-                android:onClick="onClickAudioConfiguration"/>
+                android:onClick="onClickAudioConfiguration"
+                android:text="@string/configure" />
 
         </TableRow>
 
-        <TableRow
-            style="@style/TableRow">
+        <TableRow style="@style/TableRow">
 
             <RadioButton
                 android:id="@+id/radioProfile1"
                 style="@style/RadioButton"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile" />
 
             <ImageView
                 android:id="@+id/imageProfile1"
                 style="@style/ImageView"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile" />
 
             <TextView
                 android:id="@+id/textProfile1"
                 style="@style/TextView.Table"
-                android:text="QUIET"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile"
+                android:text="QUIET" />
 
             <Button
                 android:id="@+id/buttonConfigureProfile1"
                 style="@style/Button"
-                android:text="@string/configure"
-                android:onClick="onClickAudioConfiguration"/>
+                android:onClick="onClickAudioConfiguration"
+                android:text="@string/configure" />
 
         </TableRow>
 
-        <TableRow
-            style="@style/TableRow">
+        <TableRow style="@style/TableRow">
 
             <RadioButton
                 android:id="@+id/radioProfile2"
                 style="@style/RadioButton"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile" />
 
             <ImageView
                 android:id="@+id/imageProfile2"
                 style="@style/ImageView"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile" />
 
             <TextView
                 android:id="@+id/textProfile2"
                 style="@style/TextView.Table"
-                android:text="NORMAL"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile"
+                android:text="NORMAL" />
 
             <Button
                 android:id="@+id/buttonConfigureProfile2"
                 style="@style/Button"
-                android:text="@string/configure"
-                android:onClick="onClickAudioConfiguration"/>
+                android:onClick="onClickAudioConfiguration"
+                android:text="@string/configure" />
 
         </TableRow>
 
-        <TableRow
-            style="@style/TableRow">
+        <TableRow style="@style/TableRow">
 
             <RadioButton
                 android:id="@+id/radioProfile3"
                 style="@style/RadioButton"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile" />
 
             <ImageView
                 android:id="@+id/imageProfile3"
                 style="@style/ImageView"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile" />
 
             <TextView
                 android:id="@+id/textProfile3"
                 style="@style/TextView.Table"
-                android:text="LOUD"
-                android:onClick="onClickAudioProfile"/>
+                android:onClick="onClickAudioProfile"
+                android:text="LOUD" />
 
             <Button
                 android:id="@+id/buttonConfigureProfile3"
                 style="@style/Button"
-                android:text="@string/configure"
-                android:onClick="onClickAudioConfiguration"/>
+                android:onClick="onClickAudioConfiguration"
+                android:text="@string/configure" />
 
         </TableRow>
 
@@ -156,7 +150,7 @@
     <Button
         style="@style/Button.Action"
         android:layout_gravity="center_horizontal"
-        android:text="@string/close"
-        android:onClick="onClickClose"/>
+        android:onClick="onClickClose"
+        android:text="@string/close" />
 
 </LinearLayout>

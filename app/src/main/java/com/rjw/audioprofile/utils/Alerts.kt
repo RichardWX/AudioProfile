@@ -3,6 +3,7 @@ package com.rjw.audioprofile.utils
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import com.rjw.audioprofile.activity.MainActivity
@@ -28,6 +29,7 @@ object Alerts {
         } catch(e: Exception) {
             // Do nothing.
         }
+        Log.d(MainActivity.TAG, message)
     }
 
     fun alert(title: StringBuilder, message: StringBuilder) {
@@ -51,5 +53,6 @@ object Alerts {
         } catch(e: Exception) {
             // Do nothing.
         }
+        Log.d(MainActivity.TAG, "$title\n$message")
     }
 }
