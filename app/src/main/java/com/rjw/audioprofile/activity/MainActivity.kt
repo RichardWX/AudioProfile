@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.service.quicksettings.TileService
-import android.util.Log
 import android.view.View
 import android.widget.*
 import com.rjw.audioprofile.BuildConfig
@@ -25,6 +24,7 @@ import java.util.*
 
 class MainActivity : AudioActivity {
     private lateinit var binding: ActivityMainBinding
+    private val REQUEST_PERMISSION_RESPONSE = 1
     private val mRadioProfile = arrayOfNulls<RadioButton>(AudioProfileList.NO_PROFILES)
     private val mImageProfile = arrayOfNulls<ImageView>(AudioProfileList.NO_PROFILES)
     private val mTextProfile = arrayOfNulls<TextView>(AudioProfileList.NO_PROFILES)
@@ -68,6 +68,7 @@ class MainActivity : AudioActivity {
         }
         val prefs = getSharedPreferences(TAG, MODE_PRIVATE)
         configColour = prefs.getInt(PREF_APPLICATION_COLOUR, getColor(R.color.colourConfig))
+        var firstRun = prefs.getBoolean(PREF_FIRST_RUN, true)
 
         // Set the profile names and icons.
         for(profile in 0 until AudioProfileList.NO_PROFILES) {
@@ -81,16 +82,17 @@ class MainActivity : AudioActivity {
         selectRadio(AudioProfileList.currentProfile)
 
         // Check we have the required permissions.
-        val intent = Intent(this, PermissionRequest::class.java)
-        startActivityForResult(intent, REQUEST_PERMISSIONS)
-        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-            checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), 0)
-            } else {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
-            }
+        if(firstRun) {
+            var intent = Intent(this, PermissionRequest::class.java)
+            startActivityForResult(intent, REQUEST_PERMISSIONS)
+            firstRun = false
+            prefs.edit().putBoolean(PREF_FIRST_RUN, firstRun).apply()
+        }
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_RESPONSE)
+        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), REQUEST_PERMISSION_RESPONSE)
         }
         colourControls()
     }
@@ -239,6 +241,7 @@ class MainActivity : AudioActivity {
         const val ACTIVITY_SETTINGS = 3
         const val ACTIVITY_SELECT_THEME_COLOUR = 4
         const val PREF_APPLICATION_COLOUR = "ApplicationColour"
+        const val PREF_FIRST_RUN = "FirstRun"
         private var mThis: MainActivity? = null
         var profiles: AudioProfileList? = null
             private set

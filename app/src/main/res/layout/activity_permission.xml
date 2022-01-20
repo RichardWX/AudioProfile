@@ -6,34 +6,77 @@
 
     <include layout="@layout/content_title" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/margin"
-        android:layout_marginRight="@dimen/margin"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin">
 
-        <TextView
-            style="@style/TextView"
-            android:text="@string/permission_instructions" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
-        <Button
-            style="@style/Button"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin"
-            android:layout_marginBottom="@dimen/margin"
-            android:onClick="onClickRequestPermission"
-            android:text="@string/permission_grant" />
+            <TextView
+                style="@style/TextView"
+                android:text="@string/permission_instructions_dnd" />
 
-        <Button
-            style="@style/Button"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin"
-            android:layout_marginBottom="@dimen/margin_table"
-            android:onClick="onClickOK"
-            android:text="@android:string/ok" />
+            <Button
+                style="@style/Button"
+                android:layout_gravity="right"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginBottom="@dimen/margin"
+                android:onClick="onClickRequestPermissionDND"
+                android:text="@string/permission_grant" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textBattery"
+                style="@style/TextView"
+                android:text="@string/permission_instructions_battery" />
+
+            <Button
+                android:id="@+id/buttonBattery"
+                style="@style/Button"
+                android:layout_gravity="right"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginBottom="@dimen/margin"
+                android:onClick="onClickRequestPermissionBattery"
+                android:text="@string/permission_grant" />
+
+            <TextView
+                android:id="@+id/textNeverSleep"
+                style="@style/TextView"
+                android:text="@string/permission_instructions_sleep"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/textNeverSleepInstructions"
+                style="@style/TextView"
+                android:layout_marginLeft="@dimen/margin"
+                android:text="@string/permission_instructions_sleep_instructions"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/buttonNeverSleep"
+                style="@style/Button"
+                android:layout_gravity="right"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginBottom="@dimen/margin"
+                android:onClick="onClickRequestNeverSleep"
+                android:text="@string/permission_grant"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        style="@style/Button"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/margin"
+        android:onClick="onClickClose"
+        android:text="@string/close" />
 
 </LinearLayout>

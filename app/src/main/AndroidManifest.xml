@@ -2,84 +2,85 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rjw.audioprofile">
 
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="@xml/backup_descriptor">
+        android:theme="@style/AppTheme">
 
         <activity
             android:name=".activity.ColourPicker"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".activity.PermissionRequest"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.ProfileConfiguration"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.Settings"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.QuickPanel"
+            android:exported="true"
             android:icon="@drawable/icon02"
             android:label="@string/app_name"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
             <meta-data
                 android:name="android.service.quicksettings.ACTIVE_TILE"
-                android:value="true"/>
+                android:value="true" />
         </service>
 
         <service
             android:name=".service.AudioProfileService"
-            android:label="@string/app_name"
-            android:enabled="true">
-        </service>
+            android:enabled="true"
+            android:label="@string/app_name"></service>
 
         <receiver
             android:name=".service.AudioProfileListener"
-            android:enabled="true"
             android:directBootAware="true"
+            android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.USER_UNLOCKED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_UNLOCKED" />
             </intent-filter>
         </receiver>
 

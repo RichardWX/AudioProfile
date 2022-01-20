@@ -13,8 +13,17 @@
     </plurals>
     <string name="ok">OK</string>
     <string name="permission_grant">Grant permission</string>
-    <string name="permission_instructions">In order to be able to modify the audio profile of the device, the application requires the do not disturb permission.
+    <string name="permission_instructions_battery">In order to be able to modify the audio profile of the device on a network change, the application requires to be excluded
+        from battery optimisations.
         Please press the button to grant the permission and then press Back to return to the application and press the OK button.</string>
+    <string name="permission_instructions_dnd">In order to be able to modify the audio profile of the device, the application requires the do not disturb permission.
+        Please press the button to grant the permission and then press Back to return to the application and press the OK button.</string>
+    <string name="permission_instructions_sleep">To work properly, the application needs to be added to the list of never sleeping applications.
+        Please press the button and follow the instructions below and then press Back to return to the application and press the OK button.</string>
+    <string name="permission_instructions_sleep_instructions">&#8226; Press Background usage limits.
+        \n&#8226; Press Never sleeping apps.
+        \n&#8226; Press the plus button.
+        \n&#8226; Select the application and press Add.</string>
     <array name="profile">
         <item>Silent</item>
         <item>Quiet</item>
