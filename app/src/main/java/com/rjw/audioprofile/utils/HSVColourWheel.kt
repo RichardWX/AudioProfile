@@ -7,9 +7,6 @@ import android.view.MotionEvent
 import android.view.View
 import kotlin.math.*
 
-/**
- * Class representing a colour wheel.
- */
 class HSVColourWheel : View {
     private val mContext: Context
     private var mListener: OnColourSelectedListener? = null
@@ -37,7 +34,8 @@ class HSVColourWheel : View {
      * @param context The application context.
      * @param attrs   The control attributes.
      */
-    @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
+    @JvmOverloads
+    constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
         mContext = context
         init()
     }

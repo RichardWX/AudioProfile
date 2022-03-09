@@ -22,11 +22,6 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activity.ColourPicker"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
             android:name=".activity.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
@@ -48,11 +43,6 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".activity.Settings"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
-
         <service
             android:name=".service.QuickPanel"
             android:exported="true"
@@ -70,7 +60,7 @@
         <service
             android:name=".service.AudioProfileService"
             android:enabled="true"
-            android:label="@string/app_name"></service>
+            android:label="@string/app_name" />
 
         <receiver
             android:name=".service.AudioProfileListener"

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/margin"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
@@ -21,12 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <ImageView
-            android:layout_width="@dimen/icon_size_settings"
-            android:layout_height="@dimen/icon_size_settings"
-            android:onClick="onClickSettings"
-            android:src="@drawable/settings" />
-
         <LinearLayout
             android:layout_width="@dimen/margin_small"
             android:layout_height="@dimen/icon_size_settings" />
@@ -34,6 +30,7 @@
         <ImageView
             android:layout_width="@dimen/icon_size_settings"
             android:layout_height="@dimen/icon_size_settings"
+            android:layout_gravity="center_vertical"
             android:onClick="onClickAbout"
             android:src="@drawable/information" />
 
@@ -57,7 +54,7 @@
                 android:id="@+id/textProfile0"
                 style="@style/TextView.Table"
                 android:onClick="onClickAudioProfile"
-                android:text="SILENT" />
+                tools:text="SILENT" />
 
             <Button
                 android:id="@+id/buttonConfigureProfile0"
@@ -83,7 +80,7 @@
                 android:id="@+id/textProfile1"
                 style="@style/TextView.Table"
                 android:onClick="onClickAudioProfile"
-                android:text="QUIET" />
+                tools:text="QUIET" />
 
             <Button
                 android:id="@+id/buttonConfigureProfile1"
@@ -109,7 +106,7 @@
                 android:id="@+id/textProfile2"
                 style="@style/TextView.Table"
                 android:onClick="onClickAudioProfile"
-                android:text="NORMAL" />
+                tools:text="NORMAL" />
 
             <Button
                 android:id="@+id/buttonConfigureProfile2"
@@ -135,7 +132,7 @@
                 android:id="@+id/textProfile3"
                 style="@style/TextView.Table"
                 android:onClick="onClickAudioProfile"
-                android:text="LOUD" />
+                tools:text="LOUD" />
 
             <Button
                 android:id="@+id/buttonConfigureProfile3"
@@ -147,10 +144,126 @@
 
     </TableLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkboxLockProfile"
+            style="@style/CheckBox"
+            android:onClick="onClickLockProfile"
+            android:text="@string/settings_lock_profile" />
+
+        <Spinner
+            android:id="@+id/spinnerLockProfile"
+            style="@style/Spinner.Full" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextView"
+            android:text="@string/settings_title" />
+
+        <LinearLayout style="@style/Blank" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickSettings"
+            android:src="@drawable/dropdown" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextView.Auto"
+                    android:layout_weight="2"
+                    android:text="@string/settings_wifi_enter" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/checkboxEnterWifiDefault"
+                        style="@style/CheckBox"
+                        android:onClick="onClickEnter"
+                        android:text="@string/unchanged" />
+
+                    <Spinner
+                        android:id="@+id/spinnerEnterWifi"
+                        style="@style/Spinner.Full" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextView.Auto"
+                    android:layout_weight="2"
+                    android:text="@string/settings_wifi_exit" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/checkboxExitWifiDefault"
+                        style="@style/CheckBox"
+                        android:onClick="onClickExit"
+                        android:text="@string/unchanged" />
+
+                    <Spinner
+                        android:id="@+id/spinnerExitWifi"
+                        style="@style/Spinner.Full" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <Button
         style="@style/Button.Action"
         android:layout_gravity="center_horizontal"
         android:onClick="onClickClose"
-        android:text="@string/close" />
+        android:text="@string/ok" />
 
 </LinearLayout>

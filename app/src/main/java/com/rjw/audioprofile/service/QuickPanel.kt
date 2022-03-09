@@ -7,11 +7,17 @@ import com.rjw.audioprofile.utils.AudioProfileList
 import java.lang.Exception
 
 class QuickPanel : TileService() {
+    /**
+     * Create the quick panel item.
+     */
     override fun onCreate() {
         super.onCreate()
         setIcon()
     }
 
+    /**
+     * Handle the user clicking on the quick panel icon.
+     */
     override fun onClick() {
         super.onClick()
         var nextProfile = AudioProfileList.currentProfile + 1
@@ -22,17 +28,26 @@ class QuickPanel : TileService() {
         setIcon()
     }
 
+    /**
+     * Initialise the newly added tile.
+     */
     override fun onTileAdded() {
         super.onTileAdded()
         AudioProfileList.initialise(baseContext)
     }
 
+    /**
+     * Start listening for user events.
+     */
     override fun onStartListening() {
         super.onStartListening()
         AudioProfileList.initialise(baseContext)
         setIcon()
     }
 
+    /**
+     * Set the icon for the quick panel tile.
+     */
     private fun setIcon() {
         val tile = qsTile
         if(tile != null) {

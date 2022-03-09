@@ -45,7 +45,6 @@
     <string name="notification_profile">Current profile: %s</string>
     <string name="notification_service">Audio Profile is active</string>
 
-    <string name="settings_app_colour">Application colour</string>
     <string name="settings_lock_profile">Lock profile</string>
     <string name="settings_title">Settings</string>
     <string name="settings_wifi_enter">Enter Wifi Network</string>

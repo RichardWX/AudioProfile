@@ -13,6 +13,14 @@ class IconAdapter constructor(private val mContext: Context, objects: Array<Draw
     mContext, R.layout.row_icon, objects!!
 ) {
     private lateinit var bindingRow: RowIconBinding
+
+    /**
+     * Get the view for the specified position.
+     * @param position    The position of the item in the list.
+     * @param convertView The row view to reuse if possible.
+     * @param parent      The parent of the row.
+     * @return            The formatted and populated view.
+     */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var row = convertView
         if(row == null) {
@@ -28,6 +36,13 @@ class IconAdapter constructor(private val mContext: Context, objects: Array<Draw
         return row
     }
 
+    /**
+     * Get the dropdown view for the specified position.
+     * @param position    The position of the item in the list.
+     * @param convertView The row view to reuse if possible.
+     * @param parent      The parent of the row.
+     * @return            The formatted and populated view.
+     */
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         var row = convertView
         if(row == null) {

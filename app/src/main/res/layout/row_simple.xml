@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
@@ -7,14 +8,14 @@
         android:id="@+id/value"
         style="@style/TextView"
         android:layout_margin="@dimen/margin_small"
-        android:text="VALUE"
-        android:textColor="@color/colourText" />
+        android:textColor="@color/colourText"
+        tools:text="VALUE" />
 
     <TextView
         android:id="@+id/minutes"
         style="@style/TextView"
         android:layout_margin="@dimen/margin_small"
-        android:text="MINUTES"
-        android:textColor="@color/colourText" />
+        android:textColor="@color/colourText"
+        tools:text="MINUTES" />
 
 </LinearLayout>

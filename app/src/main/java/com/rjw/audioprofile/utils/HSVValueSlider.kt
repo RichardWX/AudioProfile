@@ -8,9 +8,6 @@ import android.view.View
 import kotlin.math.max
 import kotlin.math.min
 
-/**
- * Class to represent a slider to select a colour.
- */
 class HSVValueSlider
 /**
  * Class constructor.

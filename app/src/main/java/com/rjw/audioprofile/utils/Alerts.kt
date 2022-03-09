@@ -14,10 +14,20 @@ import com.rjw.audioprofile.databinding.ToastBinding
 object Alerts {
     private lateinit var bindingToast: ToastBinding
     private lateinit var bindingAlert: AlertBinding
+
+
+    /**
+     * Diplay a customised toast message.
+     * @param message The message id to be displayed.
+     */
     fun toast(message: Int) {
         toast(MainActivity.instance!!.getString(message))
     }
 
+    /**
+     * Diplay a customised toast message.
+     * @param message The message to be displayed.
+     */
     fun toast(message: String) {
         try {
             bindingToast = ToastBinding.inflate(LayoutInflater.from(MainActivity.instance!!))
@@ -32,10 +42,20 @@ object Alerts {
         Log.d(MainActivity.TAG, message)
     }
 
+    /**
+     * Diplay a customised alert message.
+     * @param title   The alert title.
+     * @param message The message to be displayed.
+     */
     fun alert(title: StringBuilder, message: StringBuilder) {
         alert(title.toString(), message.toString())
     }
 
+    /**
+     * Diplay a customised alert message.
+     * @param title   The alert title.
+     * @param message The message to be displayed.
+     */
     private fun alert(title: String, message: String) {
         try {
             bindingAlert = AlertBinding.inflate(LayoutInflater.from(MainActivity.instance!!))

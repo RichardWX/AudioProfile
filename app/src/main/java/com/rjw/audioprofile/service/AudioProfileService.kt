@@ -13,8 +13,15 @@ import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.utils.AudioProfileList
 import java.util.*
 
-class  AudioProfileService : Service() {
+class AudioProfileService : Service() {
+    private var mSsid = ""
+
     private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        /**
+         * Deal with incoming intents.
+         * @param context The application context.
+         * @param intent  The incoming intent.
+         */
         override fun onReceive(context: Context?, intent: Intent?) {
             if(context != null && intent != null) {
                 val action = intent.action
@@ -24,23 +31,29 @@ class  AudioProfileService : Service() {
                     if(wm.wifiState == WifiManager.WIFI_STATE_ENABLED) {
                         val ssid = wm.connectionInfo.ssid
                         if(ssid.isEmpty() || ssid == UNKNOWN_SSID) {
-                            val profile = AudioProfileList.exitWifiProfile
-                            if(profile != -1) {
-                                val now = Calendar.getInstance().timeInMillis
-                                val switch = if(AudioProfileList.lockProfileTime == -1) true else
-                                    now - AudioProfileList.lastProfileSwitchTime > AudioProfileList.lockProfileTime * 60000
-                                if(switch) {
-                                    AudioProfileList.currentProfile = profile
-                                    AudioProfileList.applyProfile(context)
-                                    MainActivity.updateTile(context)
+                            if(mSsid.isNotEmpty()) {
+                                mSsid = ""
+                                val profile = AudioProfileList.exitWifiProfile
+                                if(profile != -1) {
+                                    // Check whether the profile has been locked - if so, don't change it.
+                                    val now = Calendar.getInstance().timeInMillis
+                                    val switch = if(AudioProfileList.lockProfileTime == -1) true else
+                                        now - AudioProfileList.profileLockStartTime > AudioProfileList.lockProfileTime * 60000
+                                    if(switch) {
+                                        AudioProfileList.currentProfile = profile
+                                        AudioProfileList.applyProfile(context)
+                                        MainActivity.updateTile(context)
+                                    }
                                 }
                             }
                         } else {
+                            mSsid = ssid
                             val profile = AudioProfileList.enterWifiProfile
                             if(profile != -1) {
+                                // Check whether the profile has been locked - if so, don't change it.
                                 val now = Calendar.getInstance().timeInMillis
                                 val switch = if(AudioProfileList.lockProfileTime == -1) true else
-                                    now - AudioProfileList.lastProfileSwitchTime > AudioProfileList.lockProfileTime * 60000
+                                    now - AudioProfileList.profileLockStartTime > AudioProfileList.lockProfileTime * 60000
                                 if(switch) {
                                     AudioProfileList.currentProfile = profile
                                     AudioProfileList.applyProfile(context)
@@ -54,10 +67,17 @@ class  AudioProfileService : Service() {
         }
     }
 
+    /**
+     * Bind the service.
+     * @param intent The intent to start the service.
+     */
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
+    /**
+     * Create the service and add the intents that will be listened for.
+     */
     override fun onCreate() {
         super.onCreate()
         // Get the profile list updated.
@@ -72,11 +92,20 @@ class  AudioProfileService : Service() {
         Notifications.showServiceNotification(this, getString(R.string.notification_service), pendingIntent)
     }
 
+    /**
+     * Destroy the service by unregistering the intent listener.
+     */
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(mReceiver)
     }
 
+    /**
+     * Set the service as permanently running.
+     * @param intent  The intent for starting the service.
+     * @param flags   The flags for starting the service.
+     * @param startId The id to identify the service.
+     */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         return START_STICKY

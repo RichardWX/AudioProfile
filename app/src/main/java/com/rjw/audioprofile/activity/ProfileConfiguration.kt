@@ -14,6 +14,10 @@ class ProfileConfiguration : AudioActivity() {
     private lateinit var binding: ActivityConfigBinding
     private var mProfile = 0
 
+    /**
+     * Create the configuration screen.
+     * @param savedInstanceState State information from last time the activity was run.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.setWindowRatios(0.8f, 0.5f)
         super.onCreate(savedInstanceState)
@@ -73,10 +77,18 @@ class ProfileConfiguration : AudioActivity() {
         }
     }
 
+    /**
+     * Handle the unchanged profile button.
+     * @param v The view in question.
+     */
     fun onClickUnchanged(v: View?) {
         enableControls()
     }
 
+    /**
+     * Close the activity.
+     * @param v The view in question.
+     */
     fun onClickClose(v: View?) {
         AudioProfileList.setProfile(
             mProfile,
@@ -93,6 +105,9 @@ class ProfileConfiguration : AudioActivity() {
         finish()
     }
 
+    /**
+     * Enable or disable the controls depending on the state.
+     */
     private fun enableControls() {
         binding.seekBarRingtone.isEnabled = !binding.checkBoxUnchangedRingtone.isChecked
         binding.seekBarNotification.isEnabled = !binding.checkBoxUnchangedNotification.isChecked

@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginRight="@dimen/margin"
             android:gravity="center_vertical"
@@ -49,14 +49,14 @@
                 android:id="@+id/textNeverSleep"
                 style="@style/TextView"
                 android:text="@string/permission_instructions_sleep"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/textNeverSleepInstructions"
                 style="@style/TextView"
                 android:layout_marginLeft="@dimen/margin"
                 android:text="@string/permission_instructions_sleep_instructions"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/buttonNeverSleep"
@@ -66,7 +66,7 @@
                 android:layout_marginBottom="@dimen/margin"
                 android:onClick="onClickRequestNeverSleep"
                 android:text="@string/permission_grant"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 

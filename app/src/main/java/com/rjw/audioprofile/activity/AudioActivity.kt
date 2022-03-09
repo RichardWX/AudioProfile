@@ -12,8 +12,12 @@ import com.rjw.audioprofile.utils.DisplayUtils
 open class AudioActivity : Activity() {
     private lateinit var bindingTitle: ContentTitleBinding
     protected var view: View? = null
-
     protected var mWindowRatio = floatArrayOf(0.8f, 0.8f)
+
+    /**
+     * Create the activity.
+     * @param savedInstanceState The state information of the activity.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -22,6 +26,10 @@ open class AudioActivity : Activity() {
         setTheme(R.style.AppTheme_Dialog)
     }
 
+    /**
+     * Set the content of the activity and resize the window if necessary.
+     * @param layout The id of the layout to use in the activity.
+     */
     override fun setContentView(layout: Int) {
         view = layoutInflater.inflate(layout, null, false)
         setContentView(view)
@@ -52,20 +60,37 @@ open class AudioActivity : Activity() {
         })
     }
 
+    /**
+     * Set the window title.
+     * @param title The new window title.
+     */
     override fun setTitle(title: CharSequence) {
         bindingTitle.title.text = title
     }
 
+    /**
+     * Set the window title.
+     * @param title The new window title.
+     */
     override fun setTitle(titleId: Int) {
         bindingTitle.title.setText(titleId)
     }
 
+    /**
+     * Set the window ratios to the screen.
+     * @param xRatio The x ratio of the window compared to the screen.
+     * @param yRatio The y ratio of the window compared to the screen.
+     */
     protected fun setWindowRatios(xRatio: Float, yRatio: Float) {
         mWindowRatio[0] = xRatio
         mWindowRatio[1] = yRatio
     }
 
-    protected fun colourControls(colour: Int = MainActivity.configColour) {
+    /**
+     * Colour the window controls.
+     * @param colour The colour to use for the controls.
+     */
+    protected fun colourControls(colour: Int = getColor(R.color.colourConfig)) {
         DisplayUtils.colourControls(window.decorView, colour)
     }
 }

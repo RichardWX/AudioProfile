@@ -6,6 +6,11 @@ import android.content.Intent
 import com.rjw.audioprofile.activity.MainActivity
 
 class AudioProfileListener : BroadcastReceiver() {
+    /**
+     * Process incoming intents.
+     * @param context The application context.
+     * @param intent  The intent to be handled.
+     */
     override fun onReceive(context: Context?, intent: Intent?) {
         try {
             if(context != null && intent != null) {

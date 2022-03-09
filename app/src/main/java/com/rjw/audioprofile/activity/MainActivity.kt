@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.service.quicksettings.TileService
 import android.view.View
 import android.widget.*
+import androidx.core.view.isVisible
 import com.rjw.audioprofile.BuildConfig
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.ActivityMainBinding
@@ -22,9 +23,11 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainActivity : AudioActivity {
-    private lateinit var binding: ActivityMainBinding
+class MainActivity : AudioActivity() {
     private val REQUEST_PERMISSION_RESPONSE = 1
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var bindingContent: ContentMainBinding
+    private val mLockTimings = arrayOf(1, 2, 5, 10, 20, 30, 60)
     private val mRadioProfile = arrayOfNulls<RadioButton>(AudioProfileList.NO_PROFILES)
     private val mImageProfile = arrayOfNulls<ImageView>(AudioProfileList.NO_PROFILES)
     private val mTextProfile = arrayOfNulls<TextView>(AudioProfileList.NO_PROFILES)
@@ -32,18 +35,19 @@ class MainActivity : AudioActivity {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {}
         override fun onServiceDisconnected(name: ComponentName?) {}
     }
+    private var mProfileLockChanged = false
 
-    constructor() {
-        mThis = this
-    }
-
+    /**
+     * Create the activity.
+     * @param savedInstanceState The state information for the activity.
+     */
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mWindowRatio = floatArrayOf(0.7f, 0.7f)
+        mWindowRatio = floatArrayOf(0.9f, 0.7f)
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.bind(view!!)
-        val bindingContent = ContentMainBinding.bind(binding.layoutMain)
+        bindingContent = ContentMainBinding.bind(binding.layoutMain)
 
         // Setup handler for uncaught exceptions.
         Thread.setDefaultUncaughtExceptionHandler { _, e -> e.printStackTrace() }
@@ -67,7 +71,6 @@ class MainActivity : AudioActivity {
             startService()
         }
         val prefs = getSharedPreferences(TAG, MODE_PRIVATE)
-        configColour = prefs.getInt(PREF_APPLICATION_COLOUR, getColor(R.color.colourConfig))
         var firstRun = prefs.getBoolean(PREF_FIRST_RUN, true)
 
         // Set the profile names and icons.
@@ -78,12 +81,26 @@ class MainActivity : AudioActivity {
             mImageProfile[profile]!!.setImageDrawable(AudioProfileList.getIcon(audioProfile.icon))
         }
 
-        // Select the current profile.
-        selectRadio(AudioProfileList.currentProfile)
+        // Set up the lock adapters.
+        val profileLockTime = AudioProfileList.lockProfileTime
+        val lockAdapter = MinutesAdapter(this, mLockTimings)
+        bindingContent.spinnerLockProfile.adapter = lockAdapter
+        bindingContent.spinnerLockProfile.background.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
+        bindingContent.checkboxLockProfile.buttonDrawable!!.setColorFilter(configColour, Mode.SRC_ATOP)
+
+        // Set up the profile lock time.
+        var profileLocked = AudioProfileList.profileLocked
+        if(profileLocked and (Calendar.getInstance().timeInMillis > AudioProfileList.profileLockStartTime + profileLockTime * 60000)) {
+            profileLocked = false
+        }
+        bindingContent.checkboxLockProfile.isChecked = profileLocked
+
+        // Set the handler for the lock time spinner.
+        AdapterView.OnItemClickListener { _, _, _, _ -> mProfileLockChanged = true }
 
         // Check we have the required permissions.
         if(firstRun) {
-            var intent = Intent(this, PermissionRequest::class.java)
+            val intent = Intent(this, PermissionRequest::class.java)
             startActivityForResult(intent, REQUEST_PERMISSIONS)
             firstRun = false
             prefs.edit().putBoolean(PREF_FIRST_RUN, firstRun).apply()
@@ -95,8 +112,15 @@ class MainActivity : AudioActivity {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), REQUEST_PERMISSION_RESPONSE)
         }
         colourControls()
+        updateControls()
     }
 
+    /**
+     * Handle the closing of the other activities.
+     * @param requestCode The id of the activity that has been closed.
+     * @param resultCode  The result of closing the activity.
+     * @param data        The data returned from the closing activity.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             REQUEST_PERMISSIONS -> updateTile(this)
@@ -105,26 +129,16 @@ class MainActivity : AudioActivity {
                 val modified = data.getIntExtra(ProfileConfiguration.AUDIO_PROFILE, 0)
                 mTextProfile[modified]!!.text = AudioProfileList.getProfile(modified).name
                 mImageProfile[modified]!!.setImageDrawable(AudioProfileList.getIcon(AudioProfileList.getProfile(modified).icon))
-                if(AudioProfileList.currentProfile == modified) {
-                    selectRadio(AudioProfileList.currentProfile)
-                }
-            }
-            ACTIVITY_SETTINGS -> {
-                if(data != null) {
-                    val themeColour = data.getIntExtra(DisplayUtils.EXTRA_CUSTOM_COLOUR, configColour)
-                    if(themeColour != configColour) {
-                        configColour = themeColour
-                        setAppColour(configColour)
-                    }
-                }
-                val intent = Intent(this, javaClass)
-                startActivity(intent)
-                finish()
+                updateControls()
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
+    /**
+     * Set the current profile.
+     * @param v The view in question.
+     */
     fun onClickAudioProfile(v: View) {
         when(v.id) {
             R.id.radioProfile0, R.id.imageProfile0, R.id.textProfile0 -> selectRadio(0)
@@ -134,6 +148,10 @@ class MainActivity : AudioActivity {
         }
     }
 
+    /**
+     * Update the specified audio profile.
+     * @param v The view in question.
+     */
     fun onClickAudioConfiguration(v: View) {
         val intent = Intent(this, ProfileConfiguration::class.java)
         when(v.id) {
@@ -145,6 +163,10 @@ class MainActivity : AudioActivity {
         startActivityForResult(intent, REQUEST_AUDIO_PROFILE)
     }
 
+    /**
+     * Display the application about information.
+     * @param v The view in question.
+     */
     fun onClickAbout(v: View?) {
         val about = StringBuilder()
         try {
@@ -165,15 +187,59 @@ class MainActivity : AudioActivity {
         }
     }
 
+    /**
+     * Show or hide the settings controls.
+     * @param v The view in question.
+     */
     fun onClickSettings(v: View?) {
-        val intent = Intent(this, Settings::class.java)
-        startActivityForResult(intent, ACTIVITY_SETTINGS)
+        bindingContent.layoutSettings.visibility = if(bindingContent.layoutSettings.isVisible) View.GONE else View.VISIBLE
     }
 
+    /**
+     * Toggle the enter WiFi update profile setting.
+     * @param v The view in question.
+     */
+    fun onClickEnter(v: View?) {
+        AudioProfileList.enterWifiProfile = if(bindingContent.checkboxEnterWifiDefault.isChecked) -1 else bindingContent.spinnerEnterWifi.selectedItemPosition
+        updateControls()
+    }
+
+    /**
+     * Toggle the exit WiFi update profile setting.
+     * @param v The view in question.
+     */
+    fun onClickExit(v: View?) {
+        AudioProfileList.exitWifiProfile = if(bindingContent.checkboxExitWifiDefault.isChecked) -1 else bindingContent.spinnerExitWifi.selectedItemPosition
+        updateControls()
+    }
+
+    /**
+     * Toggle whether the profile is locked.
+     * @param v The view in question.
+     */
+    fun onClickLockProfile(v: View?) {
+        mProfileLockChanged = true
+        updateControls()
+    }
+
+    /**
+     * Close the activty.
+     * @param v The view in question.
+     */
     fun onClickClose(v: View?) {
+        AudioProfileList.enterWifiProfile = if(bindingContent.checkboxEnterWifiDefault.isChecked) -1 else bindingContent.spinnerEnterWifi.selectedItemPosition
+        AudioProfileList.exitWifiProfile = if(bindingContent.checkboxExitWifiDefault.isChecked) -1 else bindingContent.spinnerExitWifi.selectedItemPosition
+        AudioProfileList.lockProfileTime = bindingContent.spinnerLockProfile.getItemAtPosition(bindingContent.spinnerLockProfile.selectedItemPosition) as Int
+        if(mProfileLockChanged) {
+            AudioProfileList.profileLocked = bindingContent.checkboxLockProfile.isChecked
+            AudioProfileList.profileLockStartTime = Calendar.getInstance().timeInMillis
+        }
         finish()
     }
 
+    /**
+     * Select the radio button and the current profile.
+     */
     private fun selectRadio(profile: Int) {
         AudioProfileList.currentProfile = profile
         when(profile) {
@@ -202,10 +268,52 @@ class MainActivity : AudioActivity {
                 mRadioProfile[3]!!.isChecked = true
             }
         }
+        AudioProfileList.currentProfile = profile
         AudioProfileList.applyProfile(this)
         updateTile(this)
     }
 
+    /**
+     * Update the controls to reflect the current settings.
+     */
+    private fun updateControls() {
+        // Select the right profile.
+        selectRadio(AudioProfileList.currentProfile)
+
+        // Now update the spinners for the entry and exit events.
+        val adapterLockTime = bindingContent.spinnerLockProfile.adapter
+        for(item in 0 until adapterLockTime.count) {
+            if(adapterLockTime.getItem(item)!! == AudioProfileList.lockProfileTime) {
+                bindingContent.spinnerLockProfile.setSelection(item)
+                break
+            }
+        }
+        bindingContent.spinnerEnterWifi.visibility = if(bindingContent.checkboxEnterWifiDefault.isChecked) View.INVISIBLE else View.VISIBLE
+        bindingContent.spinnerExitWifi.visibility = if(bindingContent.checkboxExitWifiDefault.isChecked) View.INVISIBLE else View.VISIBLE
+        bindingContent.spinnerLockProfile.visibility = if(bindingContent.checkboxLockProfile.isChecked) View.VISIBLE else View.INVISIBLE
+
+        val adapter = ProfileAdapter(this, AudioProfileList.getProfiles().toTypedArray())
+        bindingContent.spinnerEnterWifi.adapter = adapter
+        bindingContent.checkboxEnterWifiDefault.buttonDrawable!!.setColorFilter(configColour, Mode.SRC_ATOP)
+        bindingContent.spinnerExitWifi.adapter = adapter
+        bindingContent.checkboxExitWifiDefault.buttonDrawable!!.setColorFilter(configColour, Mode.SRC_ATOP)
+        var profile = AudioProfileList.enterWifiProfile
+        if(profile == -1) {
+            bindingContent.checkboxEnterWifiDefault.isChecked = true
+        } else {
+            bindingContent.spinnerEnterWifi.setSelection(profile)
+        }
+        profile = AudioProfileList.exitWifiProfile
+        if(profile == -1) {
+            bindingContent.checkboxExitWifiDefault.isChecked = true
+        } else {
+            bindingContent.spinnerExitWifi.setSelection(profile)
+        }
+    }
+
+    /**
+     * Start the audio listener service.
+     */
     private fun startService() {
         val serviceIntent = Intent(mThis, AudioProfileService::class.java)
         try {
@@ -216,8 +324,10 @@ class MainActivity : AudioActivity {
         }
     }
 
-    // Do nothing.
     private val isServiceRunning: Boolean
+        /**
+         * Return if the service is running.
+         */
         get() {
             try {
                 val am = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
@@ -238,17 +348,15 @@ class MainActivity : AudioActivity {
         const val TAG = "AudioProfile"
         const val REQUEST_PERMISSIONS = 1
         const val REQUEST_AUDIO_PROFILE = 2
-        const val ACTIVITY_SETTINGS = 3
-        const val ACTIVITY_SELECT_THEME_COLOUR = 4
-        const val PREF_APPLICATION_COLOUR = "ApplicationColour"
         const val PREF_FIRST_RUN = "FirstRun"
         private var mThis: MainActivity? = null
         var profiles: AudioProfileList? = null
             private set
-        var configColour = 0
-            private set
 
         val instance: MainActivity?
+            /**
+             * Return an instance of the main activity.
+             */
             get() {
                 if(mThis == null) {
                     MainActivity()
@@ -256,6 +364,9 @@ class MainActivity : AudioActivity {
                 return mThis
             }
 
+        /**
+         * Update the quick panel tile to reflect the current profile.
+         */
         fun updateTile(context: Context?) {
             try {
                 TileService.requestListeningState(context, ComponentName(context!!, QuickPanel::class.java))
@@ -263,13 +374,20 @@ class MainActivity : AudioActivity {
             }
         }
 
-        val whiteColour: Int
-            get() = mThis!!.getColor(R.color.colourWhiteText)
+        val configColour: Int
+            /**
+             * Get the current application colour.
+             */
+            get() = mThis!!.getColor(R.color.colourConfig)
 
-        fun setAppColour(colour: Int) {
-            configColour = colour
-            val prefs = mThis!!.getSharedPreferences(TAG, MODE_PRIVATE)
-            prefs.edit().putInt(PREF_APPLICATION_COLOUR, configColour).apply()
-        }
+        val whiteColour: Int
+            /**
+             * Get the white colour.
+             */
+            get() = mThis!!.getColor(R.color.colourWhiteText)
+    }
+
+    init {
+        mThis = this
     }
 }

@@ -21,8 +21,13 @@ import com.rjw.audioprofile.activity.MainActivity.Companion.whiteColour
 
 object DisplayUtils {
     const val EXTRA_CUSTOM_COLOUR = "CustomColour"
-    const val COLOUR_LEVELS = 6
+    private const val COLOUR_LEVELS = 6
 
+    /**
+     * Colour the view controls.
+     * @param v      The view to be coloured.
+     * @param colour The base colour for the view.
+     */
     fun colourControls(v: View?, colour: Int = configColour) {
         if(v == null) {
             return
@@ -61,6 +66,11 @@ object DisplayUtils {
         }
     }
 
+    /**
+     * Darken the specified colour.
+     * @param colour The colour to be darkened.
+     * @return       The new darkened colour.
+     */
     private fun darken(colour: Int): Int {
         val hsv = FloatArray(3)
         Color.colorToHSV(colour, hsv)
@@ -68,6 +78,12 @@ object DisplayUtils {
         return Color.HSVToColor(hsv)
     }
 
+    /**
+     * Darken the specified colour.
+     * @param colour The colour to be darken.
+     * @param levels The number of iterations to darkened by.
+     * @return       The new darkened colour.
+     */
     private fun darken(colour: Int, levels: Int): Int {
         var newColour = colour
         for(level in 0 until levels) {
@@ -76,6 +92,11 @@ object DisplayUtils {
         return newColour
     }
 
+    /**
+     * Lighten the specified colour.
+     * @param colour The colour to be lightened.
+     * @return       The new lightened colour.
+     */
     private fun lighten(colour: Int): Int {
         val hsv = FloatArray(3)
         Color.colorToHSV(colour, hsv)
@@ -83,6 +104,12 @@ object DisplayUtils {
         return Color.HSVToColor(hsv)
     }
 
+    /**
+     * Lighten the specified colour.
+     * @param colour The colour to be lightened.
+     * @param levels The number of iterations to lighten by.
+     * @return       The new lightened colour.
+     */
     fun lighten(colour: Int, levels: Int): Int {
         var newColour = colour
         for(level in 0 until levels) {
@@ -91,6 +118,10 @@ object DisplayUtils {
         return newColour
     }
 
+    /**
+     * Return whether the colour is dark or not.
+     * @return True if the colour is determined as dark, otherwise false.
+     */
     private fun isDark(colour: Int): Boolean {
         return ColorUtils.calculateLuminance(colour) < 0.2
     }
@@ -131,6 +162,37 @@ enum class Mode {
     ADD,
     OVERLAY;
 
+    /**
+     * Return the porter duff mode when using Android Q or above.
+     * @return The corresponding porter duff mode.
+     */
+    fun getPorterDuffMode(): PorterDuff.Mode {
+        return when(this) {
+            CLEAR -> PorterDuff.Mode.CLEAR
+            SRC -> PorterDuff.Mode.SRC
+            DST -> PorterDuff.Mode.DST
+            SRC_OVER -> PorterDuff.Mode.SRC_OVER
+            DST_OVER -> PorterDuff.Mode.DST_OVER
+            SRC_IN -> PorterDuff.Mode.SRC_IN
+            DST_IN -> PorterDuff.Mode.DST_IN
+            SRC_OUT -> PorterDuff.Mode.SRC_OUT
+            DST_OUT -> PorterDuff.Mode.DST_OUT
+            SRC_ATOP -> PorterDuff.Mode.SRC_ATOP
+            DST_ATOP -> PorterDuff.Mode.DST_ATOP
+            XOR -> PorterDuff.Mode.XOR
+            DARKEN -> PorterDuff.Mode.DARKEN
+            LIGHTEN -> PorterDuff.Mode.LIGHTEN
+            MULTIPLY -> PorterDuff.Mode.MULTIPLY
+            SCREEN -> PorterDuff.Mode.SCREEN
+            ADD -> PorterDuff.Mode.ADD
+            OVERLAY -> PorterDuff.Mode.OVERLAY
+        }
+    }
+
+    /**
+     * Return the blend mode when using Android Q or above.
+     * @return The corresponding blend mode.
+     */
     @RequiresApi(Build.VERSION_CODES.Q)
     fun getBlendMode(): BlendMode {
         return when(this) {
@@ -152,29 +214,6 @@ enum class Mode {
             SCREEN -> BlendMode.SCREEN
             ADD -> BlendMode.PLUS
             OVERLAY -> BlendMode.OVERLAY
-        }
-    }
-
-    fun getPorterDuffMode(): PorterDuff.Mode {
-        return when(this) {
-            CLEAR -> PorterDuff.Mode.CLEAR
-            SRC -> PorterDuff.Mode.SRC
-            DST -> PorterDuff.Mode.DST
-            SRC_OVER -> PorterDuff.Mode.SRC_OVER
-            DST_OVER -> PorterDuff.Mode.DST_OVER
-            SRC_IN -> PorterDuff.Mode.SRC_IN
-            DST_IN -> PorterDuff.Mode.DST_IN
-            SRC_OUT -> PorterDuff.Mode.SRC_OUT
-            DST_OUT -> PorterDuff.Mode.DST_OUT
-            SRC_ATOP -> PorterDuff.Mode.SRC_ATOP
-            DST_ATOP -> PorterDuff.Mode.DST_ATOP
-            XOR -> PorterDuff.Mode.XOR
-            DARKEN -> PorterDuff.Mode.DARKEN
-            LIGHTEN -> PorterDuff.Mode.LIGHTEN
-            MULTIPLY -> PorterDuff.Mode.MULTIPLY
-            SCREEN -> PorterDuff.Mode.SCREEN
-            ADD -> PorterDuff.Mode.ADD
-            OVERLAY -> PorterDuff.Mode.OVERLAY
         }
     }
 }

@@ -13,6 +13,14 @@ class ProfileAdapter constructor(private val mContext: Context, objects: Array<A
     mContext, R.layout.row_profile, objects!!
 ) {
     private lateinit var bindingRow: RowProfileBinding
+
+    /**
+     * Get the view for the specified position.
+     * @param position    The position of the item in the list.
+     * @param convertView The row view to reuse if possible.
+     * @param parent      The parent of the row.
+     * @return            The formatted and populated view.
+     */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = convertView ?: LayoutInflater.from(mContext).inflate(R.layout.row_profile, parent, false)
         bindingRow = RowProfileBinding.bind(row)
@@ -28,6 +36,13 @@ class ProfileAdapter constructor(private val mContext: Context, objects: Array<A
         return row
     }
 
+    /**
+     * Get the dropdown view for the specified position.
+     * @param position    The position of the item in the list.
+     * @param convertView The row view to reuse if possible.
+     * @param parent      The parent of the row.
+     * @return            The formatted and populated view.
+     */
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = convertView ?: LayoutInflater.from(mContext).inflate(R.layout.row_profile, parent, false)
         bindingRow = RowProfileBinding.bind(row)
