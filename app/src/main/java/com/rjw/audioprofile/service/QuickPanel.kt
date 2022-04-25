@@ -3,6 +3,7 @@ package com.rjw.audioprofile.service
 import android.graphics.drawable.Icon
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import android.util.Log
 import com.rjw.audioprofile.utils.AudioProfileList
 import java.lang.Exception
 
@@ -25,6 +26,7 @@ class QuickPanel : TileService() {
             nextProfile = 0
         }
         AudioProfileList.currentProfile = nextProfile
+        AudioProfileList.profileLocked = false
         setIcon()
     }
 
@@ -33,6 +35,7 @@ class QuickPanel : TileService() {
      */
     override fun onTileAdded() {
         super.onTileAdded()
+        Log.d("AudioProfile", "Tile added")
         AudioProfileList.initialise(baseContext)
     }
 
@@ -41,6 +44,7 @@ class QuickPanel : TileService() {
      */
     override fun onStartListening() {
         super.onStartListening()
+        Log.d("AudioProfile", "Starting listening")
         AudioProfileList.initialise(baseContext)
         setIcon()
     }

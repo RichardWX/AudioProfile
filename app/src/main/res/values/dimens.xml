@@ -1,6 +1,7 @@
 <resources>
     <dimen name="colour_picker_height">40dp</dimen>
     <dimen name="border_radius">20dp</dimen>
+    <dimen name="button_height">40dp</dimen>
     <dimen name="header_height">64dp</dimen>
     <dimen name="icon_size">48dp</dimen>
     <dimen name="icon_size_settings">24dp</dimen>

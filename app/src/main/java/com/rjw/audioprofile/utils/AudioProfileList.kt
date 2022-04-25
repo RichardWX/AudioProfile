@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
@@ -75,6 +76,7 @@ class AudioProfileList(context: Context?) {
          */
         fun initialise(context: Context?) {
             mContext = context?.applicationContext
+            Log.d("AudioProfile", "Initialising audio profiles")
             if(mIcons == null || mIcons!!.isEmpty()) {
                 mIcons = intArrayOf(
                     R.drawable.icon00,
@@ -138,6 +140,7 @@ class AudioProfileList(context: Context?) {
             mEnterWifiProfile = mPrefs!!.getInt(ENTER_PROFILE, mEnterWifiProfile)
             mExitWifiProfile = mPrefs!!.getInt(EXIT_PROFILE, mExitWifiProfile)
             mLockProfileTime = mPrefs!!.getInt(LOCK_PROFILE, mLockProfileTime)
+            mProfileLockStartTime = mPrefs!!.getLong(LOCK_PROFILE_START_TIME, mProfileLockStartTime)
             for(profile in 0 until NO_PROFILES) {
                 val audioProfile = AudioProfile(
                     mPrefs!!.getString(
@@ -263,6 +266,7 @@ class AudioProfileList(context: Context?) {
              */
             set(switchTime) {
                 mProfileLockStartTime = switchTime
+                mPrefs!!.edit().putLong(LOCK_PROFILE_START_TIME, mProfileLockStartTime).apply()
             }
 
         /**
@@ -324,6 +328,7 @@ class AudioProfileList(context: Context?) {
      * Initialise the class.
      */
     init {
+        Log.d("AudioProfile", "Initialising audio profile list completely")
         initialise(context)
     }
 }

@@ -3,7 +3,7 @@
     <color name="colourAccent">#F044E1E6</color>
     <color name="colourAlert">#F0FFFFFF</color>
     <color name="colourConfig">@color/colourPrimary</color>
-    <color name="colourBackground">@android:color/white</color>
+    <color name="colourBackground">@color/colourWhiteText</color>
     <color name="colourPrimary">#F02FB1BD</color>
     <color name="colourPrimaryDark">#F01C89CF</color>
     <color name="colourText">#000000</color>

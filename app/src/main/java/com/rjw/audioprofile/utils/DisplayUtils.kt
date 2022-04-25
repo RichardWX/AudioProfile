@@ -1,5 +1,6 @@
 package com.rjw.audioprofile.utils
 
+import android.content.res.Configuration
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.Color
@@ -49,7 +50,7 @@ object DisplayUtils {
             if(v is Button && v !is CompoundButton) {
                 val background = v.background
                 background?.setColorFilter(colour, Mode.SRC_ATOP)
-                if(isDark(colour)) {
+                if(isDark(colour) || (instance!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)) {
                     v.setTextColor(whiteColour)
                 } else {
                     v.setTextColor(darken(colour, COLOUR_LEVELS))
@@ -61,7 +62,11 @@ object DisplayUtils {
                     resources.getDimension(R.dimen.shadow_offset), darken(colour, COLOUR_LEVELS)
                 )
             } else {
-                v.setTextColor(darken(colour, COLOUR_LEVELS))
+                if(instance!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+                    v.setTextColor(whiteColour)
+                } else {
+                    v.setTextColor(darken(colour, COLOUR_LEVELS))
+                }
             }
         }
     }

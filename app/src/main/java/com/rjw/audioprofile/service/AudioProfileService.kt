@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.os.IBinder
+import android.util.Log
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.utils.AudioProfileList
@@ -30,6 +31,7 @@ class AudioProfileService : Service() {
                     val wm = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
                     if(wm.wifiState == WifiManager.WIFI_STATE_ENABLED) {
                         val ssid = wm.connectionInfo.ssid
+                        Log.d("AudioProfile", "WiFi connection changed - current ssid = $ssid")
                         if(ssid.isEmpty() || ssid == UNKNOWN_SSID) {
                             if(mSsid.isNotEmpty()) {
                                 mSsid = ""
@@ -37,8 +39,15 @@ class AudioProfileService : Service() {
                                 if(profile != -1) {
                                     // Check whether the profile has been locked - if so, don't change it.
                                     val now = Calendar.getInstance().timeInMillis
-                                    val switch = if(AudioProfileList.lockProfileTime == -1) true else
+                                    val switch = if(AudioProfileList.profileLocked) {
                                         now - AudioProfileList.profileLockStartTime > AudioProfileList.lockProfileTime * 60000
+                                    } else {
+                                        true
+                                    }
+                                    Log.d(
+                                        "AudioProfile", "Lock Profile Time = ${AudioProfileList.lockProfileTime}, lock start time = ${AudioProfileList.profileLockStartTime}" +
+                                                "${if(switch) ", switching" else ""}"
+                                    )
                                     if(switch) {
                                         AudioProfileList.currentProfile = profile
                                         AudioProfileList.applyProfile(context)
@@ -52,8 +61,15 @@ class AudioProfileService : Service() {
                             if(profile != -1) {
                                 // Check whether the profile has been locked - if so, don't change it.
                                 val now = Calendar.getInstance().timeInMillis
-                                val switch = if(AudioProfileList.lockProfileTime == -1) true else
+                                val switch = if(AudioProfileList.profileLocked) {
                                     now - AudioProfileList.profileLockStartTime > AudioProfileList.lockProfileTime * 60000
+                                } else {
+                                    true
+                                }
+                                Log.d(
+                                    "AudioProfile", "Lock Profile Time = ${AudioProfileList.lockProfileTime}, lock start time = ${AudioProfileList.profileLockStartTime}" +
+                                            "${if(switch) ", switching" else ""}"
+                                )
                                 if(switch) {
                                     AudioProfileList.currentProfile = profile
                                     AudioProfileList.applyProfile(context)
@@ -80,6 +96,7 @@ class AudioProfileService : Service() {
      */
     override fun onCreate() {
         super.onCreate()
+        Log.d("AudioProfile", "Starting service")
         // Get the profile list updated.
         AudioProfileList.initialise(this)
         val filter = IntentFilter()
@@ -98,6 +115,7 @@ class AudioProfileService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(mReceiver)
+        Log.d("AudioProfile", "Stopping service")
     }
 
     /**

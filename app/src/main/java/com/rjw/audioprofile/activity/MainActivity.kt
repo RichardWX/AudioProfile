@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.service.quicksettings.TileService
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.view.isVisible
@@ -27,7 +28,7 @@ class MainActivity : AudioActivity() {
     private val REQUEST_PERMISSION_RESPONSE = 1
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingContent: ContentMainBinding
-    private val mLockTimings = arrayOf(1, 2, 5, 10, 20, 30, 60)
+    private val mLockTimings = arrayOf(1, 2, 5, 10, 20, 30, 60, 90, 120)
     private val mRadioProfile = arrayOfNulls<RadioButton>(AudioProfileList.NO_PROFILES)
     private val mImageProfile = arrayOfNulls<ImageView>(AudioProfileList.NO_PROFILES)
     private val mTextProfile = arrayOfNulls<TextView>(AudioProfileList.NO_PROFILES)
@@ -233,6 +234,7 @@ class MainActivity : AudioActivity() {
         if(mProfileLockChanged) {
             AudioProfileList.profileLocked = bindingContent.checkboxLockProfile.isChecked
             AudioProfileList.profileLockStartTime = Calendar.getInstance().timeInMillis
+            Log.d("AudioProfile", "New lock profile start time = ${AudioProfileList.profileLockStartTime}${if(AudioProfileList.Companion.profileLocked) " (locked)" else ""}")
         }
         finish()
     }
@@ -318,7 +320,11 @@ class MainActivity : AudioActivity() {
         val serviceIntent = Intent(mThis, AudioProfileService::class.java)
         try {
             bindService(serviceIntent, mConnection, BIND_AUTO_CREATE)
-            startService(serviceIntent)
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent)
+            } else {
+                startService(serviceIntent)
+            }
         } catch(e: Exception) {
             Alerts.toast(e.toString())
         }
