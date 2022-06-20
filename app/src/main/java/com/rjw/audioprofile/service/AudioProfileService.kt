@@ -45,8 +45,8 @@ class AudioProfileService : Service() {
                                         true
                                     }
                                     Log.d(
-                                        "AudioProfile", "Lock Profile Time = ${AudioProfileList.lockProfileTime}, lock start time = ${AudioProfileList.profileLockStartTime}" +
-                                                "${if(switch) ", switching" else ""}"
+                                        "AudioProfile",
+                                        "Lock Profile Time = ${AudioProfileList.lockProfileTime}, lock start time = ${AudioProfileList.profileLockStartTime}${if(switch) ", switching" else ""}"
                                     )
                                     if(switch) {
                                         AudioProfileList.currentProfile = profile
@@ -67,8 +67,8 @@ class AudioProfileService : Service() {
                                     true
                                 }
                                 Log.d(
-                                    "AudioProfile", "Lock Profile Time = ${AudioProfileList.lockProfileTime}, lock start time = ${AudioProfileList.profileLockStartTime}" +
-                                            "${if(switch) ", switching" else ""}"
+                                    "AudioProfile",
+                                    "Lock Profile Time = ${AudioProfileList.lockProfileTime}, lock start time = ${AudioProfileList.profileLockStartTime}${if(switch) ", switching" else ""}"
                                 )
                                 if(switch) {
                                     AudioProfileList.currentProfile = profile

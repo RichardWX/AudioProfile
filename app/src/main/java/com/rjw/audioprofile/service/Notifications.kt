@@ -2,8 +2,6 @@ package com.rjw.audioprofile.service
 
 import android.app.*
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Icon
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.utils.Alerts
 import com.rjw.audioprofile.utils.AudioProfileList
@@ -18,7 +16,7 @@ object Notifications {
     private var mNotificationBuilder: Notification.Builder? = null
 
     /**
-     * Create the notification channel for displaying notfications.
+     * Create the notification channel for displaying notifications.
      * @param context The application context.
      */
     fun createNotificationChannel(context: Context) {

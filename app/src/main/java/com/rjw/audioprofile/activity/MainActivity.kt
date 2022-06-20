@@ -12,6 +12,7 @@ import android.service.quicksettings.TileService
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import com.rjw.audioprofile.BuildConfig
 import com.rjw.audioprofile.R
@@ -86,7 +87,7 @@ class MainActivity : AudioActivity() {
         val profileLockTime = AudioProfileList.lockProfileTime
         val lockAdapter = MinutesAdapter(this, mLockTimings)
         bindingContent.spinnerLockProfile.adapter = lockAdapter
-        bindingContent.spinnerLockProfile.background.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
+        bindingContent.spinnerLockProfile.background.setColorFilter(configColour, Mode.SRC_ATOP)
         bindingContent.checkboxLockProfile.buttonDrawable!!.setColorFilter(configColour, Mode.SRC_ATOP)
 
         // Set up the profile lock time.
@@ -112,7 +113,16 @@ class MainActivity : AudioActivity() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), REQUEST_PERMISSION_RESPONSE)
         }
-        colourControls()
+        if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSION_RESPONSE)
+        }
+        val colour = if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val wm = WallpaperManager.getInstance(this)
+            DisplayUtils.getDominantColour(DisplayUtils.drawableToBitmap(wm.drawable))
+        } else {
+            getColor(R.color.colourConfig)
+        }
+        colourControls(colour)
         updateControls()
     }
 
@@ -224,7 +234,7 @@ class MainActivity : AudioActivity() {
     }
 
     /**
-     * Close the activty.
+     * Close the activity.
      * @param v The view in question.
      */
     fun onClickClose(v: View?) {
@@ -234,7 +244,7 @@ class MainActivity : AudioActivity() {
         if(mProfileLockChanged) {
             AudioProfileList.profileLocked = bindingContent.checkboxLockProfile.isChecked
             AudioProfileList.profileLockStartTime = Calendar.getInstance().timeInMillis
-            Log.d("AudioProfile", "New lock profile start time = ${AudioProfileList.profileLockStartTime}${if(AudioProfileList.Companion.profileLocked) " (locked)" else ""}")
+            Log.d("AudioProfile", "New lock profile start time = ${AudioProfileList.profileLockStartTime}${if(AudioProfileList.profileLocked) " (locked)" else ""}")
         }
         finish()
     }

@@ -70,7 +70,7 @@ open class AudioActivity : Activity() {
 
     /**
      * Set the window title.
-     * @param title The new window title.
+     * @param titleId The new window title.
      */
     override fun setTitle(titleId: Int) {
         bindingTitle.title.setText(titleId)

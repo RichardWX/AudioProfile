@@ -17,7 +17,7 @@ object Alerts {
 
 
     /**
-     * Diplay a customised toast message.
+     * Display a customised toast message.
      * @param message The message id to be displayed.
      */
     fun toast(message: Int) {
@@ -25,7 +25,7 @@ object Alerts {
     }
 
     /**
-     * Diplay a customised toast message.
+     * Display a customised toast message.
      * @param message The message to be displayed.
      */
     fun toast(message: String) {
@@ -43,7 +43,7 @@ object Alerts {
     }
 
     /**
-     * Diplay a customised alert message.
+     * Display a customised alert message.
      * @param title   The alert title.
      * @param message The message to be displayed.
      */
@@ -52,7 +52,7 @@ object Alerts {
     }
 
     /**
-     * Diplay a customised alert message.
+     * Display a customised alert message.
      * @param title   The alert title.
      * @param message The message to be displayed.
      */

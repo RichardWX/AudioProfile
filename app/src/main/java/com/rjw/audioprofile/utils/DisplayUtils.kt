@@ -1,10 +1,8 @@
 package com.rjw.audioprofile.utils
 
 import android.content.res.Configuration
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
@@ -21,7 +19,6 @@ import com.rjw.audioprofile.activity.MainActivity.Companion.instance
 import com.rjw.audioprofile.activity.MainActivity.Companion.whiteColour
 
 object DisplayUtils {
-    const val EXTRA_CUSTOM_COLOUR = "CustomColour"
     private const val COLOUR_LEVELS = 6
 
     /**
@@ -129,6 +126,44 @@ object DisplayUtils {
      */
     private fun isDark(colour: Int): Boolean {
         return ColorUtils.calculateLuminance(colour) < 0.2
+    }
+
+    /**
+     * Get the dominant colour of the image.
+     * @param bitmap The image in question.
+     * @return       The dominant colour.
+     */
+    fun getDominantColour(bitmap: Bitmap?): Int {
+        val newBitmap = Bitmap.createScaledBitmap(bitmap!!, 1, 1, true)
+        val color = newBitmap.getPixel(0, 0)
+        newBitmap.recycle()
+        return color
+    }
+
+    /**
+     * Convert a drawable to a bitmap.
+     * @param drawable    The drawable to convert.
+     * @param finalWidth  The width of the final bitmap.
+     * @param finalHeight The height of the final bitmap.
+     * @return            A bitmap to represent the drawable.
+     */
+    fun drawableToBitmap(drawable: Drawable?, finalWidth: Int = -1, finalHeight: Int = -1): Bitmap {
+        if(drawable is BitmapDrawable) {
+            return drawable.bitmap
+        }
+
+        // If the width or height is -1, calculate the actual value.
+        var width = if(finalWidth == -1) drawable!!.intrinsicWidth else finalWidth
+        width = if(width > 0) width else 1
+        var height = if(finalHeight == -1) drawable!!.intrinsicHeight else finalHeight
+        height = if(height > 0) height else 1
+
+        // Create a bitmap of the correct size and draw the drawable object onto it.
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable!!.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
     }
 }
 
