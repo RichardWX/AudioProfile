@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.rjw.audioprofile.R
+import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.databinding.RowIconBinding
 
 class IconAdapter constructor(private val mContext: Context, objects: Array<Drawable?>?) : ArrayAdapter<Drawable?>(
@@ -29,10 +30,11 @@ class IconAdapter constructor(private val mContext: Context, objects: Array<Draw
         bindingRow = RowIconBinding.bind(row!!)
         try {
             bindingRow.icon.foreground = getItem(position)
+            bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
         } catch(e: Exception) {
             // Do nothing.
-            e.printStackTrace()
         }
+        DisplayUtils.colourControls(row)
         return row
     }
 
@@ -51,10 +53,11 @@ class IconAdapter constructor(private val mContext: Context, objects: Array<Draw
         bindingRow = RowIconBinding.bind(row!!)
         try {
             bindingRow.icon.foreground = getItem(position)
+            bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
         } catch(e: Exception) {
             // Do nothing.
-            e.printStackTrace()
         }
+        DisplayUtils.colourControls(row)
         return row
     }
 }

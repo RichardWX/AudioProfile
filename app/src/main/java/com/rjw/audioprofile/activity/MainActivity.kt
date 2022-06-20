@@ -116,13 +116,7 @@ class MainActivity : AudioActivity() {
         if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSION_RESPONSE)
         }
-        val colour = if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            val wm = WallpaperManager.getInstance(this)
-            DisplayUtils.getDominantColour(DisplayUtils.drawableToBitmap(wm.drawable))
-        } else {
-            getColor(R.color.colourConfig)
-        }
-        colourControls(colour)
+        colourControls()
         updateControls()
     }
 
@@ -321,6 +315,7 @@ class MainActivity : AudioActivity() {
         } else {
             bindingContent.spinnerExitWifi.setSelection(profile)
         }
+        colourControls()
     }
 
     /**
@@ -394,8 +389,14 @@ class MainActivity : AudioActivity() {
             /**
              * Get the current application colour.
              */
-            get() = mThis!!.getColor(R.color.colourConfig)
-
+            get() {
+                return if(mThis!!.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    val wm = WallpaperManager.getInstance(mThis)
+                    DisplayUtils.getDominantColour(DisplayUtils.drawableToBitmap(wm.drawable))
+                } else {
+                    mThis!!.getColor(R.color.colourConfig)
+                }
+            }
         val whiteColour: Int
             /**
              * Get the white colour.

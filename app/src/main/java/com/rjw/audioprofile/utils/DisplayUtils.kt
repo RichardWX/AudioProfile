@@ -1,22 +1,21 @@
 package com.rjw.audioprofile.utils
 
+import android.Manifest
+import android.app.WallpaperManager
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.ColorUtils
 import com.rjw.audioprofile.R
-import com.rjw.audioprofile.activity.MainActivity.Companion.configColour
-import com.rjw.audioprofile.activity.MainActivity.Companion.instance
-import com.rjw.audioprofile.activity.MainActivity.Companion.whiteColour
+import com.rjw.audioprofile.activity.MainActivity
 
 object DisplayUtils {
     private const val COLOUR_LEVELS = 6
@@ -26,7 +25,16 @@ object DisplayUtils {
      * @param v      The view to be coloured.
      * @param colour The base colour for the view.
      */
-    fun colourControls(v: View?, colour: Int = configColour) {
+    fun colourControls(v: View?) {
+        colourControls(v, MainActivity.configColour)
+    }
+
+    /**
+     * Colour the view controls.
+     * @param v      The view to be coloured.
+     * @param colour The base colour for the view.
+     */
+    fun colourControls(v: View?, colour: Int = MainActivity.configColour) {
         if(v == null) {
             return
         }
@@ -35,35 +43,44 @@ object DisplayUtils {
                 colourControls(v.getChildAt(child), colour)
             }
         }
+        val activity = MainActivity.instance!!
         if(v.id == R.id.layoutTitle) {
             val background = v.background
             if(background != null) {
                 background.setColorFilter(colour, Mode.SRC_ATOP)
                 v.background = background
             }
-        } else if(v is ImageView && v.getId() != R.id.icon) {
+        } else if(v is ImageView && v.id != R.id.appIcon) {
             v.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+        } else if(v is CheckBox) {
+            v.buttonDrawable?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+        } else if(v is RadioButton) {
+            v.buttonDrawable?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+        } else if(v is SeekBar) {
+            val seek = v.progressDrawable as LayerDrawable
+            seek.getDrawable(0).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+            seek.getDrawable(1).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+            seek.getDrawable(2).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+            v.thumb.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+        } else if(v is Spinner) {
+            v.background?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
         } else if(v is TextView) {
             if(v is Button && v !is CompoundButton) {
                 val background = v.background
                 background?.setColorFilter(colour, Mode.SRC_ATOP)
-                if(isDark(colour) || (instance!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)) {
-                    v.setTextColor(whiteColour)
-                } else {
-                    v.setTextColor(darken(colour, COLOUR_LEVELS))
-                }
             } else if(v.id == R.id.title) {
-                val resources = instance!!.resources
+                val resources = activity.resources
                 v.setShadowLayer(
                     resources.getDimension(R.dimen.shadow_radius), resources.getDimension(R.dimen.shadow_offset),
                     resources.getDimension(R.dimen.shadow_offset), darken(colour, COLOUR_LEVELS)
                 )
+            }
+        }
+        if(v is TextView && v.id != R.id.title) {
+            if(activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+                v.setTextColor(MainActivity.whiteColour)
             } else {
-                if(instance!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-                    v.setTextColor(whiteColour)
-                } else {
-                    v.setTextColor(darken(colour, COLOUR_LEVELS))
-                }
+                v.setTextColor(darken(colour, COLOUR_LEVELS))
             }
         }
     }

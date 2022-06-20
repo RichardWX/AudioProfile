@@ -1,11 +1,14 @@
 package com.rjw.audioprofile.utils
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.rjw.audioprofile.R
+import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.databinding.RowProfileBinding
 import com.rjw.audioprofile.utils.AudioProfileList.AudioProfile
 
@@ -27,6 +30,7 @@ class ProfileAdapter constructor(private val mContext: Context, objects: Array<A
         try {
             val profile = getItem(position)
             bindingRow.icon.foreground = AudioProfileList.getIcon(profile!!.icon)
+            bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
             bindingRow.profile.text = profile.name
         } catch(e: Exception) {
             // Do nothing.
@@ -49,6 +53,7 @@ class ProfileAdapter constructor(private val mContext: Context, objects: Array<A
         try {
             val profile = getItem(position)
             bindingRow.icon.foreground = AudioProfileList.getIcon(profile!!.icon)
+            bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
             bindingRow.profile.text = profile.name
         } catch(e: Exception) {
             // Do nothing.

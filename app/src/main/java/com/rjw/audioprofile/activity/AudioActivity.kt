@@ -1,6 +1,9 @@
 package com.rjw.audioprofile.activity
 
+import android.Manifest
 import android.app.Activity
+import android.app.WallpaperManager
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
@@ -24,6 +27,14 @@ open class AudioActivity : Activity() {
         window.setBackgroundDrawableResource(R.drawable.rounded_background)
         setFinishOnTouchOutside(false)
         setTheme(R.style.AppTheme_Dialog)
+    }
+
+    /**
+     * Resume the activity.
+     */
+    override fun onResume() {
+        super.onResume()
+        colourControls()
     }
 
     /**
@@ -90,7 +101,7 @@ open class AudioActivity : Activity() {
      * Colour the window controls.
      * @param colour The colour to use for the controls.
      */
-    protected fun colourControls(colour: Int = getColor(R.color.colourConfig)) {
-        DisplayUtils.colourControls(window.decorView, colour)
+    protected fun colourControls() {
+        DisplayUtils.colourControls(window.decorView)
     }
 }

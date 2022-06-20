@@ -8,7 +8,7 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/appIcon"
         style="@style/Icon"
         android:src="@mipmap/ic_launcher_foreground" />
 
