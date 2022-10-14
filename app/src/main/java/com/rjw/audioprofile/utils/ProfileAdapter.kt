@@ -1,8 +1,6 @@
 package com.rjw.audioprofile.utils
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

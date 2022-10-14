@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layoutMain"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <include layout="@layout/content_title" />
@@ -20,10 +20,12 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textDoNotDisturb"
                 style="@style/TextView"
                 android:text="@string/permission_instructions_dnd" />
 
             <Button
+                android:id="@+id/buttonDoNotDisturb"
                 style="@style/Button"
                 android:layout_gravity="right"
                 android:layout_marginTop="@dimen/margin"
@@ -67,6 +69,21 @@
                 android:onClick="onClickRequestNeverSleep"
                 android:text="@string/permission_grant"
                 android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/textPermissionsInstructions"
+                style="@style/TextView"
+                android:layout_marginLeft="@dimen/margin"
+                android:text="@string/permission_instructions_permissions" />
+
+            <Button
+                android:id="@+id/buttonPermissions"
+                style="@style/Button"
+                android:layout_gravity="right"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginBottom="@dimen/margin"
+                android:onClick="onClickRequestPermissions"
+                android:text="@string/permission_grant" />
 
         </LinearLayout>
 

@@ -1,8 +1,5 @@
 package com.rjw.audioprofile.utils
 
-import android.Manifest
-import android.app.WallpaperManager
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
@@ -23,7 +20,6 @@ object DisplayUtils {
     /**
      * Colour the view controls.
      * @param v      The view to be coloured.
-     * @param colour The base colour for the view.
      */
     fun colourControls(v: View?) {
         colourControls(v, MainActivity.configColour)

@@ -44,19 +44,21 @@ object Alerts {
 
     /**
      * Display a customised alert message.
-     * @param title   The alert title.
-     * @param message The message to be displayed.
+     * @param title           The alert title.
+     * @param message         The message to be displayed.
+     * @param onClickHandler  The handler for the button.
      */
-    fun alert(title: StringBuilder, message: StringBuilder) {
-        alert(title.toString(), message.toString())
+    fun alert(title: StringBuilder, message: StringBuilder, onClickHandler: (() -> Unit)? = null) {
+        alert(title.toString(), message.toString(), onClickHandler)
     }
 
     /**
      * Display a customised alert message.
-     * @param title   The alert title.
-     * @param message The message to be displayed.
+     * @param title           The alert title.
+     * @param message         The message to be displayed.
+     * @param onClickHandler  The handler for the button.
      */
-    private fun alert(title: String, message: String) {
+    fun alert(title: String, message: String, onClickHandler: (() -> Unit)? = null) {
         try {
             bindingAlert = AlertBinding.inflate(LayoutInflater.from(MainActivity.instance!!))
             val bindingTitle = ContentTitleBinding.bind(bindingAlert.layoutTitle.root)
@@ -65,7 +67,10 @@ object Alerts {
             bindingAlert.text.text = message
             builder.setView(bindingAlert.root)
             val dialog = builder.create()
-            bindingAlert.buttonOK.setOnClickListener { dialog.dismiss() }
+            bindingAlert.buttonOK.setOnClickListener {
+                onClickHandler?.invoke()
+                dialog.dismiss()
+            }
             DisplayUtils.colourControls(bindingAlert.root)
             dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setCanceledOnTouchOutside(false)

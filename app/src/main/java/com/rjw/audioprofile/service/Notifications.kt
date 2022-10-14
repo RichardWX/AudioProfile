@@ -23,7 +23,7 @@ object Notifications {
         try {
             mNm = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
             if(mNm != null) {
-                val channel = NotificationChannel(CHANNEL_ID,   CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN)
+                val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN)
                 channel.description = CHANNEL_DESCRIPTION
                 channel.setShowBadge(false)
                 channel.enableLights(false)
@@ -49,6 +49,7 @@ object Notifications {
                     .setSmallIcon(AudioProfileList.getIconResource(AudioProfileList.getProfile(AudioProfileList.currentProfile).icon))
                     .setContentTitle(msg)
                     .setContentIntent(pendingIntent)
+                    .setOngoing(true)
                 service.startForeground(SERVICE_NOTIFICATION_ID, mNotificationBuilder!!.build())
                 updateNotification(service)
             }

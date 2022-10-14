@@ -1,18 +1,15 @@
 package com.rjw.audioprofile.activity
 
-import android.Manifest
-import android.app.Activity
-import android.app.WallpaperManager
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.Window
+import androidx.activity.ComponentActivity
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.ContentTitleBinding
 import com.rjw.audioprofile.utils.DisplayUtils
 
-open class AudioActivity : Activity() {
+open class AudioActivity : ComponentActivity() {
     private lateinit var bindingTitle: ContentTitleBinding
     protected var view: View? = null
     protected var mWindowRatio = floatArrayOf(0.8f, 0.8f)
@@ -99,7 +96,6 @@ open class AudioActivity : Activity() {
 
     /**
      * Colour the window controls.
-     * @param colour The colour to use for the controls.
      */
     protected fun colourControls() {
         DisplayUtils.colourControls(window.decorView)

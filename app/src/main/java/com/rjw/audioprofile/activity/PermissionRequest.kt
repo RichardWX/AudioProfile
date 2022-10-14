@@ -1,14 +1,18 @@
 package com.rjw.audioprofile.activity
 
+import android.Manifest
 import android.app.NotificationManager
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.util.Log
 import android.view.View
+import androidx.core.app.ActivityCompat
 import com.rjw.audioprofile.R
-import android.content.ComponentName
-import android.os.Build
 import com.rjw.audioprofile.databinding.ActivityPermissionBinding
 
 
@@ -24,12 +28,29 @@ class PermissionRequest : AudioActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission)
         binding = ActivityPermissionBinding.bind(view!!)
-        if(Build.MANUFACTURER.compareTo("Samsung", true) == 0) {
-            binding.textNeverSleep.visibility = View.VISIBLE
-            binding.textNeverSleepInstructions.visibility = View.VISIBLE
-            binding.buttonNeverSleep.visibility = View.VISIBLE
+        val doNotDisturb = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted
+        val batteryOptimizations = (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
+        val notifications = !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+        val files = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        if(doNotDisturb) {
+            binding.textDoNotDisturb.visibility = View.GONE
+            binding.buttonDoNotDisturb.visibility = View.GONE
+        }
+        if(batteryOptimizations) {
             binding.textBattery.visibility = View.GONE
             binding.buttonBattery.visibility = View.GONE
+            binding.textBattery.visibility = View.GONE
+            binding.buttonBattery.visibility = View.GONE
+        } else {
+            if(Build.MANUFACTURER.compareTo("Samsung", true) == 0) {
+                binding.textNeverSleep.visibility = View.VISIBLE
+                binding.textNeverSleepInstructions.visibility = View.VISIBLE
+                binding.buttonNeverSleep.visibility = View.VISIBLE
+            }
+        }
+        if(notifications && files) {
+            binding.textPermissionsInstructions.visibility = View.GONE
+            binding.buttonPermissions.visibility = View.GONE
         }
         colourControls()
     }
@@ -40,13 +61,34 @@ class PermissionRequest : AudioActivity() {
     override fun onResume() {
         super.onResume()
         // If we already have the permission, just leave.
-        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager?
-        val pm = getSystemService(POWER_SERVICE) as PowerManager?
-        if(nm == null || pm == null) {
+        val doNotDisturb = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted
+        val batteryOptimizations = (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
+        val notifications = !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+        val files = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        if(doNotDisturb && batteryOptimizations && notifications && files) {
             finish()
         }
-        if(nm!!.isNotificationPolicyAccessGranted && pm!!.isIgnoringBatteryOptimizations(packageName)) {
-            finish()
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == REQUEST_PERMISSION_RESPONSE) {
+            when {
+                grantResults.isEmpty() -> {
+                    // If user interaction was interrupted, the permission request is cancelled and you
+                    // receive empty arrays.
+                    Log.i(MainActivity.TAG, "User interaction was cancelled.")
+                }
+                grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
+                    // Permission was granted.
+                }
+                else -> {
+                    // Permission denied.
+                }
+            }
         }
     }
 
@@ -73,6 +115,8 @@ class PermissionRequest : AudioActivity() {
      * @param v The view in question.
      */
     fun onClickRequestNeverSleep(v: View?) {
+        val intentOptimization = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+        startActivityForResult(intentOptimization, REQUEST_PERMISSION_RESPONSE)
         try {
             val intentSleeping = Intent()
             intentSleeping.component = ComponentName("com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity")
@@ -84,9 +128,27 @@ class PermissionRequest : AudioActivity() {
                 intentSleeping.component = ComponentName("com.samsung.android.sm", "com.samsung.android.sm.ui.battery.BatteryActivity")
                 startActivityForResult(intentSleeping, REQUEST_PERMISSION_RESPONSE)
             } catch(e: Exception) {
-                // Do nothing, just skip.
             }
         }
+    }
+
+    /**
+     * Point the user at the Application settings.
+     * @param v The view in question.
+     */
+    fun onClickRequestPermissions(v: View?) {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.READ_EXTERNAL_STORAGE),
+            REQUEST_PERMISSION_RESPONSE)
+/*
+        val i = Intent()
+        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        i.addCategory(Intent.CATEGORY_DEFAULT)
+        i.setData(Uri.parse("package:" + getPackageName()))
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+        startActivity(i);
+*/
     }
 
     /**

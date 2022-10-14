@@ -2,17 +2,22 @@ package com.rjw.audioprofile.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.ActivityManager
+import android.app.NotificationManager
+import android.app.WallpaperManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.os.PowerManager
 import android.service.quicksettings.TileService
 import android.util.Log
 import android.view.View
-import android.widget.*
-import androidx.core.graphics.drawable.toBitmap
+import android.widget.AdapterView
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.TextView
 import androidx.core.view.isVisible
 import com.rjw.audioprofile.BuildConfig
 import com.rjw.audioprofile.R
@@ -72,8 +77,22 @@ class MainActivity : AudioActivity() {
         if(!isServiceRunning) {
             startService()
         }
-        val prefs = getSharedPreferences(TAG, MODE_PRIVATE)
-        var firstRun = prefs.getBoolean(PREF_FIRST_RUN, true)
+
+        // Check we have the required permissions.
+        val doNotDisturb = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted
+        val batteryOptimizations = (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
+        val notifications =
+            !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+        if(!doNotDisturb || !notifications || !batteryOptimizations) {
+            val intent = Intent(this, PermissionRequest::class.java)
+            startActivityForResult(intent, REQUEST_PERMISSIONS)
+        }
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_RESPONSE)
+        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), REQUEST_PERMISSION_RESPONSE)
+        }
 
         // Set the profile names and icons.
         for(profile in 0 until AudioProfileList.NO_PROFILES) {
@@ -100,22 +119,6 @@ class MainActivity : AudioActivity() {
         // Set the handler for the lock time spinner.
         AdapterView.OnItemClickListener { _, _, _, _ -> mProfileLockChanged = true }
 
-        // Check we have the required permissions.
-        if(firstRun) {
-            val intent = Intent(this, PermissionRequest::class.java)
-            startActivityForResult(intent, REQUEST_PERMISSIONS)
-            firstRun = false
-            prefs.edit().putBoolean(PREF_FIRST_RUN, firstRun).apply()
-        }
-        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_RESPONSE)
-        }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), REQUEST_PERMISSION_RESPONSE)
-        }
-        if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSION_RESPONSE)
-        }
         colourControls()
         updateControls()
     }
@@ -138,6 +141,10 @@ class MainActivity : AudioActivity() {
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     /**
@@ -359,7 +366,6 @@ class MainActivity : AudioActivity() {
         const val TAG = "AudioProfile"
         const val REQUEST_PERMISSIONS = 1
         const val REQUEST_AUDIO_PROFILE = 2
-        const val PREF_FIRST_RUN = "FirstRun"
         private var mThis: MainActivity? = null
         var profiles: AudioProfileList? = null
             private set
@@ -390,13 +396,21 @@ class MainActivity : AudioActivity() {
              * Get the current application colour.
              */
             get() {
-                return if(mThis!!.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    val wm = WallpaperManager.getInstance(mThis)
-                    DisplayUtils.getDominantColour(DisplayUtils.drawableToBitmap(wm.drawable))
-                } else {
-                    mThis!!.getColor(R.color.colourConfig)
+                return when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
+                        val wm = WallpaperManager.getInstance(mThis)
+                        wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)!!.primaryColor.toArgb()
+                    }
+                    mThis!!.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
+                        val wm = WallpaperManager.getInstance(mThis)
+                        DisplayUtils.getDominantColour(DisplayUtils.drawableToBitmap(wm.drawable))
+                    }
+                    else -> {
+                        mThis!!.getColor(R.color.colourConfig)
+                    }
                 }
             }
+
         val whiteColour: Int
             /**
              * Get the white colour.
