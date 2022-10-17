@@ -73,7 +73,6 @@
             <TextView
                 android:id="@+id/textPermissionsInstructions"
                 style="@style/TextView"
-                android:layout_marginLeft="@dimen/margin"
                 android:text="@string/permission_instructions_permissions" />
 
             <Button
