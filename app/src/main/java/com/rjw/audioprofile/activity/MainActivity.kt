@@ -388,6 +388,7 @@ class MainActivity : AudioActivity() {
             try {
                 TileService.requestListeningState(context, ComponentName(context!!, QuickPanel::class.java))
             } catch(e: Exception) {
+                // Do nothing.
             }
         }
 

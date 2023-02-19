@@ -28,6 +28,15 @@ class PermissionRequest : AudioActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission)
         binding = ActivityPermissionBinding.bind(view!!)
+        colourControls()
+    }
+
+    /**
+     * Check the permissions when the activity resumes.
+     */
+    override fun onResume() {
+        super.onResume()
+        // If we already have the permission, just leave.
         val doNotDisturb = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted
         val batteryOptimizations = (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
         val notifications = !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
@@ -52,19 +61,6 @@ class PermissionRequest : AudioActivity() {
             binding.textPermissionsInstructions.visibility = View.GONE
             binding.buttonPermissions.visibility = View.GONE
         }
-        colourControls()
-    }
-
-    /**
-     * Check the permissions when the activity resumes.
-     */
-    override fun onResume() {
-        super.onResume()
-        // If we already have the permission, just leave.
-        val doNotDisturb = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted
-        val batteryOptimizations = (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
-        val notifications = !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
-        val files = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
         if(doNotDisturb && batteryOptimizations && notifications && files) {
             finish()
         }
@@ -115,8 +111,6 @@ class PermissionRequest : AudioActivity() {
      * @param v The view in question.
      */
     fun onClickRequestNeverSleep(v: View?) {
-        val intentOptimization = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-        startActivityForResult(intentOptimization, REQUEST_PERMISSION_RESPONSE)
         try {
             val intentSleeping = Intent()
             intentSleeping.component = ComponentName("com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity")
@@ -128,6 +122,7 @@ class PermissionRequest : AudioActivity() {
                 intentSleeping.component = ComponentName("com.samsung.android.sm", "com.samsung.android.sm.ui.battery.BatteryActivity")
                 startActivityForResult(intentSleeping, REQUEST_PERMISSION_RESPONSE)
             } catch(e: Exception) {
+                // Do nothing.
             }
         }
     }
@@ -139,16 +134,6 @@ class PermissionRequest : AudioActivity() {
     fun onClickRequestPermissions(v: View?) {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.READ_EXTERNAL_STORAGE),
             REQUEST_PERMISSION_RESPONSE)
-/*
-        val i = Intent()
-        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        i.addCategory(Intent.CATEGORY_DEFAULT)
-        i.setData(Uri.parse("package:" + getPackageName()))
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-        startActivity(i);
-*/
     }
 
     /**
