@@ -39,15 +39,13 @@ class PermissionRequest : AudioActivity() {
         // If we already have the permission, just leave.
         val doNotDisturb = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted
         val batteryOptimizations = (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
-        val notifications = !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
-        val files = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val notifications =
+            !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
         if(doNotDisturb) {
             binding.textDoNotDisturb.visibility = View.GONE
             binding.buttonDoNotDisturb.visibility = View.GONE
         }
         if(batteryOptimizations) {
-            binding.textBattery.visibility = View.GONE
-            binding.buttonBattery.visibility = View.GONE
             binding.textBattery.visibility = View.GONE
             binding.buttonBattery.visibility = View.GONE
         } else {
@@ -57,11 +55,11 @@ class PermissionRequest : AudioActivity() {
                 binding.buttonNeverSleep.visibility = View.VISIBLE
             }
         }
-        if(notifications && files) {
+        if(notifications) {
             binding.textPermissionsInstructions.visibility = View.GONE
             binding.buttonPermissions.visibility = View.GONE
         }
-        if(doNotDisturb && batteryOptimizations && notifications && files) {
+        if(doNotDisturb && batteryOptimizations && notifications) {
             finish()
         }
     }
@@ -132,8 +130,9 @@ class PermissionRequest : AudioActivity() {
      * @param v The view in question.
      */
     fun onClickRequestPermissions(v: View?) {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.READ_EXTERNAL_STORAGE),
-            REQUEST_PERMISSION_RESPONSE)
+        ActivityCompat.requestPermissions(
+            this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_PERMISSION_RESPONSE
+        )
     }
 
     /**

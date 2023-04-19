@@ -1,4 +1,5 @@
 <resources>
+
     <dimen name="colour_picker_height">40dp</dimen>
     <dimen name="border_radius">20dp</dimen>
     <dimen name="button_height">40dp</dimen>
@@ -14,4 +15,5 @@
     <dimen name="shadow_radius">1dp</dimen>
     <dimen name="text_size">15sp</dimen>
     <dimen name="text_size_title">25sp</dimen>
+
 </resources>

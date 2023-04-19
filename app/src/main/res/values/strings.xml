@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">Audio Profile</string>
     <string name="audio_profile_title">Set audio profile</string>
     <string name="cannot_get_system_service">Cannot get system service, exiting!</string>
@@ -19,7 +20,6 @@
     <string name="permission_instructions_dnd">In order to be able to modify the audio profile of the device, the application requires the do not disturb permission.
         \nPlease press the button to grant the permission and then press Back to return to the application and press the OK button.</string>
     <string name="permission_instructions_permissions">To work properly, the application needs to be able to send notifications.
-        \nTo use the wallpaper colour for the controls, the application needs to be able to read external files.
         \nPlease press the button and grant the permission and then press Back to return to the application and press the OK button.</string>
     <string name="permission_instructions_sleep">To work properly, the application needs to be added to the list of never sleeping applications.
         \nPlease press the button and follow the instructions below and then press Back to return to the application and press the OK button.</string>
@@ -52,4 +52,5 @@
     <string name="settings_title">Settings</string>
     <string name="settings_wifi_enter">Enter Wifi Network</string>
     <string name="settings_wifi_exit">Exit Wifi Network</string>
+
 </resources>

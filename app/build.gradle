@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId "com.rjw.audioprofile"
-        minSdkVersion 26
+        minSdkVersion 27
         targetSdkVersion 33
-        versionCode 12
-        versionName "1.12"
+        versionCode 13
+        versionName "1.13"
 
         setProperty("archivesBaseName", "AudioProfile" + " - R" + versionName)
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
@@ -39,8 +39,8 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.0"
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.20'
+    implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'com.google.android.material:material:1.8.0'

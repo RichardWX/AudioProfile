@@ -398,16 +398,12 @@ class MainActivity : AudioActivity() {
              */
             get() {
                 return when {
-//                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
-//                        val wm = WallpaperManager.getInstance(mThis)
-//                        wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)!!.primaryColor.toArgb()
-//                    }
-//                    mThis!!.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
-//                        val wm = WallpaperManager.getInstance(mThis)
-//                        DisplayUtils.getDominantColour(DisplayUtils.drawableToBitmap(wm.drawable))
-//                    }
-                    else -> {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                         mThis!!.getColor(R.color.colourConfig)
+                    }
+                    else -> {
+                        val wm = WallpaperManager.getInstance(mThis)
+                        wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)!!.primaryColor.toArgb()
                     }
                 }
             }
