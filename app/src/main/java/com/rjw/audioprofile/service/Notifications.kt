@@ -12,8 +12,8 @@ object Notifications {
     private const val CHANNEL_DESCRIPTION = "AudioProfile"
     private const val SERVICE_NOTIFICATION_ID = 100
 
-    private var mNm: NotificationManager? = null
-    private var mNotificationBuilder: Notification.Builder? = null
+    private var notificationManager: NotificationManager? = null
+    private var notificationBuilder: Notification.Builder? = null
 
     /**
      * Create the notification channel for displaying notifications.
@@ -21,14 +21,14 @@ object Notifications {
      */
     fun createNotificationChannel(context: Context) {
         try {
-            mNm = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
-            if(mNm != null) {
+            notificationManager = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
+            notificationManager?.let { notificationManager ->
                 val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN)
                 channel.description = CHANNEL_DESCRIPTION
                 channel.setShowBadge(false)
                 channel.enableLights(false)
                 channel.setSound(null, null)
-                mNm!!.createNotificationChannel(channel)
+                notificationManager.createNotificationChannel(channel)
             }
         } catch(e: Exception) {
             Alerts.toast("Creating notification channel: ${e.javaClass.name}\n${e.message}")
@@ -44,14 +44,16 @@ object Notifications {
     fun showServiceNotification(service: Service?, msg: String?, pendingIntent: PendingIntent?) {
         try {
             if(service != null) {
-                mNotificationBuilder = Notification.Builder(service)
+                notificationBuilder = Notification.Builder(service)
                     .setChannelId(CHANNEL_ID)
                     .setSmallIcon(AudioProfileList.getIconResource(AudioProfileList.getProfile(AudioProfileList.currentProfile).icon))
                     .setContentTitle(msg)
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
-                service.startForeground(SERVICE_NOTIFICATION_ID, mNotificationBuilder!!.build())
-                updateNotification(service)
+                notificationBuilder?.let { builder ->
+                    service.startForeground(SERVICE_NOTIFICATION_ID, builder.build())
+                    updateNotification(service)
+                }
             }
         } catch(e: Exception) {
             Alerts.toast("Creating notification: ${e.javaClass.name}\n${e.message}")
@@ -64,18 +66,18 @@ object Notifications {
      */
     fun updateNotification(context: Context) {
         try {
-            if(mNm == null) {
-                mNm = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
+            if(notificationManager == null) {
+                notificationManager = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
             }
-            if(mNm != null && mNotificationBuilder != null) {
-                mNotificationBuilder!!.setContentText(
+            notificationBuilder?.let { builder ->
+                builder.setContentText(
                     String.format(
                         context.getString(R.string.notification_profile),
                         AudioProfileList.getProfile(AudioProfileList.currentProfile).name
                     )
                 )
-                mNotificationBuilder!!.setSmallIcon(AudioProfileList.getIconResource(AudioProfileList.getProfile(AudioProfileList.currentProfile).icon))
-                mNm!!.notify(SERVICE_NOTIFICATION_ID, mNotificationBuilder!!.build())
+                builder.setSmallIcon(AudioProfileList.getIconResource(AudioProfileList.getProfile(AudioProfileList.currentProfile).icon))
+                notificationManager?.notify(SERVICE_NOTIFICATION_ID, builder.build())
             }
         } catch(e: Exception) {
             Alerts.toast("Updating notification: ${e.javaClass.name}\n${e.message}")

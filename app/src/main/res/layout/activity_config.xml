@@ -60,7 +60,6 @@
                 <CheckBox
                     android:id="@+id/checkBoxUnchangedRingtone"
                     style="@style/CheckBox"
-                    android:onClick="onClickUnchanged"
                     android:text="@string/unchanged" />
 
             </LinearLayout>
@@ -68,6 +67,11 @@
             <SeekBar
                 android:id="@+id/seekBarRingtone"
                 style="@style/SeekBar" />
+
+            <CheckBox
+                android:id="@+id/checkBoxVibrateRingtone"
+                style="@style/CheckBox"
+                android:text="@string/vibrate" />
 
         </LinearLayout>
 
@@ -93,7 +97,6 @@
                 <CheckBox
                     android:id="@+id/checkBoxUnchangedNotification"
                     style="@style/CheckBox"
-                    android:onClick="onClickUnchanged"
                     android:text="@string/unchanged" />
 
             </LinearLayout>
@@ -126,7 +129,6 @@
                 <CheckBox
                     android:id="@+id/checkBoxUnchangedMedia"
                     style="@style/CheckBox"
-                    android:onClick="onClickUnchanged"
                     android:text="@string/unchanged" />
 
             </LinearLayout>
@@ -159,7 +161,6 @@
                 <CheckBox
                     android:id="@+id/checkBoxUnchangedSystem"
                     style="@style/CheckBox"
-                    android:onClick="onClickUnchanged"
                     android:text="@string/unchanged" />
 
             </LinearLayout>
@@ -171,11 +172,11 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/buttonClose"
             style="@style/Button.Action"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin"
             android:layout_marginBottom="@dimen/margin_table"
-            android:onClick="onClickClose"
             android:text="@string/close" />
 
     </LinearLayout>

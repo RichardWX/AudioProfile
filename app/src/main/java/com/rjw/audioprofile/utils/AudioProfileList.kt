@@ -12,7 +12,7 @@ import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.service.Notifications
 import java.util.*
 
-class AudioProfileList(context: Context?) {
+class AudioProfileList(context: Context) {
     /**
      * Class constructor.
      * @param name               The profile name.
@@ -21,14 +21,16 @@ class AudioProfileList(context: Context?) {
      * @param notificationVolume The notification volume.
      * @param mediaVolume        The media volume.
      * @param systemVolume       The system volume.
+     * @param vibrate            True if the device will vibrate when in mute or false if not.
      */
-    class AudioProfile(name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int) {
+    class AudioProfile(name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int, vibrate: Boolean) {
         var name: String? = null
         var icon = 0
         var ringtoneVolume = 0
         var notificationVolume = 0
         var mediaVolume = 0
         var systemVolume = 0
+        var vibrate = true
 
         /**
          * Set the audio profile information.
@@ -38,21 +40,23 @@ class AudioProfileList(context: Context?) {
          * @param notificationVolume The notification volume.
          * @param mediaVolume        The media volume.
          * @param systemVolume       The system volume.
+         * @param vibrate            True if the device will vibrate when in mute or false if not.
          */
-        operator fun set(name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int) {
+        operator fun set(name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int, vibrate: Boolean) {
             this.name = name
             this.icon = icon
             this.ringtoneVolume = ringtoneVolume
             this.notificationVolume = notificationVolume
             this.mediaVolume = mediaVolume
             this.systemVolume = systemVolume
+            this.vibrate = vibrate
         }
 
         /**
          * Class initialisation.
          */
         init {
-            set(name, icon, ringtoneVolume, notificationVolume, mediaVolume, systemVolume)
+            set(name, icon, ringtoneVolume, notificationVolume, mediaVolume, systemVolume, vibrate)
         }
     }
 
@@ -64,20 +68,20 @@ class AudioProfileList(context: Context?) {
         private var mExitWifiProfile = -1
         private var mProfileLocked = false
         private var mLockProfileTime = -1
-        private var mContext: Context? = null
+        private lateinit var mContext: Context
         private var mPrefs: SharedPreferences? = null
         private val mProfiles = ArrayList<AudioProfile>()
-        private var mIcons: IntArray? = null
+        private var mIcons = IntArray(0)
         private var mProfileLockStartTime = -1L
 
         /**
          * Initialise the class.
          * @param context The application context.
          */
-        fun initialise(context: Context?) {
-            mContext = context?.applicationContext
+        fun initialise(context: Context) {
+            mContext = context.applicationContext
             Log.d("AudioProfile", "Initialising audio profiles")
-            if(mIcons == null || mIcons!!.isEmpty()) {
+            if(mIcons.isEmpty()) {
                 mIcons = intArrayOf(
                     R.drawable.icon00,
                     R.drawable.icon01,
@@ -92,7 +96,8 @@ class AudioProfileList(context: Context?) {
                     R.drawable.icon10,
                     R.drawable.icon11,
                     R.drawable.icon12,
-                    R.drawable.icon13
+                    R.drawable.icon13,
+                    R.drawable.icon14
                 )
             }
             if(mProfiles.isEmpty()) {
@@ -105,7 +110,7 @@ class AudioProfileList(context: Context?) {
              * Get the number of icons.
              */
             get() {
-                return mIcons!!.size
+                return mIcons.size
             }
 
         /**
@@ -113,9 +118,9 @@ class AudioProfileList(context: Context?) {
          * @param iconId The profile icon index.
          * @return The drawable for the icon.
          */
-        fun getIcon(iconId: Int): Drawable {
-            val icon = ContextCompat.getDrawable(mContext!!, mIcons!![iconId])
-            icon!!.setColorFilter(mContext!!.getColor(R.color.colourConfig), Mode.SRC_ATOP)
+        fun getIcon(iconId: Int): Drawable? {
+            val icon = ContextCompat.getDrawable(mContext, mIcons[iconId])
+            icon?.setColorFilter(mContext.getColor(R.color.colourConfig), Mode.SRC_ATOP)
             return icon
         }
 
@@ -125,7 +130,7 @@ class AudioProfileList(context: Context?) {
          * @return The icon resource index.
          */
         fun getIconResource(iconId: Int): Int {
-            return mIcons!![iconId]
+            return mIcons[iconId]
         }
 
         /**
@@ -133,25 +138,28 @@ class AudioProfileList(context: Context?) {
          */
         private fun loadProfiles() {
             if(mPrefs == null) {
-                mPrefs = mContext!!.getSharedPreferences(MainActivity.TAG, Activity.MODE_PRIVATE)
+                mPrefs = mContext.getSharedPreferences(MainActivity.TAG, Activity.MODE_PRIVATE)
             }
             mProfiles.clear()
-            mCurrentProfile = mPrefs!!.getInt(CURRENT_PROFILE, mCurrentProfile)
-            mEnterWifiProfile = mPrefs!!.getInt(ENTER_PROFILE, mEnterWifiProfile)
-            mExitWifiProfile = mPrefs!!.getInt(EXIT_PROFILE, mExitWifiProfile)
-            mLockProfileTime = mPrefs!!.getInt(LOCK_PROFILE, mLockProfileTime)
-            mProfileLockStartTime = mPrefs!!.getLong(LOCK_PROFILE_START_TIME, mProfileLockStartTime)
-            for(profile in 0 until NO_PROFILES) {
-                val audioProfile = AudioProfile(
-                    mPrefs!!.getString(
-                        NAME + profile,
-                        mContext!!.resources.getStringArray(R.array.profile)[profile]
-                    ),
-                    mPrefs!!.getInt(ICON + profile, profile),
-                    mPrefs!!.getInt(RINGTONE + profile, DEFAULT), mPrefs!!.getInt(NOTIFICATION + profile, DEFAULT),
-                    mPrefs!!.getInt(MEDIA + profile, DEFAULT), mPrefs!!.getInt(SYSTEM + profile, DEFAULT)
-                )
-                mProfiles.add(audioProfile)
+            mPrefs?.let { prefs ->
+                mCurrentProfile = prefs.getInt(CURRENT_PROFILE, mCurrentProfile)
+                mEnterWifiProfile = prefs.getInt(ENTER_PROFILE, mEnterWifiProfile)
+                mExitWifiProfile = prefs.getInt(EXIT_PROFILE, mExitWifiProfile)
+                mLockProfileTime = prefs.getInt(LOCK_PROFILE, mLockProfileTime)
+                mProfileLockStartTime = prefs.getLong(LOCK_PROFILE_START_TIME, mProfileLockStartTime)
+                for(profile in 0 until NO_PROFILES) {
+                    val audioProfile = AudioProfile(
+                        prefs.getString(
+                            NAME + profile,
+                            mContext.resources.getStringArray(R.array.profile)[profile]
+                        ),
+                        prefs.getInt(ICON + profile, profile),
+                        prefs.getInt(RINGTONE + profile, DEFAULT), prefs.getInt(NOTIFICATION + profile, DEFAULT),
+                        prefs.getInt(MEDIA + profile, DEFAULT), prefs.getInt(SYSTEM + profile, DEFAULT),
+                        prefs.getBoolean(VIBRATE + profile, true)
+                    )
+                    mProfiles.add(audioProfile)
+                }
             }
         }
 
@@ -165,12 +173,15 @@ class AudioProfileList(context: Context?) {
             }
             for(profile in 0 until NO_PROFILES) {
                 val audioProfile = mProfiles[profile]
-                mPrefs!!.edit().putString(NAME + profile, audioProfile.name).apply()
-                mPrefs!!.edit().putInt(ICON + profile, audioProfile.icon).apply()
-                mPrefs!!.edit().putInt(RINGTONE + profile, audioProfile.ringtoneVolume).apply()
-                mPrefs!!.edit().putInt(NOTIFICATION + profile, audioProfile.notificationVolume).apply()
-                mPrefs!!.edit().putInt(MEDIA + profile, audioProfile.mediaVolume).apply()
-                mPrefs!!.edit().putInt(SYSTEM + profile, audioProfile.systemVolume).apply()
+                mPrefs?.let { prefs ->
+                    prefs.edit().putString(NAME + profile, audioProfile.name).apply()
+                    prefs.edit().putInt(ICON + profile, audioProfile.icon).apply()
+                    prefs.edit().putInt(RINGTONE + profile, audioProfile.ringtoneVolume).apply()
+                    prefs.edit().putInt(NOTIFICATION + profile, audioProfile.notificationVolume).apply()
+                    prefs.edit().putInt(MEDIA + profile, audioProfile.mediaVolume).apply()
+                    prefs.edit().putInt(SYSTEM + profile, audioProfile.systemVolume).apply()
+                    prefs.edit().putBoolean(VIBRATE + profile, audioProfile.vibrate).apply()
+                }
             }
         }
 
@@ -187,8 +198,8 @@ class AudioProfileList(context: Context?) {
              */
             set(currentProfile) {
                 mCurrentProfile = currentProfile
-                mPrefs!!.edit().putInt(CURRENT_PROFILE, mCurrentProfile).apply()
-                Notifications.updateNotification(mContext!!)
+                mPrefs?.edit()?.putInt(CURRENT_PROFILE, mCurrentProfile)?.apply()
+                Notifications.updateNotification(mContext)
             }
 
         var enterWifiProfile: Int
@@ -204,7 +215,7 @@ class AudioProfileList(context: Context?) {
              */
             set(enterProfile) {
                 mEnterWifiProfile = enterProfile
-                mPrefs!!.edit().putInt(ENTER_PROFILE, mEnterWifiProfile).apply()
+                mPrefs?.edit()?.putInt(ENTER_PROFILE, mEnterWifiProfile)?.apply()
             }
 
         var exitWifiProfile: Int
@@ -220,7 +231,7 @@ class AudioProfileList(context: Context?) {
              */
             set(exitProfile) {
                 mExitWifiProfile = exitProfile
-                mPrefs!!.edit().putInt(EXIT_PROFILE, mExitWifiProfile).apply()
+                mPrefs?.edit()?.putInt(EXIT_PROFILE, mExitWifiProfile)?.apply()
             }
 
         var profileLocked: Boolean
@@ -251,7 +262,7 @@ class AudioProfileList(context: Context?) {
              */
             set(lockProfileTime) {
                 mLockProfileTime = lockProfileTime
-                mPrefs!!.edit().putInt(LOCK_PROFILE, mLockProfileTime).apply()
+                mPrefs?.edit()?.putInt(LOCK_PROFILE, mLockProfileTime)?.apply()
             }
 
         var profileLockStartTime: Long
@@ -266,7 +277,7 @@ class AudioProfileList(context: Context?) {
              */
             set(switchTime) {
                 mProfileLockStartTime = switchTime
-                mPrefs!!.edit().putLong(LOCK_PROFILE_START_TIME, mProfileLockStartTime).apply()
+                mPrefs?.edit()?.putLong(LOCK_PROFILE_START_TIME, mProfileLockStartTime)?.apply()
             }
 
         /**
@@ -295,9 +306,10 @@ class AudioProfileList(context: Context?) {
          * @param notificationVolume The notification volume.
          * @param mediaVolume        The media volume.
          * @param systemVolume       The system volume.
+         * @param vibrate            True if the device will vibrate when in mute or false if not.
          */
-        fun setProfile(profile: Int, name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int) {
-            mProfiles[profile][name, icon, ringtoneVolume, notificationVolume, mediaVolume] = systemVolume
+        fun setProfile(profile: Int, name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int, vibrate: Boolean) {
+            mProfiles[profile] = AudioProfile(name, icon, ringtoneVolume, notificationVolume, mediaVolume, systemVolume, vibrate)
         }
 
         /**
@@ -310,6 +322,10 @@ class AudioProfileList(context: Context?) {
                 val audioProfile = getProfile(currentProfile)
                 if(audioProfile.ringtoneVolume != -1) {
                     am.setStreamVolume(AudioManager.STREAM_RING, audioProfile.ringtoneVolume, 0)
+                    am.ringerMode = if(audioProfile.ringtoneVolume == 0) {
+                        if(audioProfile.vibrate) AudioManager.RINGER_MODE_VIBRATE else AudioManager.RINGER_MODE_SILENT
+                    } else
+                        AudioManager.RINGER_MODE_NORMAL
                 }
                 if(audioProfile.notificationVolume != -1) {
                     am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioProfile.notificationVolume, 0)

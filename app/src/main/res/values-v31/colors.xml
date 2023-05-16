@@ -2,7 +2,6 @@
 <resources>
 
     <color name="colourAccent">@android:color/system_accent3_200</color>
-    <color name="colourAlert">@android:color/system_accent3_50</color>
     <color name="colourConfig">@android:color/system_accent1_400</color>
     <color name="colourBackground">@android:color/white</color>
     <color name="colourPrimary">@android:color/system_accent1_200</color>

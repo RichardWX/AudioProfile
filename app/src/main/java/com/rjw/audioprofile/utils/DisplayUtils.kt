@@ -30,7 +30,7 @@ object DisplayUtils {
      * @param v      The view to be coloured.
      * @param colour The base colour for the view.
      */
-    fun colourControls(v: View?, colour: Int = MainActivity.configColour) {
+    private fun colourControls(v: View?, colour: Int = MainActivity.configColour) {
         if(v == null) {
             return
         }
@@ -39,7 +39,7 @@ object DisplayUtils {
                 colourControls(v.getChildAt(child), colour)
             }
         }
-        val activity = MainActivity.instance!!
+        val activity = MainActivity.instance
         if(v.id == R.id.layoutTitle) {
             val background = v.background
             if(background != null) {
@@ -119,65 +119,6 @@ object DisplayUtils {
         return Color.HSVToColor(hsv)
     }
 
-    /**
-     * Lighten the specified colour.
-     * @param colour The colour to be lightened.
-     * @param levels The number of iterations to lighten by.
-     * @return       The new lightened colour.
-     */
-    fun lighten(colour: Int, levels: Int): Int {
-        var newColour = colour
-        for(level in 0 until levels) {
-            newColour = lighten(newColour)
-        }
-        return newColour
-    }
-
-    /**
-     * Return whether the colour is dark or not.
-     * @return True if the colour is determined as dark, otherwise false.
-     */
-    private fun isDark(colour: Int): Boolean {
-        return ColorUtils.calculateLuminance(colour) < 0.2
-    }
-
-    /**
-     * Get the dominant colour of the image.
-     * @param bitmap The image in question.
-     * @return       The dominant colour.
-     */
-    fun getDominantColour(bitmap: Bitmap?): Int {
-        val newBitmap = Bitmap.createScaledBitmap(bitmap!!, 1, 1, true)
-        val color = newBitmap.getPixel(0, 0)
-        newBitmap.recycle()
-        return color
-    }
-
-    /**
-     * Convert a drawable to a bitmap.
-     * @param drawable    The drawable to convert.
-     * @param finalWidth  The width of the final bitmap.
-     * @param finalHeight The height of the final bitmap.
-     * @return            A bitmap to represent the drawable.
-     */
-    fun drawableToBitmap(drawable: Drawable?, finalWidth: Int = -1, finalHeight: Int = -1): Bitmap {
-        if(drawable is BitmapDrawable) {
-            return drawable.bitmap
-        }
-
-        // If the width or height is -1, calculate the actual value.
-        var width = if(finalWidth == -1) drawable!!.intrinsicWidth else finalWidth
-        width = if(width > 0) width else 1
-        var height = if(finalHeight == -1) drawable!!.intrinsicHeight else finalHeight
-        height = if(height > 0) height else 1
-
-        // Create a bitmap of the correct size and draw the drawable object onto it.
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable!!.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bitmap
-    }
 }
 
 /**

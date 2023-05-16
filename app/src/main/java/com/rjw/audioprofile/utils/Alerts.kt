@@ -21,7 +21,7 @@ object Alerts {
      * @param message The message id to be displayed.
      */
     fun toast(message: Int) {
-        toast(MainActivity.instance!!.getString(message))
+        toast(MainActivity.instance.getString(message))
     }
 
     /**
@@ -30,7 +30,7 @@ object Alerts {
      */
     fun toast(message: String) {
         try {
-            bindingToast = ToastBinding.inflate(LayoutInflater.from(MainActivity.instance!!))
+            bindingToast = ToastBinding.inflate(LayoutInflater.from(MainActivity.instance))
             bindingToast.text.text = message
             DisplayUtils.colourControls(bindingToast.root)
             val toast = Toast.makeText(MainActivity.instance, "", Toast.LENGTH_SHORT)
@@ -60,7 +60,7 @@ object Alerts {
      */
     fun alert(title: String, message: String, onClickHandler: (() -> Unit)? = null) {
         try {
-            bindingAlert = AlertBinding.inflate(LayoutInflater.from(MainActivity.instance!!))
+            bindingAlert = AlertBinding.inflate(LayoutInflater.from(MainActivity.instance))
             val bindingTitle = ContentTitleBinding.bind(bindingAlert.layoutTitle.root)
             val builder = AlertDialog.Builder(MainActivity.instance)
             bindingTitle.title.text = title
@@ -72,7 +72,7 @@ object Alerts {
                 dialog.dismiss()
             }
             DisplayUtils.colourControls(bindingAlert.root)
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setCanceledOnTouchOutside(false)
             dialog.show()
         } catch(e: Exception) {

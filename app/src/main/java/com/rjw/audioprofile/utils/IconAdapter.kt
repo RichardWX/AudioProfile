@@ -10,8 +10,8 @@ import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.databinding.RowIconBinding
 
-class IconAdapter constructor(private val mContext: Context, objects: Array<Drawable?>?) : ArrayAdapter<Drawable?>(
-    mContext, R.layout.row_icon, objects!!
+class IconAdapter constructor(private val mContext: Context, objects: Array<Drawable?>) : ArrayAdapter<Drawable?>(
+    mContext, R.layout.row_icon, objects
 ) {
     private lateinit var bindingRow: RowIconBinding
 
@@ -23,11 +23,8 @@ class IconAdapter constructor(private val mContext: Context, objects: Array<Draw
      * @return            The formatted and populated view.
      */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var row = convertView
-        if(row == null) {
-            row = LayoutInflater.from(mContext).inflate(R.layout.row_icon, parent, false)
-        }
-        bindingRow = RowIconBinding.bind(row!!)
+        val row = convertView ?: LayoutInflater.from(mContext).inflate(R.layout.row_icon, parent, false)
+        bindingRow = RowIconBinding.bind(row)
         try {
             bindingRow.icon.foreground = getItem(position)
             bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
@@ -46,11 +43,8 @@ class IconAdapter constructor(private val mContext: Context, objects: Array<Draw
      * @return            The formatted and populated view.
      */
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var row = convertView
-        if(row == null) {
-            row = LayoutInflater.from(mContext).inflate(R.layout.row_icon, parent, false)
-        }
-        bindingRow = RowIconBinding.bind(row!!)
+        val row = convertView ?: LayoutInflater.from(mContext).inflate(R.layout.row_icon, parent, false)
+        bindingRow = RowIconBinding.bind(row)
         try {
             bindingRow.icon.foreground = getItem(position)
             bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)

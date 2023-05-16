@@ -2,7 +2,6 @@
 <resources>
 
     <color name="colourAccent">#F0FFFFFF</color>
-    <color name="colourAlert">#F044E1E6</color>
     <color name="colourConfig">@color/colourPrimary</color>
     <color name="colourBackground">@color/colourWhiteText</color>
     <color name="colourPrimary">#F01C89CF</color>

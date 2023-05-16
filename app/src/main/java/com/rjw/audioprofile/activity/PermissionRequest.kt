@@ -27,7 +27,7 @@ class PermissionRequest : AudioActivity() {
         super.setWindowRatios(0.9f, 0.5f)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission)
-        binding = ActivityPermissionBinding.bind(view!!)
+        binding = ActivityPermissionBinding.bind(view)
         colourControls()
     }
 
@@ -59,6 +59,37 @@ class PermissionRequest : AudioActivity() {
             binding.textPermissionsInstructions.visibility = View.GONE
             binding.buttonPermissions.visibility = View.GONE
         }
+
+        // Set up the control operations.
+        binding.buttonDoNotDisturb.setOnClickListener {
+            startActivityForResult(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), REQUEST_PERMISSION_RESPONSE)
+        }
+        binding.buttonBattery.setOnClickListener {
+            startActivityForResult(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS), REQUEST_PERMISSION_RESPONSE)
+        }
+        binding.buttonNeverSleep.setOnClickListener {
+            try {
+                val intentSleeping = Intent()
+                intentSleeping.component = ComponentName("com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity")
+                startActivityForResult(intentSleeping, REQUEST_PERMISSION_RESPONSE)
+            } catch(e: Exception) {
+                // Try something else...
+                try {
+                    val intentSleeping = Intent()
+                    intentSleeping.component = ComponentName("com.samsung.android.sm", "com.samsung.android.sm.ui.battery.BatteryActivity")
+                    startActivityForResult(intentSleeping, REQUEST_PERMISSION_RESPONSE)
+                } catch(e: Exception) {
+                    // Do nothing.
+                }
+            }
+        }
+        binding.buttonPermissions.setOnClickListener {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_PERMISSION_RESPONSE
+            )
+        }
+        binding.buttonClose.setOnClickListener { finish() }
+
         if(doNotDisturb && batteryOptimizations && notifications) {
             finish()
         }
@@ -84,63 +115,6 @@ class PermissionRequest : AudioActivity() {
                 }
             }
         }
-    }
-
-    /**
-     * Point the user at the Do not disturb settings.
-     * @param v The view in question.
-     */
-    fun onClickRequestPermissionDND(v: View?) {
-        val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
-        startActivityForResult(intent, REQUEST_PERMISSION_RESPONSE)
-    }
-
-    /**
-     * Point the user at the Battery settings.
-     * @param v The view in question.
-     */
-    fun onClickRequestPermissionBattery(v: View?) {
-        val intentOptimization = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-        startActivityForResult(intentOptimization, REQUEST_PERMISSION_RESPONSE)
-    }
-
-    /**
-     * Point the user at the Battery optimization settings.
-     * @param v The view in question.
-     */
-    fun onClickRequestNeverSleep(v: View?) {
-        try {
-            val intentSleeping = Intent()
-            intentSleeping.component = ComponentName("com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity")
-            startActivityForResult(intentSleeping, REQUEST_PERMISSION_RESPONSE)
-        } catch(e: Exception) {
-            // Try something else...
-            try {
-                val intentSleeping = Intent()
-                intentSleeping.component = ComponentName("com.samsung.android.sm", "com.samsung.android.sm.ui.battery.BatteryActivity")
-                startActivityForResult(intentSleeping, REQUEST_PERMISSION_RESPONSE)
-            } catch(e: Exception) {
-                // Do nothing.
-            }
-        }
-    }
-
-    /**
-     * Point the user at the Application settings.
-     * @param v The view in question.
-     */
-    fun onClickRequestPermissions(v: View?) {
-        ActivityCompat.requestPermissions(
-            this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_PERMISSION_RESPONSE
-        )
-    }
-
-    /**
-     * Close the activity.
-     * @param v The view in question.
-     */
-    fun onClickClose(v: View?) {
-        finish()
     }
 
     companion object {

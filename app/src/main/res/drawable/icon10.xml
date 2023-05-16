@@ -9,8 +9,4 @@
         android:fillColor="#000000"
         android:pathData="M2,22h20V2z" />
 
-    <path
-        android:fillColor="#000000"
-        android:pathData="M12,12L2,22h10z" />
-
 </vector>

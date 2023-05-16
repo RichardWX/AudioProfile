@@ -3,7 +3,6 @@
     <string name="app_name">Audio Profile</string>
     <string name="audio_profile_title">Set audio profile</string>
     <string name="cannot_get_system_service">Cannot get system service, exiting!</string>
-    <string name="cancel">Cancel</string>
     <string name="close">Close</string>
     <string name="config_profile_name">Profile name:</string>
     <string name="configure">Configure</string>
@@ -34,6 +33,7 @@
         <item>Loud</item>
     </array>
     <string name="unchanged">Do not change</string>
+    <string name="vibrate">Vibrate</string>
 
     <string name="about_built">Built:</string>
     <string name="about_title">About</string>

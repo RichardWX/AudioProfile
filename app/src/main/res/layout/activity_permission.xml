@@ -30,7 +30,6 @@
                 android:layout_gravity="right"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"
-                android:onClick="onClickRequestPermissionDND"
                 android:text="@string/permission_grant" />
 
             <TextView
@@ -44,7 +43,6 @@
                 android:layout_gravity="right"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"
-                android:onClick="onClickRequestPermissionBattery"
                 android:text="@string/permission_grant" />
 
             <TextView
@@ -66,7 +64,6 @@
                 android:layout_gravity="right"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"
-                android:onClick="onClickRequestNeverSleep"
                 android:text="@string/permission_grant"
                 android:visibility="gone" />
 
@@ -81,7 +78,6 @@
                 android:layout_gravity="right"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"
-                android:onClick="onClickRequestPermissions"
                 android:text="@string/permission_grant" />
 
         </LinearLayout>
@@ -89,10 +85,10 @@
     </ScrollView>
 
     <Button
+        android:id="@+id/buttonClose"
         style="@style/Button"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/margin"
-        android:onClick="onClickClose"
         android:text="@string/close" />
 
 </LinearLayout>

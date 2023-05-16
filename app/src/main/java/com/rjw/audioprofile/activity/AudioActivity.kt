@@ -10,8 +10,8 @@ import com.rjw.audioprofile.databinding.ContentTitleBinding
 import com.rjw.audioprofile.utils.DisplayUtils
 
 open class AudioActivity : ComponentActivity() {
+    protected lateinit var view: View
     private lateinit var bindingTitle: ContentTitleBinding
-    protected var view: View? = null
     protected var mWindowRatio = floatArrayOf(0.8f, 0.8f)
 
     /**
@@ -41,7 +41,7 @@ open class AudioActivity : ComponentActivity() {
     override fun setContentView(layout: Int) {
         view = layoutInflater.inflate(layout, null, false)
         setContentView(view)
-        bindingTitle = ContentTitleBinding.bind(view!!)
+        bindingTitle = ContentTitleBinding.bind(view)
 
         // Set the window to be the right size.
         val vto = window.decorView.viewTreeObserver
