@@ -29,7 +29,7 @@ class AudioProfileService : Service() {
                     // Wifi has been connected or disconnected, change the audio profile.
                     val wm = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
                     if(wm.wifiState == WifiManager.WIFI_STATE_ENABLED) {
-                        val ssid = wm.connectionInfo.ssid
+                        var ssid = wm.connectionInfo.ssid
                         if(ssid.isEmpty() || ssid == UNKNOWN_SSID) {
                             if(mSsid.isNotEmpty()) {
                                 mSsid = ""
@@ -50,6 +50,9 @@ class AudioProfileService : Service() {
                                 }
                             }
                         } else {
+                            if(ssid[0] == '\"') {
+                                ssid = ssid.substring(1, ssid.length - 1)
+                            }
                             mSsid = ssid
                             val profile = AudioProfileList.enterWifiProfile
                             if(profile != -1) {
