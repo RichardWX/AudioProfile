@@ -23,7 +23,15 @@ class AudioProfileList(context: Context) {
      * @param systemVolume       The system volume.
      * @param vibrate            True if the device will vibrate when in mute or false if not.
      */
-    class AudioProfile(name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int, vibrate: Boolean) {
+    class AudioProfile(
+        name: String?,
+        icon: Int,
+        ringtoneVolume: Int,
+        notificationVolume: Int,
+        mediaVolume: Int,
+        systemVolume: Int,
+        vibrate: Boolean
+    ) {
         var name: String? = null
         var icon = 0
         var ringtoneVolume = 0
@@ -42,7 +50,15 @@ class AudioProfileList(context: Context) {
          * @param systemVolume       The system volume.
          * @param vibrate            True if the device will vibrate when in mute or false if not.
          */
-        operator fun set(name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int, vibrate: Boolean) {
+        operator fun set(
+            name: String?,
+            icon: Int,
+            ringtoneVolume: Int,
+            notificationVolume: Int,
+            mediaVolume: Int,
+            systemVolume: Int,
+            vibrate: Boolean
+        ) {
             this.name = name
             this.icon = icon
             this.ringtoneVolume = ringtoneVolume
@@ -308,7 +324,16 @@ class AudioProfileList(context: Context) {
          * @param systemVolume       The system volume.
          * @param vibrate            True if the device will vibrate when in mute or false if not.
          */
-        fun setProfile(profile: Int, name: String?, icon: Int, ringtoneVolume: Int, notificationVolume: Int, mediaVolume: Int, systemVolume: Int, vibrate: Boolean) {
+        fun setProfile(
+            profile: Int,
+            name: String?,
+            icon: Int,
+            ringtoneVolume: Int,
+            notificationVolume: Int,
+            mediaVolume: Int,
+            systemVolume: Int,
+            vibrate: Boolean
+        ) {
             mProfiles[profile] = AudioProfile(name, icon, ringtoneVolume, notificationVolume, mediaVolume, systemVolume, vibrate)
         }
 
@@ -322,10 +347,33 @@ class AudioProfileList(context: Context) {
                 val audioProfile = getProfile(currentProfile)
                 if(audioProfile.ringtoneVolume != -1) {
                     am.setStreamVolume(AudioManager.STREAM_RING, audioProfile.ringtoneVolume, 0)
-                    am.ringerMode = if(audioProfile.ringtoneVolume == 0) {
-                        if(audioProfile.vibrate) AudioManager.RINGER_MODE_VIBRATE else AudioManager.RINGER_MODE_SILENT
-                    } else
-                        AudioManager.RINGER_MODE_NORMAL
+                    try {
+                        am::class.java.getMethod("setRingerModeInternal", Int::class.java).invoke(
+                            am, if(audioProfile.ringtoneVolume == 0) {
+                                if(audioProfile.vibrate) {
+                                    AudioManager.RINGER_MODE_VIBRATE
+                                } else {
+                                    AudioManager.RINGER_MODE_SILENT
+                                }
+                            } else {
+                                AudioManager.RINGER_MODE_NORMAL
+                            }
+                        )
+                    } catch(e: Exception) {
+                        try {
+                            am.ringerMode = if(audioProfile.ringtoneVolume == 0) {
+                                if(audioProfile.vibrate) {
+                                    AudioManager.RINGER_MODE_VIBRATE
+                                } else {
+                                    AudioManager.RINGER_MODE_SILENT
+                                }
+                            } else {
+                                AudioManager.RINGER_MODE_NORMAL
+                            }
+                        } catch(e: Exception) {
+                            // Do nothing - this is because the app doesn't have the necessary permissions.
+                        }
+                    }
                 }
                 if(audioProfile.notificationVolume != -1) {
                     am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioProfile.notificationVolume, 0)

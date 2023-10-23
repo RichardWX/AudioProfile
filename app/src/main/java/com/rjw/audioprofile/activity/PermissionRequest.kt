@@ -49,11 +49,11 @@ class PermissionRequest : AudioActivity() {
             binding.textBattery.visibility = View.GONE
             binding.buttonBattery.visibility = View.GONE
         } else {
-            if(Build.MANUFACTURER.compareTo("Samsung", true) == 0) {
-                binding.textNeverSleep.visibility = View.VISIBLE
-                binding.textNeverSleepInstructions.visibility = View.VISIBLE
-                binding.buttonNeverSleep.visibility = View.VISIBLE
-            }
+//            if(Build.MANUFACTURER.compareTo("Samsung", true) == 0) {
+//                binding.textNeverSleep.visibility = View.VISIBLE
+//                binding.textNeverSleepInstructions.visibility = View.VISIBLE
+//                binding.buttonNeverSleep.visibility = View.VISIBLE
+//            }
         }
         if(notifications) {
             binding.textPermissionsInstructions.visibility = View.GONE

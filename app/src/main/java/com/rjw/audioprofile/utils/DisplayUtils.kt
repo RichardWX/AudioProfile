@@ -2,7 +2,6 @@ package com.rjw.audioprofile.utils
 
 import android.content.res.Configuration
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
@@ -10,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.ColorUtils
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 
@@ -39,44 +37,47 @@ object DisplayUtils {
                 colourControls(v.getChildAt(child), colour)
             }
         }
-        val activity = MainActivity.instance
-        if(v.id == R.id.layoutTitle) {
-            val background = v.background
-            if(background != null) {
-                background.setColorFilter(colour, Mode.SRC_ATOP)
-                v.background = background
-            }
-        } else if(v is ImageView && v.id != R.id.appIcon) {
-            v.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-        } else if(v is CheckBox) {
-            v.buttonDrawable?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-        } else if(v is RadioButton) {
-            v.buttonDrawable?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-        } else if(v is SeekBar) {
-            val seek = v.progressDrawable as LayerDrawable
-            seek.getDrawable(0).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-            seek.getDrawable(1).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-            seek.getDrawable(2).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-            v.thumb.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-        } else if(v is Spinner) {
-            v.background?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-        } else if(v is TextView) {
-            if(v is Button && v !is CompoundButton) {
+        MainActivity.instance?.let { activity ->
+            if(v.id == R.id.layoutTitle) {
                 val background = v.background
-                background?.setColorFilter(colour, Mode.SRC_ATOP)
-            } else if(v.id == R.id.title) {
-                val resources = activity.resources
-                v.setShadowLayer(
-                    resources.getDimension(R.dimen.shadow_radius), resources.getDimension(R.dimen.shadow_offset),
-                    resources.getDimension(R.dimen.shadow_offset), darken(colour, COLOUR_LEVELS)
-                )
+                if(background != null) {
+                    background.setColorFilter(colour, Mode.SRC_ATOP)
+                    v.background = background
+                }
+            } else if(v is ImageView && v.id != R.id.appIcon) {
+                v.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+            } else if(v is CheckBox) {
+                v.buttonDrawable?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+            } else if(v is RadioButton) {
+                v.buttonDrawable?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+            } else if(v is SeekBar) {
+                val seek = v.progressDrawable as LayerDrawable
+                seek.getDrawable(0).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+                seek.getDrawable(1).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+                seek.getDrawable(2).setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+                v.thumb.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+            } else if(v is Spinner) {
+                v.background?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
+            } else if(v is TextView) {
+                if(v is Button && v !is CompoundButton) {
+                    val background = v.background
+                    background?.setColorFilter(colour, Mode.SRC_ATOP)
+                } else if(v.id == R.id.title) {
+                    val resources = activity.resources
+                    v.setShadowLayer(
+                        resources.getDimension(R.dimen.shadow_radius), resources.getDimension(R.dimen.shadow_offset),
+                        resources.getDimension(R.dimen.shadow_offset), darken(colour, COLOUR_LEVELS)
+                    )
+                }
             }
-        }
-        if(v is TextView && v.id != R.id.title) {
-            if(activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-                v.setTextColor(MainActivity.whiteColour)
-            } else {
-                v.setTextColor(darken(colour, COLOUR_LEVELS))
+            if(v is TextView && v.id != R.id.title) {
+                if(activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+                    if(activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+                        v.setTextColor(MainActivity.whiteColour)
+                    } else {
+                        v.setTextColor(darken(colour, COLOUR_LEVELS))
+                    }
+                }
             }
         }
     }
@@ -118,7 +119,6 @@ object DisplayUtils {
         hsv[2] = 0.1f + 0.9f * hsv[2]
         return Color.HSVToColor(hsv)
     }
-
 }
 
 /**

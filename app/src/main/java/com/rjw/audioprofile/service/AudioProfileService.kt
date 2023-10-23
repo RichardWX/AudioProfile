@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.os.IBinder
+import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.utils.AudioProfileList
@@ -16,7 +17,7 @@ import java.util.*
 class AudioProfileService : Service() {
     private var mSsid = ""
 
-    private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private val mReceiver = object : BroadcastReceiver() {
         /**
          * Deal with incoming intents.
          * @param context The application context.
@@ -95,7 +96,7 @@ class AudioProfileService : Service() {
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
         filter.addAction(WifiManager.NETWORK_IDS_CHANGED_ACTION)
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)
-        registerReceiver(mReceiver, filter)
+        ContextCompat.registerReceiver(this, mReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         val pendingIntent = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
         Notifications.createNotificationChannel(this)
         Notifications.showServiceNotification(this, getString(R.string.notification_service), pendingIntent)

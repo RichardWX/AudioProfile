@@ -15,13 +15,14 @@ object Alerts {
     private lateinit var bindingToast: ToastBinding
     private lateinit var bindingAlert: AlertBinding
 
-
     /**
      * Display a customised toast message.
      * @param message The message id to be displayed.
      */
     fun toast(message: Int) {
-        toast(MainActivity.instance.getString(message))
+        MainActivity.instance?.let { activity ->
+            toast(activity.getString(message))
+        }
     }
 
     /**

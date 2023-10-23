@@ -184,7 +184,9 @@ class MainActivity : AudioActivity() {
         }
 
         colourControls()
-        setAudioProfile(AudioProfileList.currentProfile)
+        if(savedInstanceState == null) {
+            setAudioProfile(AudioProfileList.currentProfile)
+        }
     }
 
     /**
@@ -245,7 +247,6 @@ class MainActivity : AudioActivity() {
         }
         AudioProfileList.currentProfile = profile
         AudioProfileList.profileLocked = false
-        AudioProfileList.applyProfile(this)
         updateControls()
         updateTile(this)
     }
@@ -304,9 +305,9 @@ class MainActivity : AudioActivity() {
         val serviceIntent = Intent(mThis, AudioProfileService::class.java)
         try {
             bindService(serviceIntent, mConnection, BIND_AUTO_CREATE)
-            startForegroundService(serviceIntent)
+            startService(serviceIntent)
         } catch(e: Exception) {
-            Alerts.toast(e.toString())
+            // Do nothing...
         }
     }
 
@@ -338,7 +339,7 @@ class MainActivity : AudioActivity() {
         var profiles: AudioProfileList? = null
             private set
 
-        val instance: MainActivity
+        val instance: MainActivity?
             /**
              * Return an instance of the main activity.
              */

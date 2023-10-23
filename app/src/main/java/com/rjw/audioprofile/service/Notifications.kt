@@ -2,14 +2,15 @@ package com.rjw.audioprofile.service
 
 import android.app.*
 import android.content.Context
+import android.content.pm.ServiceInfo
+import android.os.Build
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.utils.Alerts
 import com.rjw.audioprofile.utils.AudioProfileList
 
 object Notifications {
     private const val CHANNEL_ID = "AudioProfileChannelId"
-    private val CHANNEL_NAME: CharSequence = "AudioProfile"
-    private const val CHANNEL_DESCRIPTION = "AudioProfile"
+    private val CHANNEL_NAME: CharSequence = "Ongoing"
     private const val SERVICE_NOTIFICATION_ID = 100
 
     private var notificationManager: NotificationManager? = null
@@ -24,7 +25,6 @@ object Notifications {
             notificationManager = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
             notificationManager?.let { notificationManager ->
                 val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN)
-                channel.description = CHANNEL_DESCRIPTION
                 channel.setShowBadge(false)
                 channel.enableLights(false)
                 channel.setSound(null, null)
@@ -51,7 +51,11 @@ object Notifications {
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                 notificationBuilder?.let { builder ->
-                    service.startForeground(SERVICE_NOTIFICATION_ID, builder.build())
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        service.startForeground(SERVICE_NOTIFICATION_ID, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+                    } else {
+                        service.startForeground(SERVICE_NOTIFICATION_ID, builder.build())
+                    }
                     updateNotification(service)
                 }
             }
