@@ -18,6 +18,7 @@ import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import com.rjw.audioprofile.BuildConfig
 import com.rjw.audioprofile.R
@@ -43,6 +44,24 @@ class MainActivity : AudioActivity() {
         override fun onServiceDisconnected(name: ComponentName?) {}
     }
     private var mProfileLockChanged = false
+    private val requestPermissions = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        updateTile(this)
+    }
+    private val requestAudioProfile = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if(result.resultCode == RESULT_OK) {
+            result.data?.let { data ->
+                AudioProfileList.saveProfiles(this)
+                val modified = data.getIntExtra(ProfileConfiguration.AUDIO_PROFILE, 0)
+                mTextProfile[modified]?.text = AudioProfileList.getProfile(modified).name
+                mImageProfile[modified]?.setImageDrawable(AudioProfileList.getIcon(AudioProfileList.getProfile(modified).icon))
+                updateControls()
+            }
+        }
+    }
 
     /**
      * Create the activity.
@@ -78,20 +97,14 @@ class MainActivity : AudioActivity() {
             startService()
         }
 
-        // Check we have the required permissions.
+        // Check we have the required additional permissions.
         val doNotDisturb = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted
         val batteryOptimizations = (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
         val notifications =
             !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
         if(!doNotDisturb || !notifications || !batteryOptimizations) {
             val intent = Intent(this, PermissionRequest::class.java)
-            startActivityForResult(intent, REQUEST_PERMISSIONS)
-        }
-        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_RESPONSE)
-        }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), REQUEST_PERMISSION_RESPONSE)
+            requestPermissions.launch(intent)
         }
 
         // Set the profile names and icons.
@@ -132,7 +145,8 @@ class MainActivity : AudioActivity() {
                     builtDate.append(" ").append(DateFormat.getTimeInstance(DateFormat.MEDIUM).format(buildDate.time))
                 }
                 about.append("\n\n").append(getString(R.string.about_built)).append(" ").append(builtDate)
-                about.append("\n\n").append(String.format(getString(R.string.copyright), SimpleDateFormat("yyyy", Locale.getDefault()).format(buildDate.time)))
+                about.append("\n\n")
+                    .append(String.format(getString(R.string.copyright), SimpleDateFormat("yyyy", Locale.getDefault()).format(buildDate.time)))
                 val title = StringBuilder(getString(R.string.about_title)).append(" ").append(getString(R.string.app_name))
                 Alerts.alert(title, about)
             } catch(e: Throwable) {
@@ -164,21 +178,29 @@ class MainActivity : AudioActivity() {
             bindingContent.layoutSettings.visibility = if(bindingContent.layoutSettings.isVisible) View.GONE else View.VISIBLE
         }
         bindingContent.checkboxEnterWifiDefault.setOnClickListener {
-            AudioProfileList.enterWifiProfile = if(bindingContent.checkboxEnterWifiDefault.isChecked) -1 else bindingContent.spinnerEnterWifi.selectedItemPosition
+            AudioProfileList.enterWifiProfile =
+                if(bindingContent.checkboxEnterWifiDefault.isChecked) -1 else bindingContent.spinnerEnterWifi.selectedItemPosition
             updateControls()
         }
         bindingContent.checkboxExitWifiDefault.setOnClickListener {
-            AudioProfileList.exitWifiProfile = if(bindingContent.checkboxExitWifiDefault.isChecked) -1 else bindingContent.spinnerExitWifi.selectedItemPosition
+            AudioProfileList.exitWifiProfile =
+                if(bindingContent.checkboxExitWifiDefault.isChecked) -1 else bindingContent.spinnerExitWifi.selectedItemPosition
             updateControls()
         }
         bindingContent.buttonClose.setOnClickListener {
-            AudioProfileList.enterWifiProfile = if(bindingContent.checkboxEnterWifiDefault.isChecked) -1 else bindingContent.spinnerEnterWifi.selectedItemPosition
-            AudioProfileList.exitWifiProfile = if(bindingContent.checkboxExitWifiDefault.isChecked) -1 else bindingContent.spinnerExitWifi.selectedItemPosition
-            AudioProfileList.lockProfileTime = bindingContent.spinnerLockProfile.getItemAtPosition(bindingContent.spinnerLockProfile.selectedItemPosition) as Int
+            AudioProfileList.enterWifiProfile =
+                if(bindingContent.checkboxEnterWifiDefault.isChecked) -1 else bindingContent.spinnerEnterWifi.selectedItemPosition
+            AudioProfileList.exitWifiProfile =
+                if(bindingContent.checkboxExitWifiDefault.isChecked) -1 else bindingContent.spinnerExitWifi.selectedItemPosition
+            AudioProfileList.lockProfileTime =
+                bindingContent.spinnerLockProfile.getItemAtPosition(bindingContent.spinnerLockProfile.selectedItemPosition) as Int
             if(mProfileLockChanged) {
                 AudioProfileList.profileLocked = bindingContent.checkboxLockProfile.isChecked
                 AudioProfileList.profileLockStartTime = Calendar.getInstance().timeInMillis
-                Log.d("AudioProfile", "New lock profile start time = ${AudioProfileList.profileLockStartTime}${if(AudioProfileList.profileLocked) " (locked)" else ""}")
+                Log.d(
+                    "AudioProfile",
+                    "New lock profile start time = ${AudioProfileList.profileLockStartTime}${if(AudioProfileList.profileLocked) " (locked)" else ""}"
+                )
             }
             finish()
         }
@@ -190,25 +212,44 @@ class MainActivity : AudioActivity() {
     }
 
     /**
-     * Handle the closing of the other activities.
-     * @param requestCode The id of the activity that has been closed.
-     * @param resultCode  The result of closing the activity.
-     * @param data        The data returned from the closing activity.
+     * Resume the activity.
      */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
-            REQUEST_PERMISSIONS -> updateTile(this)
-            REQUEST_AUDIO_PROFILE -> if(resultCode == RESULT_OK && data != null) {
-                AudioProfileList.saveProfiles(this)
-                val modified = data.getIntExtra(ProfileConfiguration.AUDIO_PROFILE, 0)
-                mTextProfile[modified]?.text = AudioProfileList.getProfile(modified).name
-                mImageProfile[modified]?.setImageDrawable(AudioProfileList.getIcon(AudioProfileList.getProfile(modified).icon))
-                updateControls()
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
+    override fun onResume() {
+        super.onResume()
+        // Request standard application permissions.
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_RESPONSE)
+        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                REQUEST_PERMISSION_RESPONSE
+            )
+        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                REQUEST_PERMISSION_RESPONSE
+            )
+        }
+        if(checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ||
+            checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ||
+            checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS),
+                REQUEST_PERMISSION_RESPONSE
+            )
         }
     }
 
+    /**
+     * Deal with permission requests.
+     * @param requestCode  The code for the permission request.
+     * @param permissions  The permissions being requested.
+     * @param grantResults The results for each permission.
+     */
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
@@ -258,7 +299,7 @@ class MainActivity : AudioActivity() {
     private fun configureAudioProfile(profile: Int) {
         val intent = Intent(this, ProfileConfiguration::class.java)
         intent.putExtra(ProfileConfiguration.AUDIO_PROFILE, profile)
-        startActivityForResult(intent, REQUEST_AUDIO_PROFILE)
+        requestAudioProfile.launch(intent)
     }
 
     /**
@@ -331,10 +372,9 @@ class MainActivity : AudioActivity() {
             return false
         }
 
+    @SuppressLint("StaticFieldLeak")
     companion object {
         const val TAG = "AudioProfile"
-        const val REQUEST_PERMISSIONS = 1
-        const val REQUEST_AUDIO_PROFILE = 2
         private var mThis: MainActivity? = null
         var profiles: AudioProfileList? = null
             private set
@@ -375,6 +415,22 @@ class MainActivity : AudioActivity() {
                     else -> {
                         val wm = WallpaperManager.getInstance(mThis)
                         wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)?.primaryColor?.toArgb() ?: 0
+                    }
+                }
+            }
+
+        val secondaryColour: Int
+            /**
+             * Get the current application secondary colour.
+             */
+            get() {
+                return when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                        mThis?.getColor(R.color.colourAccent) ?: 0
+                    }
+                    else -> {
+                        val wm = WallpaperManager.getInstance(mThis)
+                        wm.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)?.secondaryColor?.toArgb() ?: 0
                     }
                 }
             }

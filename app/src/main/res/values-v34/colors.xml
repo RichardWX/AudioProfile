@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colourAccent">@android:color/system_accent3_200</color>
+    <color name="colourConfig">@android:color/system_secondary_light</color>
+    <color name="colourBackground">@android:color/white</color>
+    <color name="colourPrimary">@android:color/system_secondary_light</color>
+    <color name="colourPrimaryDark">@android:color/system_primary_dark</color>
+    <color name="colourText">@android:color/system_secondary_light</color>
+    <color name="colourWhiteText">@android:color/white</color>
+
+</resources>

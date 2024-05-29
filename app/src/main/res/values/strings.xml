@@ -7,6 +7,7 @@
     <string name="config_profile_name">Profile name:</string>
     <string name="configure">Configure</string>
     <string name="copyright">&#169; %1s RJW - All rights reserved</string>
+    <string name="current_location">My current location is Lat: %1$f, Long: %2$f</string>
     <plurals name="minutes">
         <item quantity="one">minute</item>
         <item quantity="other">minutes</item>
@@ -33,6 +34,7 @@
         <item>Loud</item>
     </array>
     <string name="unchanged">Do not change</string>
+    <string name="unknown_location">My location is unknown at the moment</string>
     <string name="vibrate">Vibrate</string>
 
     <string name="about_built">Built:</string>

@@ -27,7 +27,7 @@
             <Button
                 android:id="@+id/buttonDoNotDisturb"
                 style="@style/Button"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"
                 android:text="@string/permission_grant" />
@@ -40,7 +40,7 @@
             <Button
                 android:id="@+id/buttonBattery"
                 style="@style/Button"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"
                 android:text="@string/permission_grant" />
@@ -54,14 +54,14 @@
             <TextView
                 android:id="@+id/textNeverSleepInstructions"
                 style="@style/TextView"
-                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginStart="@dimen/margin"
                 android:text="@string/permission_instructions_sleep_instructions"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/buttonNeverSleep"
                 style="@style/Button"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"
                 android:text="@string/permission_grant"
@@ -75,7 +75,7 @@
             <Button
                 android:id="@+id/buttonPermissions"
                 style="@style/Button"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_marginBottom="@dimen/margin"
                 android:text="@string/permission_grant" />

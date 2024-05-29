@@ -30,7 +30,8 @@
 
             <EditText
                 android:id="@+id/editProfileName"
-                style="@style/EditText" />
+                style="@style/EditText"
+                android:inputType="text" />
 
             <Spinner
                 android:id="@+id/spinnerIcon"

@@ -10,7 +10,7 @@ import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.databinding.RowIconBinding
 
-class IconAdapter constructor(private val mContext: Context, objects: Array<Drawable?>) : ArrayAdapter<Drawable?>(
+class IconAdapter(private val mContext: Context, objects: Array<Drawable?>) : ArrayAdapter<Drawable?>(
     mContext, R.layout.row_icon, objects
 ) {
     private lateinit var bindingRow: RowIconBinding

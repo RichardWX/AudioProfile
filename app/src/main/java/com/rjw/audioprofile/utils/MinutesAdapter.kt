@@ -9,7 +9,7 @@ import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.RowSimpleBinding
 import java.lang.Exception
 
-class MinutesAdapter constructor(private val mContext: Context, objects: Array<Int>) : ArrayAdapter<Int>(
+class MinutesAdapter(private val mContext: Context, objects: Array<Int>) : ArrayAdapter<Int>(
     mContext, R.layout.row_simple, objects
 ) {
     private lateinit var bindingRow: RowSimpleBinding

@@ -10,7 +10,7 @@ import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.databinding.RowProfileBinding
 import com.rjw.audioprofile.utils.AudioProfileList.AudioProfile
 
-class ProfileAdapter constructor(private val mContext: Context, objects: Array<AudioProfile?>) : ArrayAdapter<AudioProfile?>(
+class ProfileAdapter(private val mContext: Context, objects: Array<AudioProfile?>) : ArrayAdapter<AudioProfile?>(
     mContext, R.layout.row_profile, objects
 ) {
     private lateinit var bindingRow: RowProfileBinding

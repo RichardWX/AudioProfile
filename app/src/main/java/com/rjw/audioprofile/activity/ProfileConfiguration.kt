@@ -41,39 +41,18 @@ class ProfileConfiguration : AudioActivity() {
                 icons[icon] = AudioProfileList.getIcon(icon)
             }
             val adapter = IconAdapter(this, icons)
-            binding.spinnerIcon.background.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             binding.spinnerIcon.adapter = adapter
             binding.spinnerIcon.setSelection(profile.icon)
             binding.editProfileName.setText(profile.name)
             binding.checkBoxUnchangedRingtone.isChecked = profile.ringtoneVolume == -1
-            binding.checkBoxUnchangedRingtone.buttonDrawable?.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             binding.seekBarRingtone.progress = if(profile.ringtoneVolume == -1) am.getStreamVolume(AudioManager.STREAM_RING) else profile.ringtoneVolume
-            var bar: LayerDrawable = binding.seekBarRingtone.progressDrawable.mutate() as LayerDrawable
-            bar.getDrawable(0).setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
-            bar.getDrawable(2).setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
-            binding.seekBarRingtone.thumb.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             binding.checkBoxVibrateRingtone.isChecked = profile.vibrate
             binding.checkBoxUnchangedNotification.isChecked = profile.notificationVolume == -1
-            binding.checkBoxUnchangedNotification.buttonDrawable?.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             binding.seekBarNotification.progress = if(profile.notificationVolume == -1) am.getStreamVolume(AudioManager.STREAM_NOTIFICATION) else profile.notificationVolume
-            bar = binding.seekBarNotification.progressDrawable.mutate() as LayerDrawable
-            bar.getDrawable(0).setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
-            bar.getDrawable(2).setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
-            binding.seekBarNotification.thumb.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             binding.checkBoxUnchangedMedia.isChecked = profile.mediaVolume == -1
-            binding.checkBoxUnchangedMedia.buttonDrawable?.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             binding.seekBarMedia.progress = if(profile.mediaVolume == -1) am.getStreamVolume(AudioManager.STREAM_MUSIC) else profile.mediaVolume
-            bar = binding.seekBarMedia.progressDrawable.mutate() as LayerDrawable
-            bar.getDrawable(0).setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
-            bar.getDrawable(2).setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
-            binding.seekBarMedia.thumb.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             binding.checkBoxUnchangedSystem.isChecked = profile.systemVolume == -1
-            binding.checkBoxUnchangedSystem.buttonDrawable?.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
             binding.seekBarSystem.progress = if(profile.systemVolume == -1) am.getStreamVolume(AudioManager.STREAM_SYSTEM) else profile.systemVolume
-            bar = binding.seekBarSystem.progressDrawable.mutate() as LayerDrawable
-            bar.getDrawable(0).setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
-            bar.getDrawable(2).setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
-            binding.seekBarSystem.thumb.setColorFilter(MainActivity.configColour, Mode.SRC_ATOP)
 
             // Set up the control operations.
             binding.checkBoxUnchangedRingtone.setOnClickListener { updateControls() }

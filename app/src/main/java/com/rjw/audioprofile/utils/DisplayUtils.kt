@@ -17,24 +17,17 @@ object DisplayUtils {
 
     /**
      * Colour the view controls.
-     * @param v      The view to be coloured.
+     * @param v               The view to be coloured.
+     * @param colour          The base colour for the view.
+     * @param secondaryColour The secondary colour for the view.
      */
-    fun colourControls(v: View?) {
-        colourControls(v, MainActivity.configColour)
-    }
-
-    /**
-     * Colour the view controls.
-     * @param v      The view to be coloured.
-     * @param colour The base colour for the view.
-     */
-    private fun colourControls(v: View?, colour: Int = MainActivity.configColour) {
+    fun colourControls(v: View?, colour: Int = MainActivity.configColour, secondaryColour: Int = MainActivity.secondaryColour) {
         if(v == null) {
             return
         }
         if(v is ViewGroup) {
             for(child in 0 until v.childCount) {
-                colourControls(v.getChildAt(child), colour)
+                colourControls(v.getChildAt(child), colour, secondaryColour)
             }
         }
         MainActivity.instance?.let { activity ->
@@ -61,12 +54,12 @@ object DisplayUtils {
             } else if(v is TextView) {
                 if(v is Button && v !is CompoundButton) {
                     val background = v.background
-                    background?.setColorFilter(colour, Mode.SRC_ATOP)
+                    background?.setColorFilter(secondaryColour, Mode.SRC_ATOP)
                 } else if(v.id == R.id.title) {
                     val resources = activity.resources
                     v.setShadowLayer(
                         resources.getDimension(R.dimen.shadow_radius), resources.getDimension(R.dimen.shadow_offset),
-                        resources.getDimension(R.dimen.shadow_offset), darken(colour, COLOUR_LEVELS)
+                        resources.getDimension(R.dimen.shadow_offset), darken(secondaryColour, COLOUR_LEVELS)
                     )
                 }
             }

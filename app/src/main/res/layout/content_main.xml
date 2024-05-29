@@ -17,14 +17,7 @@
             android:layout_marginStart="@dimen/margin"
             android:text="@string/audio_profile_title" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:layout_width="@dimen/margin_small"
-            android:layout_height="@dimen/icon_size_settings" />
+        <LinearLayout style="@style/Blank" />
 
         <ImageView
             android:id="@+id/about"
@@ -170,69 +163,63 @@
         android:id="@+id/layoutSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextView.Auto"
+                android:layout_weight="2"
+                android:text="@string/settings_wifi_enter" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="3"
+                android:orientation="vertical">
 
-                <TextView
-                    style="@style/TextView.Auto"
-                    android:layout_weight="2"
-                    android:text="@string/settings_wifi_enter" />
+                <CheckBox
+                    android:id="@+id/checkboxEnterWifiDefault"
+                    style="@style/CheckBox"
+                    android:text="@string/unchanged" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:orientation="vertical">
-
-                    <CheckBox
-                        android:id="@+id/checkboxEnterWifiDefault"
-                        style="@style/CheckBox"
-                        android:text="@string/unchanged" />
-
-                    <Spinner
-                        android:id="@+id/spinnerEnterWifi"
-                        style="@style/Spinner.Full" />
-
-                </LinearLayout>
+                <Spinner
+                    android:id="@+id/spinnerEnterWifi"
+                    style="@style/Spinner.Full" />
 
             </LinearLayout>
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextView.Auto"
+                android:layout_weight="2"
+                android:text="@string/settings_wifi_exit" />
+
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="3"
+                android:orientation="vertical">
 
-                <TextView
-                    style="@style/TextView.Auto"
-                    android:layout_weight="2"
-                    android:text="@string/settings_wifi_exit" />
+                <CheckBox
+                    android:id="@+id/checkboxExitWifiDefault"
+                    style="@style/CheckBox"
+                    android:text="@string/unchanged" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:orientation="vertical">
-
-                    <CheckBox
-                        android:id="@+id/checkboxExitWifiDefault"
-                        style="@style/CheckBox"
-                        android:text="@string/unchanged" />
-
-                    <Spinner
-                        android:id="@+id/spinnerExitWifi"
-                        style="@style/Spinner.Full" />
-
-                </LinearLayout>
+                <Spinner
+                    android:id="@+id/spinnerExitWifi"
+                    style="@style/Spinner.Full" />
 
             </LinearLayout>
 

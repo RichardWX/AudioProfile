@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colourPrimary</item>
         <item name="colorPrimaryDark">@color/colourPrimaryDark</item>
         <item name="colorAccent">@color/colourAccent</item>
+        <item name="android:fontFamily">@font/sans_serif</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -13,9 +14,12 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:fontFamily">@font/sans_serif</item>
     </style>
 
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog" />
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:fontFamily">@font/sans_serif</item>
+    </style>
 
     <style name="Blank">
         <item name="android:layout_width">0dp</item>
