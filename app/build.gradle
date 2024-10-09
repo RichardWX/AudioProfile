@@ -10,12 +10,12 @@ android {
         applicationId "com.rjw.audioprofile"
         minSdkVersion 27
         targetSdkVersion 34
-        versionCode 17
-        versionName "1.17"
+        versionCode 18
+        versionName "1.18"
 
         setProperty("archivesBaseName", "AudioProfile" + " - R" + versionName)
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
-        buildConfigField "String", "BUILD_INFO", "\"Auto location response\""
+        buildConfigField "String", "BUILD_INFO", "\"Fix disconnected response in Android 15\""
     }
 
     buildFeatures {
@@ -28,17 +28,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     namespace 'com.rjw.audioprofile'
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.20'
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.gms:play-services-location:21.2.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }

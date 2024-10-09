@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colourAccent">@android:color/system_accent3_200</color>
-    <color name="colourConfig">@android:color/system_accent1_400</color>
+    <color name="colourAccent">@color/material_dynamic_primary70</color>
+    <color name="colourConfig">@color/material_dynamic_primary50</color>
     <color name="colourBackground">@android:color/white</color>
-    <color name="colourPrimary">@android:color/system_accent1_200</color>
-    <color name="colourPrimaryDark">@android:color/system_accent1_800</color>
-    <color name="colourText">@android:color/system_neutral1_800</color>
+    <color name="colourPrimary">@color/material_dynamic_primary50</color>
+    <color name="colourPrimaryDark">@color/material_dynamic_primary30</color>
+    <color name="colourText">@color/material_dynamic_primary30</color>
     <color name="colourWhiteText">@android:color/white</color>
 
 </resources>

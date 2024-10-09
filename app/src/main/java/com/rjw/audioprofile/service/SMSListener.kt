@@ -87,7 +87,7 @@ class SMSListener : BroadcastReceiver() {
         override fun onProviderDisabled(provider: String) {}
     }
 
-    fun startLocation(context: Context) {
+    private fun startLocation(context: Context) {
         try {
             if(locationManager == null) {
                 locationManager = MainActivity.instance?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
@@ -122,7 +122,7 @@ class SMSListener : BroadcastReceiver() {
         }
     }
 
-    fun stopLocation() {
+    private fun stopLocation() {
         locationManager?.removeUpdates(locationListener)
     }
 

@@ -31,6 +31,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("DEPRECATION")
 class MainActivity : AudioActivity() {
     private val REQUEST_PERMISSION_RESPONSE = 1
     private lateinit var binding: ActivityMainBinding

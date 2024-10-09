@@ -2,14 +2,15 @@ package com.rjw.audioprofile.activity
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.ActivityConfigBinding
-import com.rjw.audioprofile.utils.*
+import com.rjw.audioprofile.utils.Alerts
+import com.rjw.audioprofile.utils.AudioProfileList
+import com.rjw.audioprofile.utils.IconAdapter
 
 class ProfileConfiguration : AudioActivity() {
     private lateinit var binding: ActivityConfigBinding

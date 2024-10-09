@@ -1,13 +1,22 @@
 package com.rjw.audioprofile.utils
 
-import android.content.res.Configuration
-import android.graphics.*
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.SeekBar
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
@@ -62,15 +71,10 @@ object DisplayUtils {
                         resources.getDimension(R.dimen.shadow_offset), darken(secondaryColour, COLOUR_LEVELS)
                     )
                 }
+                v.setTextColor(MainActivity.configColour)
             }
-            if(v is TextView && v.id != R.id.title) {
-                if(activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-                    if(activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-                        v.setTextColor(MainActivity.whiteColour)
-                    } else {
-                        v.setTextColor(darken(colour, COLOUR_LEVELS))
-                    }
-                }
+            if(v is TextView && v.id == R.id.title) {
+                v.setTextColor(MainActivity.whiteColour)
             }
         }
     }

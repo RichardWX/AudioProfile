@@ -6,13 +6,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.IBinder
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.utils.AudioProfileList
-import java.util.*
+import java.util.Calendar
 
 class AudioProfileService : Service() {
     private var mSsid = ""
@@ -26,36 +28,16 @@ class AudioProfileService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if(context != null && intent != null) {
                 val action = intent.action
-                if(action == WifiManager.NETWORK_STATE_CHANGED_ACTION || action == WifiManager.NETWORK_IDS_CHANGED_ACTION || action == WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION) {
-                    // Wifi has been connected or disconnected, change the audio profile.
-                    val wm = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-                    if(wm.wifiState == WifiManager.WIFI_STATE_ENABLED) {
-                        var ssid = wm.connectionInfo.ssid
-                        if(ssid.isEmpty() || ssid == UNKNOWN_SSID) {
-                            if(mSsid.isNotEmpty()) {
-                                mSsid = ""
-                                val profile = AudioProfileList.exitWifiProfile
-                                if(profile != -1) {
-                                    // Check whether the profile has been locked - if so, don't change it.
-                                    val now = Calendar.getInstance().timeInMillis
-                                    val switch = if(AudioProfileList.profileLocked) {
-                                        now - AudioProfileList.profileLockStartTime > AudioProfileList.lockProfileTime * 60000
-                                    } else {
-                                        true
-                                    }
-                                    if(switch) {
-                                        AudioProfileList.currentProfile = profile
-                                        AudioProfileList.applyProfile(context)
-                                        MainActivity.updateTile(context)
-                                    }
-                                }
-                            }
-                        } else {
-                            if(ssid[0] == '\"') {
-                                ssid = ssid.substring(1, ssid.length - 1)
-                            }
-                            mSsid = ssid
-                            val profile = AudioProfileList.enterWifiProfile
+                Log.d("AudioProfile", "Received $action")
+                // Wifi has been connected or disconnected, change the audio profile.
+                val wm = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+                if(wm.wifiState == WifiManager.WIFI_STATE_ENABLED) {
+                    var ssid = wm.connectionInfo.ssid
+                    Log.d("AudioProfile", "SSID change - $ssid")
+                    if(ssid.isEmpty() || ssid == UNKNOWN_SSID) {
+                        if(mSsid.isNotEmpty()) {
+                            mSsid = ""
+                            val profile = AudioProfileList.exitWifiProfile
                             if(profile != -1) {
                                 // Check whether the profile has been locked - if so, don't change it.
                                 val now = Calendar.getInstance().timeInMillis
@@ -65,10 +47,32 @@ class AudioProfileService : Service() {
                                     true
                                 }
                                 if(switch) {
+                                    Log.d("AudioProfile", "Switched profile to ${AudioProfileList.getProfile(profile).name}")
                                     AudioProfileList.currentProfile = profile
                                     AudioProfileList.applyProfile(context)
                                     MainActivity.updateTile(context)
                                 }
+                            }
+                        }
+                    } else {
+                        if(ssid[0] == '\"') {
+                            ssid = ssid.substring(1, ssid.length - 1)
+                        }
+                        mSsid = ssid
+                        val profile = AudioProfileList.enterWifiProfile
+                        if(profile != -1) {
+                            // Check whether the profile has been locked - if so, don't change it.
+                            val now = Calendar.getInstance().timeInMillis
+                            val switch = if(AudioProfileList.profileLocked) {
+                                now - AudioProfileList.profileLockStartTime > AudioProfileList.lockProfileTime * 60000
+                            } else {
+                                true
+                            }
+                            if(switch) {
+                                Log.d("AudioProfile", "Switched profile to ${AudioProfileList.getProfile(profile).name}")
+                                AudioProfileList.currentProfile = profile
+                                AudioProfileList.applyProfile(context)
+                                MainActivity.updateTile(context)
                             }
                         }
                     }
@@ -96,6 +100,7 @@ class AudioProfileService : Service() {
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
         filter.addAction(WifiManager.NETWORK_IDS_CHANGED_ACTION)
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         ContextCompat.registerReceiver(this, mReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         val pendingIntent = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
         Notifications.createNotificationChannel(this)
