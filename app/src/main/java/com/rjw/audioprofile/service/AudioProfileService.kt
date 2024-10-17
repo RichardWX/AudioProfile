@@ -9,13 +9,13 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.IBinder
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.utils.AudioProfileList
 import java.util.Calendar
 
+@Suppress("DEPRECATION")
 class AudioProfileService : Service() {
     private var mSsid = ""
 
@@ -27,13 +27,10 @@ class AudioProfileService : Service() {
          */
         override fun onReceive(context: Context?, intent: Intent?) {
             if(context != null && intent != null) {
-                val action = intent.action
-                Log.d("AudioProfile", "Received $action")
                 // Wifi has been connected or disconnected, change the audio profile.
                 val wm = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
                 if(wm.wifiState == WifiManager.WIFI_STATE_ENABLED) {
                     var ssid = wm.connectionInfo.ssid
-                    Log.d("AudioProfile", "SSID change - $ssid")
                     if(ssid.isEmpty() || ssid == UNKNOWN_SSID) {
                         if(mSsid.isNotEmpty()) {
                             mSsid = ""
@@ -47,7 +44,6 @@ class AudioProfileService : Service() {
                                     true
                                 }
                                 if(switch) {
-                                    Log.d("AudioProfile", "Switched profile to ${AudioProfileList.getProfile(profile).name}")
                                     AudioProfileList.currentProfile = profile
                                     AudioProfileList.applyProfile(context)
                                     MainActivity.updateTile(context)
@@ -69,7 +65,6 @@ class AudioProfileService : Service() {
                                 true
                             }
                             if(switch) {
-                                Log.d("AudioProfile", "Switched profile to ${AudioProfileList.getProfile(profile).name}")
                                 AudioProfileList.currentProfile = profile
                                 AudioProfileList.applyProfile(context)
                                 MainActivity.updateTile(context)

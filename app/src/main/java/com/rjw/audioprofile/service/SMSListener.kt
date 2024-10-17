@@ -31,7 +31,7 @@ class SMSListener : BroadcastReceiver() {
             when(intent.action) {
                 Telephony.Sms.Intents.SMS_RECEIVED_ACTION -> try {
                     // Check the incoming SMS for message and potentially send a response...
-                    (intent.getExtras()!!.get("pdus") as Array<*>?)?.let { pdus ->
+                    (intent.extras!!.get("pdus") as Array<*>?)?.let { pdus ->
                         if(pdus.isNotEmpty()) {
                             val messages = arrayOfNulls<SmsMessage>(pdus.size)
                             for(i in pdus.indices) {
