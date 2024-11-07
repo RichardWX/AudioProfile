@@ -60,7 +60,8 @@ object DisplayUtils {
                 v.thumb.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
             } else if(v is Spinner) {
                 v.background?.setColorFilter(colour, PorterDuff.Mode.SRC_ATOP)
-            } else if(v is TextView) {
+            }
+            if(v is TextView) {
                 if(v is Button && v !is CompoundButton) {
                     val background = v.background
                     background?.setColorFilter(secondaryColour, Mode.SRC_ATOP)
