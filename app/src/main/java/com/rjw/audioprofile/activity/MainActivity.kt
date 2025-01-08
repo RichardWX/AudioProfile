@@ -233,15 +233,6 @@ class MainActivity : AudioActivity() {
                 REQUEST_PERMISSION_RESPONSE
             )
         }
-        if(checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ||
-            checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ||
-            checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(
-                arrayOf(Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS),
-                REQUEST_PERMISSION_RESPONSE
-            )
-        }
     }
 
     /**
