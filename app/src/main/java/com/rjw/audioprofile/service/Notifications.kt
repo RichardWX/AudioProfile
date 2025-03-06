@@ -68,23 +68,26 @@ object Notifications {
      * Update the current notification with a new text and icon.
      * @param context The application context.
      */
-    fun updateNotification(context: Context) {
-        try {
-            if(notificationManager == null) {
-                notificationManager = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
-            }
-            notificationBuilder?.let { builder ->
-                builder.setContentText(
-                    String.format(
-                        context.getString(R.string.notification_profile),
-                        AudioProfileList.getProfile(AudioProfileList.currentProfile).name
+    fun updateNotification(context: Context?) {
+        context?.let { context ->
+            try {
+                if(notificationManager == null) {
+                    notificationManager = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
+                }
+                notificationBuilder?.let { builder ->
+                    builder.setContentText(
+                        String.format(
+                            context.getString(R.string.notification_profile),
+                            AudioProfileList.getProfile(AudioProfileList.currentProfile).name,
+                            if(AudioProfileList.profileLocked) context.getString(R.string.locked) else ""
+                        )
                     )
-                )
-                builder.setSmallIcon(AudioProfileList.getIconResource(AudioProfileList.getProfile(AudioProfileList.currentProfile).icon))
-                notificationManager?.notify(SERVICE_NOTIFICATION_ID, builder.build())
+                    builder.setSmallIcon(AudioProfileList.getIconResource(AudioProfileList.getProfile(AudioProfileList.currentProfile).icon))
+                    notificationManager?.notify(SERVICE_NOTIFICATION_ID, builder.build())
+                }
+            } catch(e: Exception) {
+                Alerts.toast("Updating notification: ${e.javaClass.name}\n${e.message}")
             }
-        } catch(e: Exception) {
-            Alerts.toast("Updating notification: ${e.javaClass.name}\n${e.message}")
         }
     }
 }

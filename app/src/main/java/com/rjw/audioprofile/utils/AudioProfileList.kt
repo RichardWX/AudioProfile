@@ -9,7 +9,6 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
-import com.rjw.audioprofile.service.Notifications
 import java.util.*
 
 class AudioProfileList(context: Context) {
@@ -215,7 +214,7 @@ class AudioProfileList(context: Context) {
             set(currentProfile) {
                 mCurrentProfile = currentProfile
                 mPrefs?.edit()?.putInt(CURRENT_PROFILE, mCurrentProfile)?.apply()
-                Notifications.updateNotification(mContext)
+                MainActivity.updateTile()
             }
 
         var enterWifiProfile: Int
@@ -346,10 +345,27 @@ class AudioProfileList(context: Context) {
             if(am != null) {
                 val audioProfile = getProfile(currentProfile)
                 if(audioProfile.ringtoneVolume != -1) {
-                    am.setStreamVolume(AudioManager.STREAM_RING, audioProfile.ringtoneVolume, 0)
+                    if(am.getStreamVolume(AudioManager.STREAM_RING) != audioProfile.ringtoneVolume) {
+                        am.setStreamVolume(AudioManager.STREAM_RING, audioProfile.ringtoneVolume, 0)
+                    }
                     try {
-                        am::class.java.getMethod("setRingerModeInternal", Int::class.java).invoke(
-                            am, if(audioProfile.ringtoneVolume == 0) {
+                        val mode = am::class.java.getMethod("getRingerModeInternal").invoke(am) as Int
+                        val newMode = if(audioProfile.ringtoneVolume == 0) {
+                            if(audioProfile.vibrate) {
+                                AudioManager.RINGER_MODE_VIBRATE
+                            } else {
+                                AudioManager.RINGER_MODE_SILENT
+                            }
+                        } else {
+                            AudioManager.RINGER_MODE_NORMAL
+                        }
+                        if(mode != newMode) {
+                            am::class.java.getMethod("setRingerModeInternal", Int::class.java).invoke(am, newMode)
+                        }
+                    } catch(e: Exception) {
+                        try {
+                            val mode = am.ringerMode
+                            val newMode = if(audioProfile.ringtoneVolume == 0) {
                                 if(audioProfile.vibrate) {
                                     AudioManager.RINGER_MODE_VIBRATE
                                 } else {
@@ -358,17 +374,8 @@ class AudioProfileList(context: Context) {
                             } else {
                                 AudioManager.RINGER_MODE_NORMAL
                             }
-                        )
-                    } catch(e: Exception) {
-                        try {
-                            am.ringerMode = if(audioProfile.ringtoneVolume == 0) {
-                                if(audioProfile.vibrate) {
-                                    AudioManager.RINGER_MODE_VIBRATE
-                                } else {
-                                    AudioManager.RINGER_MODE_SILENT
-                                }
-                            } else {
-                                AudioManager.RINGER_MODE_NORMAL
+                            if(mode != newMode) {
+                                am.ringerMode = newMode
                             }
                         } catch(e: Exception) {
                             // Do nothing - this is because the app doesn't have the necessary permissions.
@@ -376,13 +383,19 @@ class AudioProfileList(context: Context) {
                     }
                 }
                 if(audioProfile.notificationVolume != -1) {
-                    am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioProfile.notificationVolume, 0)
+                    if(am.getStreamVolume(AudioManager.STREAM_NOTIFICATION) != audioProfile.notificationVolume) {
+                        am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioProfile.notificationVolume, 0)
+                    }
                 }
                 if(audioProfile.mediaVolume != -1) {
-                    am.setStreamVolume(AudioManager.STREAM_MUSIC, audioProfile.mediaVolume, 0)
+                    if(am.getStreamVolume(AudioManager.STREAM_MUSIC) != audioProfile.mediaVolume) {
+                        am.setStreamVolume(AudioManager.STREAM_MUSIC, audioProfile.mediaVolume, 0)
+                    }
                 }
                 if(audioProfile.systemVolume != -1) {
-                    am.setStreamVolume(AudioManager.STREAM_SYSTEM, audioProfile.systemVolume, 0)
+                    if(am.getStreamVolume(AudioManager.STREAM_SYSTEM) != audioProfile.systemVolume) {
+                        am.setStreamVolume(AudioManager.STREAM_SYSTEM, audioProfile.systemVolume, 0)
+                    }
                 }
             }
         }

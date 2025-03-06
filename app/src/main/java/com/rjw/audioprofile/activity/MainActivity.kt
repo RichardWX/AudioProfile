@@ -19,12 +19,14 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.rjw.audioprofile.BuildConfig
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.ActivityMainBinding
 import com.rjw.audioprofile.databinding.ContentMainBinding
 import com.rjw.audioprofile.service.AudioProfileService
+import com.rjw.audioprofile.service.Notifications
 import com.rjw.audioprofile.service.QuickPanel
 import com.rjw.audioprofile.utils.*
 import java.text.DateFormat
@@ -48,7 +50,7 @@ class MainActivity : AudioActivity() {
     private val requestPermissions = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        updateTile(this)
+        updateTile()
     }
     private val requestAudioProfile = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -63,6 +65,7 @@ class MainActivity : AudioActivity() {
             }
         }
     }
+    private var askedPermissions = false
 
     /**
      * Create the activity.
@@ -173,7 +176,7 @@ class MainActivity : AudioActivity() {
         bindingContent.checkboxLockProfile.setOnClickListener {
             AudioProfileList.profileLocked = bindingContent.checkboxLockProfile.isChecked
             mProfileLockChanged = true
-            updateControls()
+            updateTile()
         }
         bindingContent.imageSettings.setOnClickListener {
             bindingContent.layoutSettings.visibility = if(bindingContent.layoutSettings.isVisible) View.GONE else View.VISIBLE
@@ -218,20 +221,19 @@ class MainActivity : AudioActivity() {
     override fun onResume() {
         super.onResume()
         // Request standard application permissions.
-        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_RESPONSE)
-        }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                REQUEST_PERMISSION_RESPONSE
-            )
-        }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                REQUEST_PERMISSION_RESPONSE
-            )
+        if(!askedPermissions) {
+            if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_PERMISSION_RESPONSE)
+            } else {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                        REQUEST_PERMISSION_RESPONSE
+                    )
+                }
+            }
+            askedPermissions = true
         }
     }
 
@@ -280,8 +282,7 @@ class MainActivity : AudioActivity() {
         }
         AudioProfileList.currentProfile = profile
         AudioProfileList.profileLocked = false
-        updateControls()
-        updateTile(this)
+        updateTile()
     }
 
     /**
@@ -385,11 +386,11 @@ class MainActivity : AudioActivity() {
         /**
          * Update the quick panel tile to reflect the current profile.
          */
-        fun updateTile(context: Context?) {
+        fun updateTile() {
             try {
-                if(context != null) {
-                    TileService.requestListeningState(context, ComponentName(context, QuickPanel::class.java))
-                }
+                instance?.updateControls()
+                TileService.requestListeningState(instance, ComponentName(instance!!.applicationContext, QuickPanel::class.java))
+                Notifications.updateNotification(instance)
             } catch(e: Exception) {
                 // Do nothing.
             }

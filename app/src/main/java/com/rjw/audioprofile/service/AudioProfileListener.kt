@@ -18,7 +18,7 @@ class AudioProfileListener : BroadcastReceiver() {
                     Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_LOCKED_BOOT_COMPLETED, Intent.ACTION_USER_UNLOCKED -> try {
                         val serviceIntent = Intent(context, AudioProfileService::class.java)
                         context.startService(serviceIntent)
-                        MainActivity.updateTile(context)
+                        MainActivity.updateTile()
                     } catch(e: Throwable) {
                         // Do nothing.
                     }

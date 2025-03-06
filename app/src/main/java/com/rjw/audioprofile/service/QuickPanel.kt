@@ -4,6 +4,7 @@ import android.graphics.drawable.Icon
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
+import com.rjw.audioprofile.R
 import com.rjw.audioprofile.utils.AudioProfileList
 import java.lang.Exception
 
@@ -60,7 +61,7 @@ class QuickPanel : TileService() {
                 val audioProfile = AudioProfileList.getProfile(profile)
                 tile.state = Tile.STATE_ACTIVE
                 tile.icon = Icon.createWithResource(applicationContext, AudioProfileList.getIconResource(audioProfile.icon))
-                tile.label = audioProfile.name
+                tile.label = "${audioProfile.name} ${if(AudioProfileList.profileLocked) "\r${getString(R.string.locked)}" else ""}"
                 tile.updateTile()
                 AudioProfileList.applyProfile(applicationContext)
             } catch(e: Exception) {
