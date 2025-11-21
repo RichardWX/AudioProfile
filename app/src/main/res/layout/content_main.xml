@@ -30,7 +30,9 @@
 
     <TableLayout style="@style/TableLayout">
 
-        <TableRow style="@style/TableRow">
+        <TableRow
+            android:id="@+id/rowProfile0"
+            style="@style/TableRow">
 
             <RadioButton
                 android:id="@+id/radioProfile0"
@@ -52,7 +54,9 @@
 
         </TableRow>
 
-        <TableRow style="@style/TableRow">
+        <TableRow
+            android:id="@+id/rowProfile1"
+            style="@style/TableRow">
 
             <RadioButton
                 android:id="@+id/radioProfile1"
@@ -74,7 +78,9 @@
 
         </TableRow>
 
-        <TableRow style="@style/TableRow">
+        <TableRow
+            android:id="@+id/rowProfile2"
+            style="@style/TableRow">
 
             <RadioButton
                 android:id="@+id/radioProfile2"
@@ -96,7 +102,9 @@
 
         </TableRow>
 
-        <TableRow style="@style/TableRow">
+        <TableRow
+            android:id="@+id/rowProfile3"
+            style="@style/TableRow">
 
             <RadioButton
                 android:id="@+id/radioProfile3"
@@ -140,16 +148,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginStart="@dimen/margin"
         android:layout_marginTop="@dimen/margin"
-        android:layout_marginRight="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
         android:orientation="horizontal">
 
         <TextView
-            style="@style/TextView"
+            android:id="@+id/textSettings"
+            style="@style/TextView.Auto"
             android:text="@string/settings_title" />
-
-        <LinearLayout style="@style/Blank" />
 
         <ImageView
             android:id="@+id/imageSettings"

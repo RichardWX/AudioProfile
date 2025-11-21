@@ -14,7 +14,7 @@ import com.rjw.audioprofile.utils.IconAdapter
 
 class ProfileConfiguration : AudioActivity() {
     private lateinit var binding: ActivityConfigBinding
-    private var mProfile = 0
+    private var _profile = 0
 
     /**
      * Create the configuration screen.
@@ -35,8 +35,8 @@ class ProfileConfiguration : AudioActivity() {
             binding.seekBarNotification.max = am.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION)
             binding.seekBarMedia.max = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
             binding.seekBarSystem.max = am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM)
-            mProfile = intent.getIntExtra(AUDIO_PROFILE, -1)
-            val profile = AudioProfileList.getProfile(mProfile)
+            _profile = intent.getIntExtra(AUDIO_PROFILE, -1)
+            val profile = AudioProfileList.getProfile(_profile)
             val icons = arrayOfNulls<Drawable>(AudioProfileList.length)
             for(icon in 0 until AudioProfileList.length) {
                 icons[icon] = AudioProfileList.getIcon(icon)
@@ -70,7 +70,7 @@ class ProfileConfiguration : AudioActivity() {
             binding.checkBoxUnchangedSystem.setOnClickListener { updateControls() }
             binding.buttonClose.setOnClickListener {
                 AudioProfileList.setProfile(
-                    mProfile,
+                    _profile,
                     binding.editProfileName.text.toString(),
                     binding.spinnerIcon.selectedItemPosition,
                     if(binding.checkBoxUnchangedRingtone.isChecked) -1 else binding.seekBarRingtone.progress,
@@ -80,7 +80,7 @@ class ProfileConfiguration : AudioActivity() {
                     if(binding.seekBarRingtone.progress == 0) binding.checkBoxVibrateRingtone.isChecked else true
                 )
                 val intent = Intent()
-                intent.putExtra(AUDIO_PROFILE, mProfile)
+                intent.putExtra(AUDIO_PROFILE, _profile)
                 setResult(RESULT_OK, intent)
                 finish()
             }

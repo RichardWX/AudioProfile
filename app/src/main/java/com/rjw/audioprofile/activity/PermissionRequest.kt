@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.rjw.audioprofile.activity
 
 import android.Manifest
@@ -14,9 +16,10 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.ActivityPermissionBinding
-
+import com.rjw.audioprofile.utils.TAG
 
 class PermissionRequest : AudioActivity() {
+    private val REQUEST_PERMISSION_RESPONSE = 1
     private lateinit var binding: ActivityPermissionBinding
 
     /**
@@ -66,13 +69,13 @@ class PermissionRequest : AudioActivity() {
                 val intentSleeping = Intent()
                 intentSleeping.component = ComponentName("com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity")
                 startActivity(intentSleeping)
-            } catch(e: Exception) {
+            } catch(_: Exception) {
                 // Try something else...
                 try {
                     val intentSleeping = Intent()
                     intentSleeping.component = ComponentName("com.samsung.android.sm", "com.samsung.android.sm.ui.battery.BatteryActivity")
                     startActivity(intentSleeping)
-                } catch(e: Exception) {
+                } catch(_: Exception) {
                     // Do nothing.
                 }
             }
@@ -102,7 +105,7 @@ class PermissionRequest : AudioActivity() {
                 grantResults.isEmpty() -> {
                     // If user interaction was interrupted, the permission request is cancelled and you
                     // receive empty arrays.
-                    Log.i(MainActivity.TAG, "User interaction was cancelled.")
+                    Log.i(TAG, "User interaction was cancelled.")
                 }
                 grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
                     // Permission was granted.
@@ -112,9 +115,5 @@ class PermissionRequest : AudioActivity() {
                 }
             }
         }
-    }
-
-    companion object {
-        const val REQUEST_PERMISSION_RESPONSE = 1
     }
 }

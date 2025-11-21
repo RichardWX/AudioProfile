@@ -1,5 +1,6 @@
 package com.rjw.audioprofile.utils
 
+const val TAG = "AudioProfile"
 const val NAME = "Name"
 const val ICON = "Icon"
 const val RINGTONE = "Ringtone"
@@ -12,3 +13,5 @@ const val ENTER_PROFILE = "EnterProfile"
 const val EXIT_PROFILE = "ExitProfile"
 const val LOCK_PROFILE = "LockProfile"
 const val LOCK_PROFILE_START_TIME = "LockProfileStartTime"
+
+const val CLEAR_LOG = "ClearLog"

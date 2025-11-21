@@ -9,8 +9,8 @@ import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.RowSimpleBinding
 import java.lang.Exception
 
-class MinutesAdapter(private val mContext: Context, objects: Array<Int>) : ArrayAdapter<Int>(
-    mContext, R.layout.row_simple, objects
+class MinutesAdapter(context: Context, objects: Array<Int>) : ArrayAdapter<Int>(
+    context, R.layout.row_simple, objects
 ) {
     private lateinit var bindingRow: RowSimpleBinding
 
@@ -22,13 +22,13 @@ class MinutesAdapter(private val mContext: Context, objects: Array<Int>) : Array
      * @return            The formatted and populated view.
      */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val row = convertView ?: LayoutInflater.from(mContext).inflate(R.layout.row_simple, parent, false)
+        val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_simple, parent, false)
         bindingRow = RowSimpleBinding.bind(row)
         try {
             val value = getItem(position) as Int
             bindingRow.value.text = value.toString()
-            bindingRow.minutes.text = mContext.resources.getQuantityText(R.plurals.minutes, value)
-        } catch(e: Exception) {
+            bindingRow.minutes.text = context.resources.getQuantityText(R.plurals.minutes, value)
+        } catch(_: Exception) {
             // Do nothing.
         }
         DisplayUtils.colourControls(row)
@@ -43,12 +43,12 @@ class MinutesAdapter(private val mContext: Context, objects: Array<Int>) : Array
      * @return            The formatted and populated view.
      */
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val row = convertView ?: LayoutInflater.from(mContext).inflate(R.layout.row_simple, parent, false)
+        val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_simple, parent, false)
         bindingRow = RowSimpleBinding.bind(row)
         try {
             val value = getItem(position) as Int
             bindingRow.value.text = value.toString()
-            bindingRow.minutes.text = mContext.resources.getQuantityText(R.plurals.minutes, value)
+            bindingRow.minutes.text = context.resources.getQuantityText(R.plurals.minutes, value)
         } catch(e: Exception) {
             // Do nothing.
             e.printStackTrace()

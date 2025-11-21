@@ -6,7 +6,6 @@
     <string name="close">Close</string>
     <string name="config_profile_name">Profile name:</string>
     <string name="configure">Configure</string>
-    <string name="copyright">&#169; %1s RJW - All rights reserved</string>
     <string name="locked">(Locked)</string>
     <plurals name="minutes">
         <item quantity="one">minute</item>
@@ -27,18 +26,12 @@
         \n&#8226; Press Never sleeping apps.
         \n&#8226; Press the plus button.
         \n&#8226; Select the application and press Add.</string>
-    <array name="profile">
-        <item>Silent</item>
-        <item>Quiet</item>
-        <item>Normal</item>
-        <item>Loud</item>
-    </array>
     <string name="unchanged">Do not change</string>
     <string name="vibrate">Vibrate</string>
 
-    <string name="about_built">Built:</string>
-    <string name="about_title">About</string>
-    <string name="about_version">Version</string>
+    <string name="about_built">Built: %s</string>
+    <string name="about_copyright">&#169; %1s RJW - All rights reserved</string>
+    <string name="about_version">Version: %s</string>
 
     <string name="config_title">Profile Configuration</string>
     <string name="config_volume_notification">Notification volume</string>
@@ -46,6 +39,7 @@
     <string name="config_volume_ringtone">Ringtone volume</string>
     <string name="config_volume_system">System volume</string>
 
+    <string name="notification_description">Ongoing notifications for Audio Profile</string>
     <string name="notification_profile">Current profile: %s %s</string>
     <string name="notification_service">Audio Profile is active</string>
 

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.rjw.audioprofile.service
 
 import android.app.*
@@ -28,6 +30,7 @@ object Notifications {
                 channel.setShowBadge(false)
                 channel.enableLights(false)
                 channel.setSound(null, null)
+                channel.description = context.getString(R.string.notification_description)
                 notificationManager.createNotificationChannel(channel)
             }
         } catch(e: Exception) {

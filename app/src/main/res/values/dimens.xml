@@ -10,6 +10,7 @@
     <dimen name="margin_small">5dp</dimen>
     <dimen name="margin_table">8dp</dimen>
     <dimen name="padding_button">60dp</dimen>
+    <dimen name="padding_spacing">10dp</dimen>
     <dimen name="shadow_offset">2dp</dimen>
     <dimen name="shadow_radius">1dp</dimen>
     <dimen name="text_size">15sp</dimen>

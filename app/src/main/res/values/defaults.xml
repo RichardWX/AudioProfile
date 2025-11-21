@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="profile_name">
+        <item>Quiet</item>
+        <item>Loud</item>
+        <item>Silent</item>
+        <item>Vibrate</item>
+    </array>
+
+    <integer-array name="profile_icon">
+        <item>1</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </integer-array>
+
+</resources>

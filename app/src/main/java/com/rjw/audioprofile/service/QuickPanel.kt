@@ -3,7 +3,6 @@ package com.rjw.audioprofile.service
 import android.graphics.drawable.Icon
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import android.util.Log
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.utils.AudioProfileList
 import java.lang.Exception
@@ -23,7 +22,7 @@ class QuickPanel : TileService() {
     override fun onClick() {
         super.onClick()
         var nextProfile = AudioProfileList.currentProfile + 1
-        if(nextProfile >= AudioProfileList.NO_PROFILES) {
+        if(nextProfile >= AudioProfileList.noProfiles) {
             nextProfile = 0
         }
         AudioProfileList.currentProfile = nextProfile
@@ -36,7 +35,6 @@ class QuickPanel : TileService() {
      */
     override fun onTileAdded() {
         super.onTileAdded()
-        Log.d("AudioProfile", "Tile added")
         AudioProfileList.initialise(baseContext)
     }
 
@@ -45,7 +43,6 @@ class QuickPanel : TileService() {
      */
     override fun onStartListening() {
         super.onStartListening()
-        Log.d("AudioProfile", "Starting listening")
         AudioProfileList.initialise(baseContext)
         setIcon()
     }
@@ -64,7 +61,7 @@ class QuickPanel : TileService() {
                 tile.label = "${audioProfile.name} ${if(AudioProfileList.profileLocked) "\r${getString(R.string.locked)}" else ""}"
                 tile.updateTile()
                 AudioProfileList.applyProfile(applicationContext)
-            } catch(e: Exception) {
+            } catch(_: Exception) {
                 // Do nothing - no profiles found.
             }
         }

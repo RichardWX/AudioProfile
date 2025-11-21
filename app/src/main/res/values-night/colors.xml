@@ -4,7 +4,7 @@
     <color name="colourAccent">#F0FFFFFF</color>
     <color name="colourConfig">@color/colourPrimary</color>
     <color name="colourBackground">@color/colourWhiteText</color>
-    <color name="colourPrimary">#F01C89CF</color>
+    <color name="colourPrimary">#F08CBEE2</color>
     <color name="colourPrimaryDark">#F02FB1BD</color>
     <color name="colourText">#F0FFFFFF</color>
     <color name="colourWhiteText">#000000</color>

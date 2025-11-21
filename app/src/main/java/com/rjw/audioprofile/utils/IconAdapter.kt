@@ -10,8 +10,8 @@ import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.databinding.RowIconBinding
 
-class IconAdapter(private val mContext: Context, objects: Array<Drawable?>) : ArrayAdapter<Drawable?>(
-    mContext, R.layout.row_icon, objects
+class IconAdapter(context: Context, objects: Array<Drawable?>) : ArrayAdapter<Drawable?>(
+    context, R.layout.row_icon, objects
 ) {
     private lateinit var bindingRow: RowIconBinding
 
@@ -23,12 +23,12 @@ class IconAdapter(private val mContext: Context, objects: Array<Drawable?>) : Ar
      * @return            The formatted and populated view.
      */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val row = convertView ?: LayoutInflater.from(mContext).inflate(R.layout.row_icon, parent, false)
+        val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_icon, parent, false)
         bindingRow = RowIconBinding.bind(row)
         try {
             bindingRow.icon.foreground = getItem(position)
             bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
-        } catch(e: Exception) {
+        } catch(_: Exception) {
             // Do nothing.
         }
         DisplayUtils.colourControls(row)
@@ -43,12 +43,12 @@ class IconAdapter(private val mContext: Context, objects: Array<Drawable?>) : Ar
      * @return            The formatted and populated view.
      */
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val row = convertView ?: LayoutInflater.from(mContext).inflate(R.layout.row_icon, parent, false)
+        val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_icon, parent, false)
         bindingRow = RowIconBinding.bind(row)
         try {
             bindingRow.icon.foreground = getItem(position)
             bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
-        } catch(e: Exception) {
+        } catch(_: Exception) {
             // Do nothing.
         }
         DisplayUtils.colourControls(row)

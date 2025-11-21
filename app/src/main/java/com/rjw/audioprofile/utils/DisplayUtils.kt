@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.rjw.audioprofile.utils
 
 import android.graphics.BlendMode
@@ -39,7 +41,7 @@ object DisplayUtils {
                 colourControls(v.getChildAt(child), colour, secondaryColour)
             }
         }
-        MainActivity.instance?.let { activity ->
+        MainActivity.instance.let { activity ->
             if(v.id == R.id.layoutTitle) {
                 val background = v.background
                 if(background != null) {
@@ -100,7 +102,7 @@ object DisplayUtils {
      */
     private fun darken(colour: Int, levels: Int): Int {
         var newColour = colour
-        for(level in 0 until levels) {
+        (0 until levels).forEach {
             newColour = darken(newColour)
         }
         return newColour

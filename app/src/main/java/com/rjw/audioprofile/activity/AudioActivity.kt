@@ -12,7 +12,7 @@ import com.rjw.audioprofile.utils.DisplayUtils
 open class AudioActivity : ComponentActivity() {
     protected lateinit var view: View
     private lateinit var bindingTitle: ContentTitleBinding
-    protected var mWindowRatio = floatArrayOf(0.8f, 0.8f)
+    protected var windowRatio = floatArrayOf(0.8f, 0.8f)
 
     /**
      * Create the activity.
@@ -51,12 +51,12 @@ open class AudioActivity : ComponentActivity() {
                 var changed = false
                 val dm = resources.displayMetrics
                 val lp = window.attributes
-                if(window.decorView.width < (dm.widthPixels * mWindowRatio[0]).toInt()) {
-                    lp.width = (dm.widthPixels * mWindowRatio[0]).toInt()
+                if(window.decorView.width < (dm.widthPixels * windowRatio[0]).toInt()) {
+                    lp.width = (dm.widthPixels * windowRatio[0]).toInt()
                     changed = true
                 }
-                if(window.decorView.height < (dm.heightPixels * mWindowRatio[1]).toInt()) {
-                    lp.height = (dm.heightPixels * mWindowRatio[1]).toInt()
+                if(window.decorView.height < (dm.heightPixels * windowRatio[1]).toInt()) {
+                    lp.height = (dm.heightPixels * windowRatio[1]).toInt()
                     changed = true
                 }
                 if(changed) {
@@ -90,8 +90,8 @@ open class AudioActivity : ComponentActivity() {
      * @param yRatio The y ratio of the window compared to the screen.
      */
     protected fun setWindowRatios(xRatio: Float, yRatio: Float) {
-        mWindowRatio[0] = xRatio
-        mWindowRatio[1] = yRatio
+        windowRatio[0] = xRatio
+        windowRatio[1] = yRatio
     }
 
     /**

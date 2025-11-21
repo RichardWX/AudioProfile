@@ -19,12 +19,12 @@ class AudioProfileListener : BroadcastReceiver() {
                         val serviceIntent = Intent(context, AudioProfileService::class.java)
                         context.startService(serviceIntent)
                         MainActivity.updateTile()
-                    } catch(e: Throwable) {
+                    } catch(_: Throwable) {
                         // Do nothing.
                     }
                 }
             }
-        } catch(e: Exception) {
+        } catch(_: Exception) {
             // Do nothing.
         }
     }

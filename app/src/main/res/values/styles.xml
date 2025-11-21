@@ -33,16 +33,21 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/colourText</item>
         <item name="android:background">@drawable/rounded_button</item>
-        <item name="android:paddingLeft">@dimen/margin</item>
-        <item name="android:paddingRight">@dimen/margin</item>
+        <item name="android:paddingStart">@dimen/margin</item>
+        <item name="android:paddingEnd">@dimen/margin</item>
+    </style>
+
+    <style name="Button.About">
+        <item name="android:layout_marginTop">@dimen/padding_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/padding_spacing</item>
     </style>
 
     <style name="Button.Action">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_marginTop">@dimen/margin</item>
         <item name="android:layout_marginBottom">@dimen/margin_table</item>
-        <item name="android:layout_marginLeft">@dimen/padding_button</item>
-        <item name="android:layout_marginRight">@dimen/padding_button</item>
+        <item name="android:layout_marginStart">@dimen/padding_button</item>
+        <item name="android:layout_marginEnd">@dimen/padding_button</item>
     </style>
 
     <style name="CheckBox">
@@ -56,7 +61,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_marginLeft">@dimen/margin</item>
+        <item name="android:layout_marginStart">@dimen/margin</item>
         <item name="android:textSize">@dimen/text_size</item>
         <item name="android:textColor">@color/colourText</item>
     </style>
@@ -64,8 +69,8 @@
     <style name="Icon">
         <item name="android:layout_width">@dimen/icon_size</item>
         <item name="android:layout_height">@dimen/icon_size</item>
-        <item name="android:layout_marginLeft">@dimen/margin</item>
-        <item name="android:layout_marginRight">@dimen/margin</item>
+        <item name="android:layout_marginStart">@dimen/margin</item>
+        <item name="android:layout_marginEnd">@dimen/margin</item>
     </style>
 
     <style name="ImageView">
@@ -76,7 +81,7 @@
     <style name="RadioButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">@dimen/margin</item>
+        <item name="android:layout_marginEnd">@dimen/margin</item>
         <item name="android:textAllCaps">false</item>
         <!--        <item name="android:button">@drawable/radio_button</item>-->
     </style>
@@ -89,7 +94,7 @@
     <style name="Spinner">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/margin</item>
+        <item name="android:layout_marginStart">@dimen/margin</item>
     </style>
 
     <style name="Spinner.Full">
@@ -99,8 +104,8 @@
     <style name="TableLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/margin_table</item>
-        <item name="android:layout_marginRight">@dimen/margin_table</item>
+        <item name="android:layout_marginStart">@dimen/margin_table</item>
+        <item name="android:layout_marginEnd">@dimen/margin_table</item>
     </style>
 
     <style name="TableRow">
@@ -126,11 +131,16 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TextView.Spaced">
+        <item name="android:layout_marginTop">@dimen/padding_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/padding_spacing</item>
+    </style>
+
     <style name="TextView.Table">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_marginLeft">@dimen/margin_table</item>
-        <item name="android:layout_marginRight">@dimen/margin_table</item>
+        <item name="android:layout_marginStart">@dimen/margin_table</item>
+        <item name="android:layout_marginEnd">@dimen/margin_table</item>
     </style>
 
     <style name="TextView.Title" parent="TextView.Heading">
