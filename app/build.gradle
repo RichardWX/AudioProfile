@@ -10,12 +10,12 @@ android {
         applicationId "com.rjw.audioprofile"
         minSdkVersion 27
         targetSdkVersion 36
-        versionCode 22
+        versionCode 23
         versionName "1." + versionCode
 
         setProperty("archivesBaseName", "AudioProfile" + " - R" + versionName)
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
-        buildConfigField "String", "BUILD_INFO", "\"Bug fixes for profiles\""
+        buildConfigField "String", "BUILD_INFO", "\"Fix service start on reboot\""
     }
 
     buildFeatures {

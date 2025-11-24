@@ -131,6 +131,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TextView.Log">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">@dimen/text_size_log</item>
+    </style>
+
     <style name="TextView.Spaced">
         <item name="android:layout_marginTop">@dimen/padding_spacing</item>
         <item name="android:layout_marginBottom">@dimen/padding_spacing</item>

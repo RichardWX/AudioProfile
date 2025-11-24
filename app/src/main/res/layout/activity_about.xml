@@ -65,8 +65,7 @@
 
                 <TextView
                     android:id="@+id/textLog"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    style="@style/TextView.Log"
                     tools:text="LOG ENTRIES" />
 
             </ScrollView>

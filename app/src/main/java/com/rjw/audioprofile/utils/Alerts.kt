@@ -18,13 +18,14 @@ import java.util.Calendar
 object Alerts {
     private lateinit var bindingToast: ToastBinding
     private lateinit var bindingAlert: AlertBinding
+    var instance: Context? = null
 
     /**
      * Display a customised toast message.
      * @param message The message id to be displayed.
      */
     fun toast(message: Int) {
-        MainActivity.instance.let { activity ->
+        instance?.let { activity ->
             toast(activity.getString(message))
         }
     }
@@ -35,12 +36,14 @@ object Alerts {
      */
     fun toast(message: String) {
         try {
-            bindingToast = ToastBinding.inflate(LayoutInflater.from(MainActivity.instance))
-            bindingToast.text.text = message
-            DisplayUtils.colourControls(bindingToast.root)
-            val toast = Toast.makeText(MainActivity.instance, "", Toast.LENGTH_SHORT)
-            toast.view = bindingToast.root
-            toast.show()
+            instance?.let { instance ->
+                bindingToast = ToastBinding.inflate(LayoutInflater.from(instance))
+                bindingToast.text.text = message
+                DisplayUtils.colourControls(bindingToast.root)
+                val toast = Toast.makeText(instance, "", Toast.LENGTH_SHORT)
+                toast.view = bindingToast.root
+                toast.show()
+            }
         } catch(_: Exception) {
             // Do nothing.
         }
@@ -65,21 +68,23 @@ object Alerts {
      */
     fun alert(title: String, message: String, onClickHandler: (() -> Unit)? = null) {
         try {
-            bindingAlert = AlertBinding.inflate(LayoutInflater.from(MainActivity.instance))
-            val bindingTitle = ContentTitleBinding.bind(bindingAlert.layoutTitle.root)
-            val builder = AlertDialog.Builder(MainActivity.instance)
-            bindingTitle.title.text = title
-            bindingAlert.text.text = message
-            builder.setView(bindingAlert.root)
-            val dialog = builder.create()
-            bindingAlert.buttonOK.setOnClickListener {
-                onClickHandler?.invoke()
-                dialog.dismiss()
+            instance?.let { instance ->
+                bindingAlert = AlertBinding.inflate(LayoutInflater.from(instance))
+                val bindingTitle = ContentTitleBinding.bind(bindingAlert.layoutTitle.root)
+                val builder = AlertDialog.Builder(instance)
+                bindingTitle.title.text = title
+                bindingAlert.text.text = message
+                builder.setView(bindingAlert.root)
+                val dialog = builder.create()
+                bindingAlert.buttonOK.setOnClickListener {
+                    onClickHandler?.invoke()
+                    dialog.dismiss()
+                }
+                DisplayUtils.colourControls(bindingAlert.root)
+                dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+                dialog.setCanceledOnTouchOutside(false)
+                dialog.show()
             }
-            DisplayUtils.colourControls(bindingAlert.root)
-            dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-            dialog.setCanceledOnTouchOutside(false)
-            dialog.show()
         } catch(_: Exception) {
             // Do nothing.
         }
@@ -95,17 +100,28 @@ object Alerts {
     }
 
     private const val logFilename = "entryLog"
+
     /**
      * Write an entry to the application log.
      * @param message   The text to be written to the log file.
+     * @param trace     True to include the calling function.
      */
-    fun log(message: String?) {
+    fun log(message: String?, trace: Boolean = false) {
         try {
             if(message != null) {
-                MainActivity.instance.let { instance ->
+                instance?.let { instance ->
                     instance.openFileOutput(logFilename, Context.MODE_APPEND).apply {
                         val now = Calendar.getInstance()
-                        val outputMessage = "${DateFormat.getTimeInstance(DateFormat.MEDIUM).format(now.timeInMillis)} - $message\n"
+                        val outputMessage = "${DateFormat.getDateInstance(DateFormat.MEDIUM).format(now.timeInMillis)} ${
+                            DateFormat.getTimeInstance(DateFormat.MEDIUM).format(now.timeInMillis)
+                        } - $message${
+                            if(trace) {
+                                val stack = Throwable("").stackTrace[1]
+                                " - called from ${stack.methodName} (${stack.fileName}:${stack.lineNumber})"
+                            } else {
+                                ""
+                            }
+                        }\n"
                         write(outputMessage.toByteArray())
                         flush()
                         close()
@@ -123,9 +139,9 @@ object Alerts {
      */
     fun readLog(): String {
         return try {
-            MainActivity.instance.openFileInput(logFilename).bufferedReader().useLines { lines ->
+            instance?.openFileInput(logFilename)?.bufferedReader()?.useLines { lines ->
                 lines.joinToString("\n")
-            }
+            } ?: ""
         } catch(_: Exception) {
             ""
         }
@@ -136,7 +152,7 @@ object Alerts {
      */
     fun clearLog() {
         try {
-            MainActivity.instance.openFileOutput(logFilename, Context.MODE_PRIVATE).apply {
+            instance?.openFileOutput(logFilename, Context.MODE_PRIVATE)?.apply {
                 flush()
                 close()
             }

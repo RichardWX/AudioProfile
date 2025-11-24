@@ -6,9 +6,11 @@ import android.app.*
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.util.Log
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.utils.Alerts
 import com.rjw.audioprofile.utils.AudioProfileList
+import com.rjw.audioprofile.utils.TAG
 
 object Notifications {
     private const val CHANNEL_ID = "AudioProfileChannelId"
@@ -34,7 +36,7 @@ object Notifications {
                 notificationManager.createNotificationChannel(channel)
             }
         } catch(e: Exception) {
-            Alerts.toast("Creating notification channel: ${e.javaClass.name}\n${e.message}")
+            Log.d(TAG, "Creating notification channel: ${e.javaClass.name}\n${e.message}")
         }
     }
 
@@ -63,7 +65,7 @@ object Notifications {
                 }
             }
         } catch(e: Exception) {
-            Alerts.toast("Creating notification: ${e.javaClass.name}\n${e.message}")
+            Log.d(TAG, "Creating notification: ${e.javaClass.name}\n${e.message}")
         }
     }
 
@@ -89,7 +91,7 @@ object Notifications {
                     notificationManager?.notify(SERVICE_NOTIFICATION_ID, builder.build())
                 }
             } catch(e: Exception) {
-                Alerts.toast("Updating notification: ${e.javaClass.name}\n${e.message}")
+                Log.d(TAG, "Updating notification: ${e.javaClass.name}\n${e.message}")
             }
         }
     }

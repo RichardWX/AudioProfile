@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.rjw.audioprofile.activity.MainActivity
+import com.rjw.audioprofile.utils.Alerts
 
 class AudioProfileListener : BroadcastReceiver() {
     /**
@@ -18,6 +19,8 @@ class AudioProfileListener : BroadcastReceiver() {
                     Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_LOCKED_BOOT_COMPLETED, Intent.ACTION_USER_UNLOCKED -> try {
                         val serviceIntent = Intent(context, AudioProfileService::class.java)
                         context.startService(serviceIntent)
+                        Alerts.clearLog()
+                        Alerts.log("Device rebooted")
                         MainActivity.updateTile()
                     } catch(_: Throwable) {
                         // Do nothing.

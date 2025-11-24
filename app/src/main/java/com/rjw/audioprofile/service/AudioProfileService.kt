@@ -10,19 +10,22 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Handler
 import android.os.IBinder
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.utils.Alerts
 import com.rjw.audioprofile.utils.AudioProfileList
+import com.rjw.audioprofile.utils.TAG
 import java.util.Calendar
 
 @Suppress("DEPRECATION")
 class AudioProfileService : Service() {
     val UNKNOWN_SSID = "<unknown ssid>"
     val UPDATE_DELAY = 500L
-    private var ssid = ""
+    private var currentSsid = ""
     private var initialised = false
+    private var lastAction = ""
 
     private val receiver = object : BroadcastReceiver() {
         /**
@@ -38,12 +41,15 @@ class AudioProfileService : Service() {
                         // Wifi has been connected or disconnected, change the audio profile.
                         val wm = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
                         if(wm.wifiState == WifiManager.WIFI_STATE_ENABLED) {
-                            var newSsid = wm.connectionInfo.ssid
-                            if(newSsid.isEmpty() || newSsid == UNKNOWN_SSID) {
-                                Alerts.log("${intent.action?.substringAfterLast(".")} - disconnected")
-                                if(ssid.isNotEmpty()) {
+                            var ssid = wm.connectionInfo.ssid
+                            if(ssid.isEmpty() || ssid == UNKNOWN_SSID) {
+                                if(intent.action != lastAction) {
+                                    Alerts.log("${intent.action?.substringAfterLast(".")} - disconnected")
+                                    lastAction = intent.action ?: ""
+                                }
+                                if(currentSsid.isNotEmpty()) {
                                     Alerts.log("Exit profile being fired.")
-                                    ssid = ""
+                                    currentSsid = ""
                                     val profile = AudioProfileList.exitWifiProfile
                                     if(profile != -1) {
                                         // Check whether the profile has been locked - if so, don't change it.
@@ -63,13 +69,16 @@ class AudioProfileService : Service() {
                                     }
                                 }
                             } else {
-                                if(newSsid[0] == '\"') {
-                                    newSsid = newSsid.substring(1, newSsid.length - 1)
+                                if(ssid[0] == '\"') {
+                                    ssid = ssid.substring(1, ssid.length - 1)
                                 }
-                                Alerts.log("${intent.action?.substringAfterLast(".")} - newSSid = $newSsid")
-                                if(ssid != newSsid) {
-                                    ssid = newSsid
-                                    Alerts.log("Entry profile being fired for $ssid.")
+                                if(intent.action != lastAction) {
+                                    Alerts.log("${intent.action?.substringAfterLast(".")} - newSSid = $ssid")
+                                    lastAction = intent.action ?: ""
+                                }
+                                if(currentSsid != ssid) {
+                                    currentSsid = ssid
+                                    Alerts.log("Entry profile being fired for $currentSsid.")
                                     val profile = AudioProfileList.enterWifiProfile
                                     if(profile != -1) {
                                         // Check whether the profile has been locked - if so, don't change it.
@@ -95,7 +104,6 @@ class AudioProfileService : Service() {
                         if(now - AudioProfileList.profileLockStartTime > AudioProfileList.lockProfileTime * 60000 && AudioProfileList.profileLocked) {
                             AudioProfileList.currentProfile = AudioProfileList.previousProfile
                             AudioProfileList.profileLocked = false
-                            MainActivity.updateTile()
                         }
                     }
                 }
@@ -116,8 +124,10 @@ class AudioProfileService : Service() {
      */
     override fun onCreate() {
         super.onCreate()
+        Alerts.instance = this
 
         // Get the profile list updated.
+        AudioProfileList.initialise(baseContext)
         val filter = IntentFilter()
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
         filter.addAction(WifiManager.NETWORK_IDS_CHANGED_ACTION)

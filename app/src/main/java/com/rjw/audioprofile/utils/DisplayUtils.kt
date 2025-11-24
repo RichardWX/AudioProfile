@@ -41,7 +41,7 @@ object DisplayUtils {
                 colourControls(v.getChildAt(child), colour, secondaryColour)
             }
         }
-        MainActivity.instance.let { activity ->
+        MainActivity.instance?.let { activity ->
             if(v.id == R.id.layoutTitle) {
                 val background = v.background
                 if(background != null) {

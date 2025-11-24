@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.PowerManager
 import android.service.quicksettings.TileService
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ImageView
@@ -35,6 +36,7 @@ import com.rjw.audioprofile.utils.CLEAR_LOG
 import com.rjw.audioprofile.utils.MinutesAdapter
 import com.rjw.audioprofile.utils.Mode
 import com.rjw.audioprofile.utils.ProfileAdapter
+import com.rjw.audioprofile.utils.TAG
 import com.rjw.audioprofile.utils.setColorFilter
 import java.util.Calendar
 
@@ -291,7 +293,6 @@ class MainActivity : AudioActivity() {
         }
         AudioProfileList.currentProfile = profile
         AudioProfileList.profileLocked = false
-        updateTile()
     }
 
     /**
@@ -378,7 +379,7 @@ class MainActivity : AudioActivity() {
     companion object {
         private var mThis: MainActivity? = null
 
-        val instance: MainActivity
+        val instance: MainActivity?
             /**
              * Return an instance of the main activity.
              */
@@ -386,7 +387,7 @@ class MainActivity : AudioActivity() {
                 if(mThis == null) {
                     MainActivity()
                 }
-                return mThis!!
+                return mThis
             }
 
         /**
@@ -394,11 +395,11 @@ class MainActivity : AudioActivity() {
          */
         fun updateTile() {
             try {
-                val trace = Throwable("Hello").stackTrace[1]
-                Alerts.log("updateTile - called from ${trace.methodName} (${trace.fileName}:${trace.lineNumber})")
-                instance.updateControls()
-                TileService.requestListeningState(instance, ComponentName(instance.applicationContext, QuickPanel::class.java))
-                Notifications.updateNotification(instance)
+                mThis?.let { instance ->
+                    instance.updateControls()
+                    TileService.requestListeningState(instance, ComponentName(instance.applicationContext, QuickPanel::class.java))
+                    Notifications.updateNotification(instance)
+                }
             } catch(_: Exception) {
                 // Do nothing.
             }
