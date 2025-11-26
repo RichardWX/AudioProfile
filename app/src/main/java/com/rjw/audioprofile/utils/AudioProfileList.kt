@@ -91,7 +91,6 @@ class AudioProfileList() {
         private var context: Context? = null
         private var prefs: SharedPreferences? = null
         private val profiles = ArrayList<AudioProfile>()
-        private val defaultProfiles = ArrayList<Int>()
         private var icons = IntArray(0)
         private var _profileLockStartTime = -1L
 
@@ -143,7 +142,7 @@ class AudioProfileList() {
                 val icon = ContextCompat.getDrawable(context, icons[iconId])
                 icon?.setColorFilter(context.getColor(R.color.colourConfig), Mode.SRC_ATOP)
                 return icon
-            } ?: null
+            }
         }
 
         /**
@@ -186,7 +185,7 @@ class AudioProfileList() {
                     }
                 }
             } catch(e: Exception) {
-                Alerts.log(e.message)
+                Log.log(e.message)
             }
         }
 
@@ -290,6 +289,7 @@ class AudioProfileList() {
             set(profileLocked) {
                 _profileLocked = profileLocked
                 previousProfile = if(profileLocked) currentProfile else 0
+                Log.log("Profile ${getProfile(previousProfile).name} ${if(profileLocked) "locked" else "unlocked"}")
             }
 
         var lockProfileTime: Int

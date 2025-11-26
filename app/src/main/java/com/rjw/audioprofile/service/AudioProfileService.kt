@@ -10,13 +10,11 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Handler
 import android.os.IBinder
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.activity.MainActivity
-import com.rjw.audioprofile.utils.Alerts
 import com.rjw.audioprofile.utils.AudioProfileList
-import com.rjw.audioprofile.utils.TAG
+import com.rjw.audioprofile.utils.Log
 import java.util.Calendar
 
 @Suppress("DEPRECATION")
@@ -44,11 +42,10 @@ class AudioProfileService : Service() {
                             var ssid = wm.connectionInfo.ssid
                             if(ssid.isEmpty() || ssid == UNKNOWN_SSID) {
                                 if(intent.action != lastAction) {
-                                    Alerts.log("${intent.action?.substringAfterLast(".")} - disconnected")
+                                    Log.log("${intent.action?.substringAfterLast(".")} - disconnected")
                                     lastAction = intent.action ?: ""
                                 }
                                 if(currentSsid.isNotEmpty()) {
-                                    Alerts.log("Exit profile being fired.")
                                     currentSsid = ""
                                     val profile = AudioProfileList.exitWifiProfile
                                     if(profile != -1) {
@@ -59,7 +56,7 @@ class AudioProfileService : Service() {
                                             true
                                         }
                                         if(switch) {
-                                            Alerts.log("Switching profile to ${AudioProfileList.getProfile(profile).name}")
+                                            Log.log("Switching profile to ${AudioProfileList.getProfile(profile).name}")
                                             AudioProfileList.currentProfile = profile
                                             AudioProfileList.applyProfile(context)
                                             Handler(mainLooper).postDelayed({
@@ -73,12 +70,11 @@ class AudioProfileService : Service() {
                                     ssid = ssid.substring(1, ssid.length - 1)
                                 }
                                 if(intent.action != lastAction) {
-                                    Alerts.log("${intent.action?.substringAfterLast(".")} - newSSid = $ssid")
+                                    Log.log("${intent.action?.substringAfterLast(".")} - newSSid = $ssid")
                                     lastAction = intent.action ?: ""
                                 }
                                 if(currentSsid != ssid) {
                                     currentSsid = ssid
-                                    Alerts.log("Entry profile being fired for $currentSsid.")
                                     val profile = AudioProfileList.enterWifiProfile
                                     if(profile != -1) {
                                         // Check whether the profile has been locked - if so, don't change it.
@@ -88,7 +84,7 @@ class AudioProfileService : Service() {
                                             true
                                         }
                                         if(switch) {
-                                            Alerts.log("Switching profile to ${AudioProfileList.getProfile(profile).name}")
+                                            Log.log("Switching profile to ${AudioProfileList.getProfile(profile).name}")
                                             AudioProfileList.currentProfile = profile
                                             AudioProfileList.applyProfile(context)
                                             Handler(mainLooper).postDelayed({
@@ -124,7 +120,7 @@ class AudioProfileService : Service() {
      */
     override fun onCreate() {
         super.onCreate()
-        Alerts.instance = this
+        Log.instance = this
 
         // Get the profile list updated.
         AudioProfileList.initialise(baseContext)

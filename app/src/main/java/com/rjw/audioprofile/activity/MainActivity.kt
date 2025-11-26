@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.PowerManager
 import android.service.quicksettings.TileService
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ImageView
@@ -30,13 +29,12 @@ import com.rjw.audioprofile.databinding.ContentMainBinding
 import com.rjw.audioprofile.service.AudioProfileService
 import com.rjw.audioprofile.service.Notifications
 import com.rjw.audioprofile.service.QuickPanel
-import com.rjw.audioprofile.utils.Alerts
 import com.rjw.audioprofile.utils.AudioProfileList
 import com.rjw.audioprofile.utils.CLEAR_LOG
+import com.rjw.audioprofile.utils.Log
 import com.rjw.audioprofile.utils.MinutesAdapter
 import com.rjw.audioprofile.utils.Mode
 import com.rjw.audioprofile.utils.ProfileAdapter
-import com.rjw.audioprofile.utils.TAG
 import com.rjw.audioprofile.utils.setColorFilter
 import java.util.Calendar
 
@@ -221,7 +219,7 @@ class MainActivity : AudioActivity() {
             setAudioProfile(AudioProfileList.currentProfile)
         }
         if(intent.hasExtra(CLEAR_LOG)) {
-            Alerts.clearLog()
+            Log.clearLog()
         }
     }
 

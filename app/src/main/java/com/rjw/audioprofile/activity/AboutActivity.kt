@@ -6,6 +6,7 @@ import com.rjw.audioprofile.BuildConfig
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.ActivityAboutBinding
 import com.rjw.audioprofile.utils.Alerts
+import com.rjw.audioprofile.utils.Log
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -35,7 +36,7 @@ class AboutActivity : AudioActivity() {
         binding.textBuilt.text = String.format(getString(R.string.about_built), builtDate)
         binding.textCopyright.text =
             String.format(getString(R.string.about_copyright), SimpleDateFormat("yyyy", Locale.getDefault()).format(buildDate.time))
-        binding.textLog.text = Alerts.readLog()
+        binding.textLog.text = Log.readLog()
 
         binding.log.setOnClickListener {
             binding.layoutControls.visibility = View.INVISIBLE
@@ -43,7 +44,7 @@ class AboutActivity : AudioActivity() {
             binding.deleteLog.visibility = View.VISIBLE
         }
         binding.deleteLog.setOnClickListener {
-            Alerts.clearLog()
+            Log.clearLog()
             finish()
         }
         binding.buttonClose.setOnClickListener {
