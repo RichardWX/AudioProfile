@@ -24,12 +24,10 @@ class MinutesAdapter(context: Context, objects: Array<Int>) : ArrayAdapter<Int>(
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_simple, parent, false)
         bindingRow = RowSimpleBinding.bind(row)
-        try {
+        runCatching {
             val value = getItem(position) as Int
             bindingRow.value.text = value.toString()
             bindingRow.minutes.text = context.resources.getQuantityText(R.plurals.minutes, value)
-        } catch(_: Exception) {
-            // Do nothing.
         }
         DisplayUtils.colourControls(row)
         return row
@@ -45,13 +43,10 @@ class MinutesAdapter(context: Context, objects: Array<Int>) : ArrayAdapter<Int>(
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_simple, parent, false)
         bindingRow = RowSimpleBinding.bind(row)
-        try {
+        runCatching {
             val value = getItem(position) as Int
             bindingRow.value.text = value.toString()
             bindingRow.minutes.text = context.resources.getQuantityText(R.plurals.minutes, value)
-        } catch(e: Exception) {
-            // Do nothing.
-            e.printStackTrace()
         }
         DisplayUtils.colourControls(row)
         return row

@@ -5,7 +5,7 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import com.rjw.audioprofile.R
 import com.rjw.audioprofile.utils.AudioProfileList
-import java.lang.Exception
+import com.rjw.audioprofile.utils.Log
 
 class QuickPanel : TileService() {
     /**
@@ -51,18 +51,16 @@ class QuickPanel : TileService() {
      * Set the icon for the quick panel tile.
      */
     private fun setIcon() {
-        val tile = qsTile
-        if(tile != null) {
-            try {
+        qsTile?.let { tile ->
+            runCatching {
                 val profile = AudioProfileList.currentProfile
                 val audioProfile = AudioProfileList.getProfile(profile)
                 tile.state = Tile.STATE_ACTIVE
                 tile.icon = Icon.createWithResource(applicationContext, AudioProfileList.getIconResource(audioProfile.icon))
                 tile.label = "${audioProfile.name} ${if(AudioProfileList.profileLocked) "\r${getString(R.string.locked)}" else ""}"
                 tile.updateTile()
+                Log.log("Updating tile to ${audioProfile.name}")
                 AudioProfileList.applyProfile(applicationContext)
-            } catch(_: Exception) {
-                // Do nothing - no profiles found.
             }
         }
     }

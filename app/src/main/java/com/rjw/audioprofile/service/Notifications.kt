@@ -2,15 +2,19 @@
 
 package com.rjw.audioprofile.service
 
-import android.app.*
+import android.app.Activity
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.util.Log
 import com.rjw.audioprofile.R
-import com.rjw.audioprofile.utils.Alerts
+import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.utils.AudioProfileList
-import com.rjw.audioprofile.utils.TAG
 
 object Notifications {
     private const val CHANNEL_ID = "AudioProfileChannelId"
@@ -25,7 +29,7 @@ object Notifications {
      * @param context The application context.
      */
     fun createNotificationChannel(context: Context) {
-        try {
+        runCatching {
             notificationManager = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
             notificationManager?.let { notificationManager ->
                 val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN)
@@ -35,8 +39,6 @@ object Notifications {
                 channel.description = context.getString(R.string.notification_description)
                 notificationManager.createNotificationChannel(channel)
             }
-        } catch(e: Exception) {
-            Log.d(TAG, "Creating notification channel: ${e.javaClass.name}\n${e.message}")
         }
     }
 
@@ -47,7 +49,7 @@ object Notifications {
      * @param pendingIntent The intent to be sent when the notification is clicked on.
      */
     fun showServiceNotification(service: Service?, msg: String?, pendingIntent: PendingIntent?) {
-        try {
+        runCatching {
             if(service != null) {
                 notificationBuilder = Notification.Builder(service)
                     .setChannelId(CHANNEL_ID)
@@ -64,18 +66,17 @@ object Notifications {
                     updateNotification(service)
                 }
             }
-        } catch(e: Exception) {
-            Log.d(TAG, "Creating notification: ${e.javaClass.name}\n${e.message}")
         }
     }
 
     /**
      * Update the current notification with a new text and icon.
      * @param context The application context.
+     * @param rebuild If true, rebuild the notification builder to ensure icon changes are applied.
      */
-    fun updateNotification(context: Context?) {
+    fun updateNotification(context: Context?, rebuild: Boolean = false) {
         context?.let { context ->
-            try {
+            runCatching {
                 if(notificationManager == null) {
                     notificationManager = context.getSystemService(Activity.NOTIFICATION_SERVICE) as NotificationManager?
                 }
@@ -90,8 +91,6 @@ object Notifications {
                     builder.setSmallIcon(AudioProfileList.getIconResource(AudioProfileList.getProfile(AudioProfileList.currentProfile).icon))
                     notificationManager?.notify(SERVICE_NOTIFICATION_ID, builder.build())
                 }
-            } catch(e: Exception) {
-                Log.d(TAG, "Updating notification: ${e.javaClass.name}\n${e.message}")
             }
         }
     }

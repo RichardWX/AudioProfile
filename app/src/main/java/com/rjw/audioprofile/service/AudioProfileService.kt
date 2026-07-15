@@ -20,7 +20,7 @@ import java.util.Calendar
 @Suppress("DEPRECATION")
 class AudioProfileService : Service() {
     val UNKNOWN_SSID = "<unknown ssid>"
-    val UPDATE_DELAY = 500L
+    val UPDATE_DELAY = 1000L
     private var currentSsid = ""
     private var initialised = false
     private var lastAction = ""

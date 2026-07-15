@@ -22,7 +22,7 @@ object Log {
      * @param trace     True to include the calling function.
      */
     fun log(message: String?, trace: Boolean = false) {
-        try {
+        runCatching {
             if(message != null) {
                 instance?.let { instance ->
                     instance.openFileOutput(logFilename, Context.MODE_APPEND).apply {
@@ -43,8 +43,6 @@ object Log {
                     }
                 }
             }
-        } catch(_: Exception) {
-            // We can't write to the file - carry on regardless.
         }
     }
 
@@ -66,13 +64,11 @@ object Log {
      * Clear the log file.
      */
     fun clearLog() {
-        try {
+        runCatching {
             instance?.openFileOutput(logFilename, Context.MODE_PRIVATE)?.apply {
                 flush()
                 close()
             }
-        } catch(_: Exception) {
-            // Do nothing...
         }
     }
 }

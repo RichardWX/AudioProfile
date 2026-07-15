@@ -3,7 +3,6 @@
 package com.rjw.audioprofile.utils
 
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -12,8 +11,6 @@ import com.rjw.audioprofile.activity.MainActivity
 import com.rjw.audioprofile.databinding.AlertBinding
 import com.rjw.audioprofile.databinding.ContentTitleBinding
 import com.rjw.audioprofile.databinding.ToastBinding
-import java.text.DateFormat
-import java.util.Calendar
 
 object Alerts {
     private lateinit var bindingToast: ToastBinding
@@ -34,7 +31,7 @@ object Alerts {
      * @param message The message to be displayed.
      */
     fun toast(message: String) {
-        try {
+        runCatching {
             MainActivity.instance?.let { activity ->
                 bindingToast = ToastBinding.inflate(LayoutInflater.from(activity))
                 bindingToast.text.text = message
@@ -43,8 +40,6 @@ object Alerts {
                 toast.view = bindingToast.root
                 toast.show()
             }
-        } catch(_: Exception) {
-            // Do nothing.
         }
         Log.log(message)
     }
@@ -66,7 +61,7 @@ object Alerts {
      * @param onClickHandler  The handler for the button.
      */
     fun alert(title: String, message: String, onClickHandler: (() -> Unit)? = null) {
-        try {
+        runCatching {
             MainActivity.instance?.let { activity ->
                 bindingAlert = AlertBinding.inflate(LayoutInflater.from(activity))
                 val bindingTitle = ContentTitleBinding.bind(bindingAlert.layoutTitle.root)
@@ -84,8 +79,6 @@ object Alerts {
                 dialog.setCanceledOnTouchOutside(false)
                 dialog.show()
             }
-        } catch(_: Exception) {
-            // Do nothing.
         }
         Log.log("$title\n$message")
     }

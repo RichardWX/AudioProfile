@@ -25,11 +25,9 @@ class IconAdapter(context: Context, objects: Array<Drawable?>) : ArrayAdapter<Dr
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_icon, parent, false)
         bindingRow = RowIconBinding.bind(row)
-        try {
+        runCatching {
             bindingRow.icon.foreground = getItem(position)
             bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
-        } catch(_: Exception) {
-            // Do nothing.
         }
         DisplayUtils.colourControls(row)
         return row
@@ -45,11 +43,9 @@ class IconAdapter(context: Context, objects: Array<Drawable?>) : ArrayAdapter<Dr
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_icon, parent, false)
         bindingRow = RowIconBinding.bind(row)
-        try {
+        runCatching {
             bindingRow.icon.foreground = getItem(position)
             bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
-        } catch(_: Exception) {
-            // Do nothing.
         }
         DisplayUtils.colourControls(row)
         return row

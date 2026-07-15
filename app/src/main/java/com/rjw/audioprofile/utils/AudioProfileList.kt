@@ -80,7 +80,8 @@ class AudioProfileList() {
     }
 
     companion object {
-        const val PROFILE_DELAY = 500L
+        const val PROFILE_DELAY = 800L
+        const val RETRIES = 5
         private const val DEFAULT = -1
         var noProfiles = 0
         private var _currentProfile = 0
@@ -158,7 +159,7 @@ class AudioProfileList() {
          * Load the profiles from the saved preferences.
          */
         private fun loadProfiles() {
-            try {
+            runCatching {
                 if(prefs == null) {
                     prefs = context?.getSharedPreferences(TAG, Activity.MODE_PRIVATE)
                 }
@@ -170,7 +171,7 @@ class AudioProfileList() {
                     _exitWifiProfile = prefs.getInt(EXIT_PROFILE, _exitWifiProfile)
                     _lockProfileTime = prefs.getInt(LOCK_PROFILE, _lockProfileTime)
                     _profileLockStartTime = prefs.getLong(LOCK_PROFILE_START_TIME, _profileLockStartTime)
-                    for(profile in 0 until noProfiles) {
+                    for(profile in 0.rangeUntil(noProfiles)) {
                         val audioProfile = AudioProfile(
                             prefs.getString(
                                 NAME + profile,
@@ -184,8 +185,6 @@ class AudioProfileList() {
                         profiles.add(audioProfile)
                     }
                 }
-            } catch(e: Exception) {
-                Log.log(e.message)
             }
         }
 
@@ -197,7 +196,7 @@ class AudioProfileList() {
             if(prefs == null) {
                 prefs = context.getSharedPreferences(TAG, Activity.MODE_PRIVATE)
             }
-            for(profile in 0 until noProfiles) {
+            for(profile in 0.rangeUntil(noProfiles)) {
                 val audioProfile = profiles[profile]
                 prefs?.edit {
                     putString(NAME + profile, audioProfile.name)
@@ -207,7 +206,6 @@ class AudioProfileList() {
                     putInt(MEDIA + profile, audioProfile.mediaVolume)
                     putInt(SYSTEM + profile, audioProfile.systemVolume)
                     putBoolean(VIBRATE + profile, audioProfile.vibrate)
-                    apply()
                 }
             }
         }
@@ -225,10 +223,7 @@ class AudioProfileList() {
              */
             set(currentProfile) {
                 _currentProfile = currentProfile
-                prefs?.edit {
-                    putInt(CURRENT_PROFILE, _currentProfile)
-                    apply()
-                }
+                prefs?.edit { putInt(CURRENT_PROFILE, _currentProfile) }
                 MainActivity.updateTile()
             }
 
@@ -252,7 +247,6 @@ class AudioProfileList() {
                 _enterWifiProfile = enterProfile
                 prefs?.edit {
                     putInt(ENTER_PROFILE, _enterWifiProfile)
-                    apply()
                 }
             }
 
@@ -269,10 +263,7 @@ class AudioProfileList() {
              */
             set(exitProfile) {
                 _exitWifiProfile = exitProfile
-                prefs?.edit {
-                    putInt(EXIT_PROFILE, _exitWifiProfile)
-                    apply()
-                }
+                prefs?.edit { putInt(EXIT_PROFILE, _exitWifiProfile) }
             }
 
         var profileLocked: Boolean
@@ -287,9 +278,11 @@ class AudioProfileList() {
              * @param profileLocked True if locked, otherwise false.
              */
             set(profileLocked) {
-                _profileLocked = profileLocked
-                previousProfile = if(profileLocked) currentProfile else 0
-                Log.log("Profile ${getProfile(previousProfile).name} ${if(profileLocked) "locked" else "unlocked"}")
+                if(profileLocked != _profileLocked) {
+                    _profileLocked = profileLocked
+                    previousProfile = if(profileLocked) currentProfile else 0
+                    Log.log("Profile ${getProfile(previousProfile).name} ${if(profileLocked) "locked" else "unlocked"}")
+                }
             }
 
         var lockProfileTime: Int
@@ -305,10 +298,7 @@ class AudioProfileList() {
              */
             set(lockProfileTime) {
                 _lockProfileTime = lockProfileTime
-                prefs?.edit {
-                    putInt(LOCK_PROFILE, _lockProfileTime)
-                    apply()
-                }
+                prefs?.edit { putInt(LOCK_PROFILE, _lockProfileTime) }
             }
 
         var profileLockStartTime: Long
@@ -323,10 +313,7 @@ class AudioProfileList() {
              */
             set(switchTime) {
                 _profileLockStartTime = switchTime
-                prefs?.edit {
-                    putLong(LOCK_PROFILE_START_TIME, _profileLockStartTime)
-                    apply()
-                }
+                prefs?.edit { putLong(LOCK_PROFILE_START_TIME, _profileLockStartTime) }
             }
 
         /**
@@ -375,13 +362,18 @@ class AudioProfileList() {
          * @param context The application context.
          */
         fun applyProfile(context: Context) {
-            val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
-            if(am != null) {
+            (context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?)?.let { am ->
                 val audioProfile = getProfile(currentProfile)
                 if(audioProfile.ringtoneVolume != -1) {
-                    if(am.getStreamVolume(AudioManager.STREAM_RING) != audioProfile.ringtoneVolume) {
+                    var retries = 0
+                    while(retries < RETRIES && am.getStreamVolume(AudioManager.STREAM_RING) != audioProfile.ringtoneVolume) {
                         am.setStreamVolume(AudioManager.STREAM_RING, audioProfile.ringtoneVolume, 0)
+                        retries++
+                        if(retries < RETRIES) {
+                            Thread.sleep(PROFILE_DELAY)
+                        }
                     }
+                    Log.log("Setting ringtone volume to ${audioProfile.ringtoneVolume} - set to ${am.getStreamVolume(AudioManager.STREAM_RING)} (retries: $retries)")
                     try {
                         val mode = am::class.java.getMethod("getRingerModeInternal").invoke(am) as Int
                         val newMode = if(audioProfile.ringtoneVolume == 0) {
@@ -397,7 +389,7 @@ class AudioProfileList() {
                             am::class.java.getMethod("setRingerModeInternal", Int::class.java).invoke(am, newMode)
                         }
                     } catch(_: Exception) {
-                        try {
+                        runCatching {
                             val mode = am.ringerMode
                             val newMode = if(audioProfile.ringtoneVolume == 0) {
                                 if(audioProfile.vibrate) {
@@ -411,35 +403,44 @@ class AudioProfileList() {
                             if(mode != newMode) {
                                 am.ringerMode = newMode
                             }
-                        } catch(_: Exception) {
-                            // Do nothing - this is because the app doesn't have the necessary permissions.
                         }
                     }
+                    Thread.sleep(500L)
                 }
                 if(audioProfile.notificationVolume != -1) {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        if(am.getStreamVolume(AudioManager.STREAM_NOTIFICATION) != audioProfile.notificationVolume) {
-                            am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioProfile.notificationVolume, 0)
+                    var retries = 0
+                    while(retries < RETRIES && am.getStreamVolume(AudioManager.STREAM_NOTIFICATION) != audioProfile.notificationVolume) {
+                        am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioProfile.notificationVolume, 0)
+                        retries++
+                        if(retries < RETRIES) {
+                            Thread.sleep(PROFILE_DELAY)
                         }
-                    }, PROFILE_DELAY)
+                    }
+                    Log.log("Setting notification volume to ${audioProfile.notificationVolume} - set to ${am.getStreamVolume(AudioManager.STREAM_NOTIFICATION)} (retries: $retries)")
                 }
                 if(audioProfile.mediaVolume != -1) {
-                    if(am.getStreamVolume(AudioManager.STREAM_MUSIC) != audioProfile.mediaVolume) {
+                    var retries = 0
+                    while(retries < RETRIES && am.getStreamVolume(AudioManager.STREAM_MUSIC) != audioProfile.mediaVolume) {
                         am.setStreamVolume(AudioManager.STREAM_MUSIC, audioProfile.mediaVolume, 0)
+                        retries++
+                        if(retries < RETRIES) {
+                            Thread.sleep(PROFILE_DELAY)
+                        }
                     }
+                    Log.log("Setting media volume to ${audioProfile.mediaVolume} - set to ${am.getStreamVolume(AudioManager.STREAM_MUSIC)} (retries: $retries)")
                 }
                 if(audioProfile.systemVolume != -1) {
-                    if(am.getStreamVolume(AudioManager.STREAM_SYSTEM) != audioProfile.systemVolume) {
+                    var retries = 0
+                    while(retries < RETRIES && am.getStreamVolume(AudioManager.STREAM_SYSTEM) != audioProfile.systemVolume) {
                         am.setStreamVolume(AudioManager.STREAM_SYSTEM, audioProfile.systemVolume, 0)
+                        retries++
+                        if(retries < RETRIES) {
+                            Thread.sleep(PROFILE_DELAY)
+                        }
                     }
+                    Log.log("Setting system volume to ${audioProfile.systemVolume} - set to ${am.getStreamVolume(AudioManager.STREAM_SYSTEM)} (retries: $retries)")
                 }
             }
         }
-    }
-
-    /**
-     * Initialise the class.
-     */
-    init {
     }
 }

@@ -13,22 +13,18 @@ class AudioProfileListener : BroadcastReceiver() {
      * @param intent  The intent to be handled.
      */
     override fun onReceive(context: Context?, intent: Intent?) {
-        try {
+        runCatching {
             if(context != null && intent != null) {
                 when(intent.action) {
-                    Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_LOCKED_BOOT_COMPLETED, Intent.ACTION_USER_UNLOCKED -> try {
+                    Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_LOCKED_BOOT_COMPLETED, Intent.ACTION_USER_UNLOCKED -> runCatching {
                         val serviceIntent = Intent(context, AudioProfileService::class.java)
                         context.startService(serviceIntent)
                         Log.clearLog()
                         Log.log("Device rebooted")
                         MainActivity.updateTile()
-                    } catch(_: Throwable) {
-                        // Do nothing.
                     }
                 }
             }
-        } catch(_: Exception) {
-            // Do nothing.
         }
     }
 }

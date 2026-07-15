@@ -25,14 +25,12 @@ class ProfileAdapter(context: Context, objects: Array<AudioProfile?>) : ArrayAda
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_profile, parent, false)
         bindingRow = RowProfileBinding.bind(row)
-        try {
+        runCatching {
             getItem(position)?.let { profile ->
                 bindingRow.icon.foreground = AudioProfileList.getIcon(profile.icon)
                 bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
                 bindingRow.profile.text = profile.name
             }
-        } catch(e: Exception) {
-            // Do nothing.
         }
         DisplayUtils.colourControls(row)
         return row
@@ -48,14 +46,12 @@ class ProfileAdapter(context: Context, objects: Array<AudioProfile?>) : ArrayAda
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val row = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_profile, parent, false)
         bindingRow = RowProfileBinding.bind(row)
-        try {
+        runCatching {
             getItem(position)?.let { profile ->
                 bindingRow.icon.foreground = AudioProfileList.getIcon(profile.icon)
                 bindingRow.icon.foreground.setColorFilter(MainActivity.configColour)
                 bindingRow.profile.text = profile.name
             }
-        } catch(e: Exception) {
-            // Do nothing.
         }
         DisplayUtils.colourControls(row)
         return row

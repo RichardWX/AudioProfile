@@ -14,7 +14,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
-import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.ActivityPermissionBinding
 import com.rjw.audioprofile.utils.TAG
 
@@ -29,8 +28,8 @@ class PermissionRequest : AudioActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.setWindowRatios(0.9f, 0.5f)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_permission)
-        binding = ActivityPermissionBinding.bind(view)
+        binding = ActivityPermissionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         colourControls()
     }
 
@@ -71,12 +70,10 @@ class PermissionRequest : AudioActivity() {
                 startActivity(intentSleeping)
             } catch(_: Exception) {
                 // Try something else...
-                try {
+                runCatching {
                     val intentSleeping = Intent()
                     intentSleeping.component = ComponentName("com.samsung.android.sm", "com.samsung.android.sm.ui.battery.BatteryActivity")
                     startActivity(intentSleeping)
-                } catch(_: Exception) {
-                    // Do nothing.
                 }
             }
         }

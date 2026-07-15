@@ -255,6 +255,15 @@ class MainActivity : AudioActivity() {
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                    REQUEST_PERMISSION_RESPONSE
+                )
+            }
+        }
     }
 
     /**
@@ -345,11 +354,9 @@ class MainActivity : AudioActivity() {
      */
     private fun startService() {
         val serviceIntent = Intent(mThis, AudioProfileService::class.java)
-        try {
+        runCatching {
             bindService(serviceIntent, connection, BIND_AUTO_CREATE)
             startService(serviceIntent)
-        } catch(_: Exception) {
-            // Do nothing...
         }
     }
 
@@ -358,7 +365,7 @@ class MainActivity : AudioActivity() {
          * Return if the service is running.
          */
         get() {
-            try {
+            runCatching {
                 val am = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
                 if(am != null) {
                     for(service in am.getRunningServices(Int.MAX_VALUE)) {
@@ -367,8 +374,6 @@ class MainActivity : AudioActivity() {
                         }
                     }
                 }
-            } catch(_: Exception) {
-                // Do nothing.
             }
             return false
         }
@@ -392,14 +397,12 @@ class MainActivity : AudioActivity() {
          * Update the quick panel tile to reflect the current profile.
          */
         fun updateTile() {
-            try {
+            runCatching {
                 mThis?.let { instance ->
                     instance.updateControls()
                     TileService.requestListeningState(instance, ComponentName(instance.applicationContext, QuickPanel::class.java))
                     Notifications.updateNotification(instance)
                 }
-            } catch(_: Exception) {
-                // Do nothing.
             }
         }
 
