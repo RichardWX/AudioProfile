@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
+import com.rjw.audioprofile.R
 import com.rjw.audioprofile.databinding.ActivityPermissionBinding
 import com.rjw.audioprofile.utils.TAG
 
@@ -28,8 +29,8 @@ class PermissionRequest : AudioActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.setWindowRatios(0.9f, 0.5f)
         super.onCreate(savedInstanceState)
-        binding = ActivityPermissionBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_permission)
+        binding = ActivityPermissionBinding.bind(view)
         colourControls()
     }
 
